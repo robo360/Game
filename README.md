@@ -118,7 +118,6 @@ Game is an app that allows users to form community around their favorites sports
 |objectId     | String    | unique id for the user post |
 |Username | String	|a screenName |
 |Name | String	| actual name of the user|
-|creater |	Pointer to User | the person who created the post|
 |postsCount|	Number|	number of posts submitted by a user|
 |createdAt|	DateTime|	date when user is created (default field)|
 |updatedAt|	DateTime|	date when user is last updated (default field)|
