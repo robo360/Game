@@ -144,24 +144,34 @@ Game is an app that allows users to form community around their favorites sports
 |image | File	|event poster|
 |Title  |	Pointer to User | the user who likes a post|
 |Address | GeoPoint |the address of the Match|
-|createdAt|	DateTime|	date when the user likes a post|
+|community| Pointer to Community| the community in which the user is posting in|
+|createdAt|	DateTime| date when the user likes a post|
 
-
-4. Interact (User - event)
+4. Attendance (User - event)
 
 | Property | Type     | Description |
 | -------- | -------- | -------- |
 |objectId     | String    | unique id for the user post |
-|text  | String	|content of the comment |
 |user |	Pointer to User | the person who created the post|
 |event |	Pointer to Event| Comments to a post|
-|AttendStatus | Boolean |whether attending or not attending|
-|LikeStatus | Boolean | whether likes or not| 
-|Comment |String | text of the comment written by the user| 
+|attendStatus | Boolean |whether attending or not attending|
+|likeStatus | Boolean | whether likes or not| 
+|comment |String | text of the comment written by the user| 
 |createdAt|	DateTime|	date when the first interaction is created (default field)|
 |updatedAt|	DateTime|	date when comment is last updated (default) field)|
 
-5. Follow (user - community)
+5. Comment (User - event)
+
+| Property | Type     | Description |
+| -------- | -------- | -------- |
+|objectId     | String    | unique id for the user post |
+|user |	Pointer to User | the person who created the post|
+|event |	Pointer to Event| Comments to a post|
+|comment |String | text of the comment written by the user| 
+|createdAt|	DateTime|	date when the first interaction is created (default field)|
+|updatedAt|	DateTime|	date when comment is last updated (default) field)|
+
+6. Follow (user - community)
 
 | Property | Type     | Description |
 | -------- | -------- | -------- |
