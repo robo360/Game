@@ -176,9 +176,9 @@ Game is an app that allows users to form community around their favorites sports
 | Property | Type     | Description |
 | -------- | -------- | -------- |
 |objectId     | String    | unique id for the user post |
-|follower |	Pointer to User | the user who follows a community|
+|user |	Pointer to User | the user who follows a community|
 |community |Pointer to Community | A community that the user is following|
-|EventAttend |Number | number of events in attended from this community|
-|Interaction |Number | number of times the user checks, clicks on an event in the community, or create an event in the community|
+|eventAttend |Number | number of events in attended from this community|
+|interactionCount |Number | number of times the user checks, clicks on an event in the community, or create an event in the community|
 |createdAt|	DateTime|	date when the user follows a community|
 
