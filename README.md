@@ -142,8 +142,8 @@ Game is an app that allows users to form community around their favorites sports
 |objectId     | String    | unique id for the user post |
 |creator |Pointer to User | the user who created the event|
 |image | File	|event poster|
-|Title  |	Pointer to User | the user who likes a post|
-|Address | GeoPoint |the address of the Match|
+|title  |	Pointer to User | the user who likes a post|
+|address | GeoPoint |the address of the Match|
 |community| Pointer to Community| the community in which the user is posting in|
 |createdAt|	DateTime| date when the user likes a post|
 
