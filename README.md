@@ -1,4 +1,4 @@
-Game Project - README Template
+Game Project 
 ===
 
 # Game
@@ -102,7 +102,7 @@ Game is an app that allows users to form community around their favorites sports
 
 | Property | Type     | Description |
 | -------- | -------- | -------- |
-|objectId     | String    | unique id for the post |
+|objectId  | String    | unique id for the post |
 |author | Pointer to User | the author of the post|
 |image | File	|image that user posts|
 |Text |	String |	the content of a post|
@@ -118,6 +118,7 @@ Game is an app that allows users to form community around their favorites sports
 |objectId     | String    | unique id for the user post |
 |Username | String	|a screenName |
 |Name | String	| actual name of the user|
+|image | File	|profile pic of the user|
 |postsCount|	Number|	number of posts submitted by a user|
 |createdAt|	DateTime|	date when user is created (default field)|
 |updatedAt|	DateTime|	date when user is last updated (default field)|
@@ -128,6 +129,7 @@ Game is an app that allows users to form community around their favorites sports
 | -------- | -------- | -------- |
 |objectId     | String    | unique id for the user post |
 |name | File	|a unique name of the community |
+|image | File	|profile pic of the community|
 |creater |	Pointer to User | the person who created the post|
 |postsCount|	Number|	number of posts in the community|
 |createdAt|	DateTime|	date when community is created (default field)|
@@ -139,9 +141,9 @@ Game is an app that allows users to form community around their favorites sports
 | -------- | -------- | -------- |
 |objectId     | String    | unique id for the user post |
 |creator |Pointer to User | the user who created the event|
+|image | File	|event poster|
 |Title  |	Pointer to User | the user who likes a post|
-|Address | String |the address of the Match|
-|coordinates | String |Map coordinates|
+|Address | GeoPoint |the address of the Match|
 |createdAt|	DateTime|	date when the user likes a post|
 
 
