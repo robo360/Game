@@ -10,19 +10,19 @@ import com.parse.ParseUser;
 import org.parceler.Parcel;
 
 /*
-* Parse Model: Event
-* | Property | Type     | Description |
-* | -------- | -------- | -------- |
-* |objectId  | String    | unique id for the user post |
-* |creator |Pointer to User | the user who created the event|
-* |image | File	|event poster|
-* |title  |	String | the title of the event|
-* |address | GeoPoint |the address of the Match|
-* |community| Pointer to Community| the community in which the user is posting in|
-* |createdAt|	DateTime| date when the user likes a post|
+ * Parse Model: Event
+ * | Property | Type     | Description |
+ * | -------- | -------- | -------- |
+ * |objectId  | String    | unique id for the user post |
+ * |creator |Pointer to User | the user who created the event|
+ * |image | File	|event poster|
+ * |title  |	String | the title of the event|
+ * |address | GeoPoint |the address of the Match|
+ * |community| Pointer to Community| the community in which the user is posting in|
+ * |createdAt|	DateTime| date when the user likes a post|
  */
 
-@Parcel(analyze={Event.class})
+@Parcel(analyze = {Event.class})
 @ParseClassName("Event")
 public class Event extends ParseObject {
     public static final String KEY_CREATOR = "creator";
@@ -36,39 +36,39 @@ public class Event extends ParseObject {
         return getParseUser(KEY_CREATOR);
     }
 
-    public ParseFile getImage(){
+    public ParseFile getImage() {
         return getParseFile(KEY_IMAGE);
     }
 
-    public String getTitle (){
+    public String getTitle() {
         return getString(KEY_TITLE);
     }
 
-    public ParseGeoPoint getAddress(){
+    public ParseGeoPoint getAddress() {
         return getParseGeoPoint(KEY_ADDRESS);
     }
 
-    public ParseObject getCommunity(){
+    public ParseObject getCommunity() {
         return getParseObject(KEY_COMMUNITY);
     }
 
-    public void setUser(ParseUser user){
+    public void setUser(ParseUser user) {
         put(KEY_CREATOR, user);
     }
 
-    public void setImage(ParseFile image){
+    public void setImage(ParseFile image) {
         put(KEY_IMAGE, image);
     }
 
-    public void setTitle(String title){
+    public void setTitle(String title) {
         put(KEY_TITLE, title);
     }
 
-    public void setAddress(ParseGeoPoint address){
+    public void setAddress(ParseGeoPoint address) {
         put(KEY_ADDRESS, address);
     }
 
-    public void setCommunity(ParseObject community){
+    public void setCommunity(ParseObject community) {
         put(KEY_COMMUNITY, community);
     }
 }

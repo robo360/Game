@@ -20,7 +20,7 @@ Parse Model: Community
 |createdAt|	DateTime|	date when community is created (default field)|
 |updatedAt|	DateTime|	date when community is last updated (default field)|
  */
-@Parcel(analyze={Community.class})
+@Parcel(analyze = {Community.class})
 @ParseClassName("Community")
 public class Community extends ParseObject {
     public static final String KEY_NAME = "name";
@@ -29,35 +29,35 @@ public class Community extends ParseObject {
     public static final String KEY_POSTSCOUNT = "postsCount";
     public static final String KEY_CREATEDAT = "postsCount";
 
-    public ParseUser getCreator(){
+    public ParseUser getCreator() {
         return getParseUser(KEY_CREATOR);
     }
 
-    public ParseFile getImage(){
+    public ParseFile getImage() {
         return getParseFile(KEY_IMAGE);
     }
 
-    public String getName(){
+    public String getName() {
         return getString(KEY_NAME);
     }
 
-    public int getPostsCount(){
+    public int getPostsCount() {
         return getNumber(KEY_POSTSCOUNT).intValue();
     }
 
-    public void setCreator(ParseUser user){
+    public void setCreator(ParseUser user) {
         put(KEY_CREATOR, user);
     }
 
-    public void setImage(ParseFile image){
+    public void setImage(ParseFile image) {
         put(KEY_IMAGE, image);
     }
 
-    public void setName(String name){
+    public void setName(String name) {
         put(KEY_NAME, name);
     }
 
-    public void setPostsCount(int count){
+    public void setPostsCount(int count) {
         put(KEY_POSTSCOUNT, count);
     }
 }

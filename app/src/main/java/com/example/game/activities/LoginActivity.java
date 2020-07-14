@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.game.R;
@@ -19,12 +20,13 @@ import com.parse.ParseException;
 import com.parse.ParseUser;
 
 public class LoginActivity extends AppCompatActivity {
-    public static final String  TAG = "LoginActivity";
-    
     private ActivityLoginBinding binding;
     private EditText etEmail;
     private EditText etPassword;
     private Button btnLogin;
+    private TextView tvSingup;
+
+    public static final String TAG = "LoginActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +38,11 @@ public class LoginActivity extends AppCompatActivity {
         etEmail = binding.etMail;
         etPassword = binding.etPassword;
         btnLogin = binding.btnLogin;
+        tvSingup = binding.tvSignUpMessage;
 
+        //TODO: [UX] When the etPassword or etEmail lose focus, remove the virtual keyboard.
+
+        //set a listener on the btnLogin
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -53,22 +59,31 @@ public class LoginActivity extends AppCompatActivity {
                         public void done(ParseUser user, ParseException e) {
                             if (e != null) {
                                 Log.e(TAG, "Error while logging in" + e);
-                                Snackbar.make(btnLogin, "Incorrect username or password. Try again.", BaseTransientBottomBar.LENGTH_SHORT);
+                                Snackbar.make(btnLogin, "Error" + e, BaseTransientBottomBar.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
-                                gotoMainActivity();
+                                goToActivity(MainActivity.class);
                             }
                         }
                     });
                 }
             }
         });
+
+        //set a listener on the tvSingup
+        tvSingup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToActivity(SignupActivity.class);
+            }
+        });
+
     }
 
-    private void gotoMainActivity() {
-        //go to MainActivity
-        Intent i = new Intent(LoginActivity.this, MainActivity.class);
+    private void goToActivity(Class aClass) {
+        Intent i = new Intent(LoginActivity.this, aClass);
         startActivity(i);
         finish();
     }
+
 }
