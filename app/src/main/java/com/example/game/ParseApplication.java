@@ -2,8 +2,11 @@ package com.example.game;
 
 import android.app.Application;
 
+import com.example.game.models.Attendance;
+import com.example.game.models.Comment;
 import com.example.game.models.Community;
 import com.example.game.models.Event;
+import com.example.game.models.Subscription;
 import com.parse.Parse;
 import com.parse.ParseObject;
 
@@ -14,6 +17,9 @@ public class ParseApplication extends Application {
 
         ParseObject.registerSubclass(Event.class);
         ParseObject.registerSubclass(Community.class);
+        ParseObject.registerSubclass(Subscription.class);
+        ParseObject.registerSubclass(Attendance.class);
+        ParseObject.registerSubclass(Comment.class);
 
         // set applicationId, and server server based on the values in the Heroku settings.
         // clientKey is not needed unless explicitly configured

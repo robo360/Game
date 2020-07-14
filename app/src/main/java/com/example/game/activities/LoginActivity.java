@@ -11,7 +11,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.game.R;
 import com.example.game.databinding.ActivityLoginBinding;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
@@ -31,10 +30,11 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        if (ParseUser.getCurrentUser() != null) {
+            goToActivity(MainActivity.class);
+        }
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
         etEmail = binding.etMail;
         etPassword = binding.etPassword;
         btnLogin = binding.btnLogin;
@@ -76,7 +76,6 @@ public class LoginActivity extends AppCompatActivity {
                 goToActivity(SignupActivity.class);
             }
         });
-
     }
 
     private void goToActivity(Class aClass) {
@@ -84,5 +83,4 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(i);
         finish();
     }
-
 }
