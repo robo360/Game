@@ -20,8 +20,8 @@ Parse Model: Community
 |createdAt|	DateTime|	date when community is created (default field)|
 |updatedAt|	DateTime|	date when community is last updated (default field)|
  */
-@Parcel(analyze={Event.class})
-@ParseClassName("Event")
+@Parcel(analyze={Community.class})
+@ParseClassName("Community")
 public class Community extends ParseObject {
     public static final String KEY_NAME = "name";
     public static final String KEY_IMAGE = "image";
