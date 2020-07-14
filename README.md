@@ -170,13 +170,14 @@ Game is an app that allows users to form community around their favorites sports
 |createdAt|	DateTime|	date when the first interaction is created (default field)|
 |updatedAt|	DateTime|	date when comment is last updated (default) field)|
 
-6. Follow (user - community)
+6. Subscription (user - community)
 
 | Property | Type     | Description |
 | -------- | -------- | -------- |
 |objectId     | String    | unique id for the user post |
 |user |	Pointer to User | the user who follows a community|
 |community |Pointer to Community | A community that the user is following|
+|followStatus | Boolean | whether follows or not| 
 |eventAttend |Number | number of events in attended from this community|
 |interactionCount |Number | number of times the user checks, clicks on an event in the community, or create an event in the community|
 |createdAt|	DateTime|	date when the user follows a community|

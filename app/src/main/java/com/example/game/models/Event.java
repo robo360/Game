@@ -10,18 +10,17 @@ import com.parse.ParseUser;
 import org.parceler.Parcel;
 
 /*
- * Parse Model: Event
- * | Property | Type     | Description |
- * | -------- | -------- | -------- |
- * |objectId  | String    | unique id for the user post |
- * |creator |Pointer to User | the user who created the event|
- * |image | File	|event poster|
- * |title  |	String | the title of the event|
- * |address | GeoPoint |the address of the Match|
- * |community| Pointer to Community| the community in which the user is posting in|
- * |createdAt|	DateTime| date when the user likes a post|
+Parse Model: Event
+| Property | Type     | Description |
+| -------- | -------- | -------- |
+|objectId  | String    | unique id for the user post |
+|creator |Pointer to User | the user who created the event|
+|image | File	|event poster|
+|title  |	String | the title of the event|
+|address | GeoPoint |the address of the Match|
+|community| Pointer to Community| the community in which the user is posting in|
+|createdAt|	DateTime| date when the user likes a post|
  */
-
 @Parcel(analyze = {Event.class})
 @ParseClassName("Event")
 public class Event extends ParseObject {

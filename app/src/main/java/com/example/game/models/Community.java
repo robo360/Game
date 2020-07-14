@@ -15,7 +15,7 @@ Parse Model: Community
 |objectId     | String    | unique id for the user post |
 |name | File	|a unique name of the community |
 |image | File	|profile pic of the community|
-|creater |	Pointer to User | the person who created the post|
+|creator |	Pointer to User | the person who created the post|
 |postsCount|	Number|	number of posts in the community|
 |createdAt|	DateTime|	date when community is created (default field)|
 |updatedAt|	DateTime|	date when community is last updated (default field)|
@@ -41,8 +41,8 @@ public class Community extends ParseObject {
         return getString(KEY_NAME);
     }
 
-    public int getPostsCount() {
-        return getNumber(KEY_POSTSCOUNT).intValue();
+    public Number getPostsCount() {
+        return getNumber(KEY_POSTSCOUNT);
     }
 
     public void setCreator(ParseUser user) {
