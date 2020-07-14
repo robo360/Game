@@ -7,8 +7,6 @@ import com.example.game.models.Event;
 import com.parse.Parse;
 import com.parse.ParseObject;
 
-import org.w3c.dom.Comment;
-
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 

@@ -19,12 +19,12 @@ import com.parse.ParseException;
 import com.parse.ParseUser;
 
 public class LoginActivity extends AppCompatActivity {
+    public static final String  TAG = "LoginActivity";
+    
     private ActivityLoginBinding binding;
     private EditText etEmail;
     private EditText etPassword;
     private Button btnLogin;
-
-    public static final String  TAG = "LoginActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,17 +44,17 @@ public class LoginActivity extends AppCompatActivity {
                 String email = etEmail.getText().toString();
                 String password = etPassword.getText().toString();
 
-                if(email.isEmpty() || password.isEmpty()){
+                if (email.isEmpty() || password.isEmpty()) {
                     Snackbar.make(btnLogin, "Email or password cannot be empty", BaseTransientBottomBar.LENGTH_SHORT);
-                }else{
+                } else {
                     //Send Async request
                     ParseUser.logInInBackground(email, password, new LogInCallback() {
                         @Override
                         public void done(ParseUser user, ParseException e) {
-                            if(e!= null){
+                            if (e != null) {
                                 Log.e(TAG, "Error while logging in" + e);
                                 Snackbar.make(btnLogin, "Incorrect username or password. Try again.", BaseTransientBottomBar.LENGTH_SHORT);
-                            }else{
+                            } else {
                                 Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
                                 gotoMainActivity();
                             }
@@ -63,7 +63,6 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
 
     private void gotoMainActivity() {
@@ -72,5 +71,4 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(i);
         finish();
     }
-
 }
