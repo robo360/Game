@@ -1,11 +1,11 @@
 <resources>
     <string name="app_name">Game</string>
-    <string name="setupAccount"><![CDATA[New to Game.\n Sign up for an account.>>]]></string>
+    <string name="setupAccount"><![CDATA[New to Game.\n Sign up for an account.]]></string>
     <string name="e_mail">E-mail</string>
-    <string name="password">password</string>
+    <string name="password">Password</string>
     <string name="login">Login</string>
     <string name="repeat_password">Repeat Password</string>
     <string name="name">Name</string>
     <string name="singup">SingUp</string>
-    <string name="loginMessage">Have an account Login</string>
+    <string name="loginMessage">Have an account.\t Login here.</string>
 </resources>
