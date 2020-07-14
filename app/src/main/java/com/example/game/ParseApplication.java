@@ -7,9 +7,6 @@ import com.example.game.models.Event;
 import com.parse.Parse;
 import com.parse.ParseObject;
 
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
-
 public class ParseApplication extends Application {
     @Override
     public void onCreate() {
@@ -17,6 +14,7 @@ public class ParseApplication extends Application {
 
         ParseObject.registerSubclass(Event.class);
         ParseObject.registerSubclass(Community.class);
+
         // set applicationId, and server server based on the values in the Heroku settings.
         // clientKey is not needed unless explicitly configured
         // any network interceptors must be added with the Configuration Builder given this syntax
@@ -24,4 +22,5 @@ public class ParseApplication extends Application {
                 .applicationId("gameparse") // should correspond to APP_ID env variable
                 .server("https://gameparse.herokuapp.com/parse/").build());
     }
+
 }

@@ -20,13 +20,13 @@ import com.parse.ParseException;
 import com.parse.ParseUser;
 
 public class LoginActivity extends AppCompatActivity {
+    public static final String TAG = "LoginActivity";
+
     private ActivityLoginBinding binding;
     private EditText etEmail;
     private EditText etPassword;
     private Button btnLogin;
     private TextView tvSingup;
-
-    public static final String TAG = "LoginActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +39,6 @@ public class LoginActivity extends AppCompatActivity {
         etPassword = binding.etPassword;
         btnLogin = binding.btnLogin;
         tvSingup = binding.tvSignUpMessage;
-
         //TODO: [UX] When the etPassword or etEmail lose focus, remove the virtual keyboard.
 
         //set a listener on the btnLogin
