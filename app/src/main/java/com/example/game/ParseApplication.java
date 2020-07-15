@@ -28,5 +28,4 @@ public class ParseApplication extends Application {
                 .applicationId("gameparse") // should correspond to APP_ID env variable
                 .server("https://gameparse.herokuapp.com/parse/").build());
     }
-
 }
