@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="side_margin">16dp</dimen>
+    <dimen name="top_margin">140dp</dimen>
+    <dimen name="et_size">45dp</dimen>
+    <dimen name="new_block">56dp</dimen>
+    <dimen name="text_size">13sp</dimen>
+</resources>
