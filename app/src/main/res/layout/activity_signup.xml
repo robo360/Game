@@ -6,107 +6,18 @@
     android:layout_height="match_parent"
     tools:context=".activities.LoginActivity">
 
-    <EditText
-        android:id="@+id/etName"
+    <FrameLayout
+        android:id="@+id/flContainer"
         android:layout_width="0dp"
-        android:layout_height="@dimen/et_size"
-        android:layout_marginStart="@dimen/side_margin"
-        android:layout_marginTop="@dimen/top_margin"
-        android:layout_marginEnd="@dimen/side_margin"
-        android:autofillHints=""
-        android:background="@drawable/edit_text_border"
-        android:gravity="center"
-        android:hint="@string/name"
-        android:inputType="textMultiLine"
-        android:textAlignment="center"
+        android:layout_height="0dp"
+        android:layout_alignParentStart="false"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        android:textColorHint="@color/gray"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible">
 
-    <EditText
-        android:id="@+id/etMail"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/et_size"
-        android:layout_marginStart="@dimen/side_margin"
-        android:layout_marginTop="@dimen/side_margin"
-        android:layout_marginEnd="@dimen/side_margin"
-        android:autofillHints=""
-        android:background="@drawable/edit_text_border"
-        android:gravity="center"
-        android:hint="@string/e_mail"
-        android:inputType="textMultiLine"
-        android:textAlignment="center"
-        android:textColorHint="@color/gray"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etName" />
-
-    <EditText
-        android:id="@+id/etPassword"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/et_size"
-        android:layout_marginStart="@dimen/side_margin"
-        android:layout_marginTop="@dimen/side_margin"
-        android:layout_marginEnd="@dimen/side_margin"
-        android:autofillHints=""
-        android:background="@drawable/edit_text_border"
-        android:ems="10"
-        android:gravity="center"
-        android:hint="@string/password"
-        android:inputType="textPassword"
-        android:textAlignment="center"
-        android:textColorHint="@color/gray"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etMail" />
-
-    <EditText
-        android:id="@+id/etRepeatPassword"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/et_size"
-        android:layout_marginStart="@dimen/side_margin"
-        android:layout_marginTop="@dimen/side_margin"
-        android:layout_marginEnd="@dimen/side_margin"
-        android:autofillHints=""
-        android:background="@drawable/edit_text_border"
-        android:ems="10"
-        android:gravity="center"
-        android:hint="@string/repeat_password"
-        android:inputType="textPassword"
-        android:textAlignment="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etPassword" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnLogin"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/et_size"
-        android:layout_marginTop="@dimen/new_block"
-        android:backgroundTint="@color/colorPrimary"
-        android:text="@string/singup"
-        android:textColor="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etRepeatPassword" />
-
-    <TextView
-        android:id="@+id/tvLoginMessage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/side_margin"
-        android:text="@string/loginMessage"
-        android:textAlignment="center"
-        android:textSize="@dimen/text_size"
-        android:textColor="@color/gray"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnLogin" />
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,6 +6,15 @@
     <string name="login">Login</string>
     <string name="repeat_password">Repeat Password</string>
     <string name="name">Name</string>
-    <string name="singup">SingUp</string>
-    <string name="loginMessage">Have an account.\t Login here.</string>
+    <string name="signup">Sign Up</string>
+    <string name="loginMessage">Have an account.\n Login here.</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="take_profile_picture">TAKE PROFILE PICTURE</string>
+    <string name="or">OR</string>
+    <string name="submit">Submit</string>
+    <string name="image_holder">image holder</string>
+    <string name="camera">camera</string>
+    <string name="folder">folder</string>
+    <string name="skip">Skip</string>
 </resources>

@@ -7,12 +7,32 @@
     tools:context=".activities.LoginActivity">
 
     <EditText
-        android:id="@+id/etMail"
+        android:id="@+id/etName"
         android:layout_width="0dp"
         android:layout_height="@dimen/et_size"
         android:layout_marginStart="@dimen/side_margin"
         android:layout_marginTop="@dimen/top_margin"
         android:layout_marginEnd="@dimen/side_margin"
+        android:autofillHints=""
+        android:background="@drawable/edit_text_border"
+        android:gravity="center"
+        android:hint="@string/name"
+        android:inputType="textMultiLine"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        android:textColorHint="@color/gray"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/etMail"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/et_size"
+        android:layout_marginStart="@dimen/side_margin"
+        android:layout_marginTop="@dimen/side_margin"
+        android:layout_marginEnd="@dimen/side_margin"
+        android:autofillHints=""
         android:background="@drawable/edit_text_border"
         android:gravity="center"
         android:hint="@string/e_mail"
@@ -20,10 +40,9 @@
         android:textAlignment="center"
         android:textColorHint="@color/gray"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.493"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:autofillHints="" />
+        app:layout_constraintTop_toBottomOf="@+id/etName" />
 
     <EditText
         android:id="@+id/etPassword"
@@ -32,41 +51,61 @@
         android:layout_marginStart="@dimen/side_margin"
         android:layout_marginTop="@dimen/side_margin"
         android:layout_marginEnd="@dimen/side_margin"
+        android:autofillHints=""
         android:background="@drawable/edit_text_border"
+        android:ems="10"
         android:gravity="center"
         android:hint="@string/password"
-        android:inputType="textMultiLine|textPassword"
+        android:inputType="textPassword"
         android:textAlignment="center"
         android:textColorHint="@color/gray"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etMail"
-        android:autofillHints="" />
+        app:layout_constraintTop_toBottomOf="@+id/etMail" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnLogin"
-        android:layout_width="wrap_content"
+    <EditText
+        android:id="@+id/etRepeatPassword"
+        android:layout_width="0dp"
         android:layout_height="@dimen/et_size"
-        android:layout_marginTop="@dimen/new_block"
-        android:backgroundTint="@color/colorPrimary"
-        android:text="@string/login"
-        android:textColor="@color/white"
+        android:layout_marginStart="@dimen/side_margin"
+        android:layout_marginTop="@dimen/side_margin"
+        android:layout_marginEnd="@dimen/side_margin"
+        android:autofillHints=""
+        android:background="@drawable/edit_text_border"
+        android:ems="10"
+        android:gravity="center"
+        android:hint="@string/repeat_password"
+        android:inputType="textPassword"
+        android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etPassword" />
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnSignUp"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/et_size"
+        android:layout_marginTop="76dp"
+        android:backgroundTint="@color/colorPrimary"
+        android:text="@string/signup"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etRepeatPassword" />
+
     <TextView
-        android:id="@+id/tvSignUpMessage"
+        android:id="@+id/tvLoginMessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/setupAccount"
         android:layout_marginTop="@dimen/side_margin"
+        android:text="@string/loginMessage"
         android:textAlignment="center"
         android:textColor="@color/gray"
         android:textSize="@dimen/text_size"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnLogin" />
+        app:layout_constraintTop_toBottomOf="@+id/btnSignUp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
