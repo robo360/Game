@@ -17,10 +17,8 @@ import android.widget.Toast;
 
 import com.example.game.R;
 import com.example.game.activities.LoginActivity;
-import com.example.game.activities.SignupActivity;
-import com.example.game.databinding.ActivitySignupBinding;
 import com.example.game.databinding.FragmentSignupBinding;
-import com.example.game.helpers.Helper;
+import com.example.game.helpers.NavigationUtil;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.parse.LogInCallback;
@@ -38,7 +36,10 @@ public class SignupFragment extends Fragment {
     private EditText etRepeatedPassword;
     private Button btnSignup;
     private TextView tvLoginMessage;
-    private SignupFragment fragment;
+
+    public SignupFragment(){
+        // Required empty public constructor
+    }
 
     public static SignupFragment newInstance() {
         SignupFragment fragment = new SignupFragment();
@@ -82,7 +83,8 @@ public class SignupFragment extends Fragment {
                         }
                     });
                 } else {
-                    Snackbar.make(btnSignup, "Password and Repeated Password should match", BaseTransientBottomBar.LENGTH_SHORT).show();
+                    Snackbar.make(btnSignup, "Password and Repeated Password should match",
+                            BaseTransientBottomBar.LENGTH_SHORT).show();
                     etPassword.setBackground(getActivity().getDrawable(R.drawable.edit_text_border_danger));
                     etRepeatedPassword.setBackground(getActivity().getDrawable(R.drawable.edit_text_border_danger));
                 }
@@ -93,7 +95,7 @@ public class SignupFragment extends Fragment {
         tvLoginMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Helper.goToActivity(getActivity(), LoginActivity.class);
+                NavigationUtil.goToActivity(getActivity(), LoginActivity.class);
             }
         });
     }

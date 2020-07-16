@@ -7,4 +7,5 @@
     <dimen name="text_size">13sp</dimen>
     <dimen name="ib_height">80dp</dimen>
     <dimen name="ib_width">80dp</dimen>
+    <dimen name="iv_size">240dp</dimen>
 </resources>
