@@ -6,7 +6,6 @@ import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
 
-
 import com.example.game.R;
 import com.example.game.databinding.ActivitySignupBinding;
 import com.example.game.fragments.SignupFragment;
