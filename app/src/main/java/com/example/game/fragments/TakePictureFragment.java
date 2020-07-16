@@ -59,10 +59,6 @@ public class TakePictureFragment extends Fragment {
     private Bitmap image;
     private File photoFile;
 
-    public TakePictureFragment() {
-        // Required empty public constructor
-    }
-
     public static TakePictureFragment newInstance() {
         TakePictureFragment fragment = new TakePictureFragment();
         Bundle args = new Bundle();
