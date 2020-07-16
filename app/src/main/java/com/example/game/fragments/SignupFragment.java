@@ -36,11 +36,7 @@ public class SignupFragment extends Fragment {
     private EditText etRepeatedPassword;
     private Button btnSignup;
     private TextView tvLoginMessage;
-
-    public SignupFragment(){
-        // Required empty public constructor
-    }
-
+    
     public static SignupFragment newInstance() {
         SignupFragment fragment = new SignupFragment();
         Bundle args = new Bundle();
