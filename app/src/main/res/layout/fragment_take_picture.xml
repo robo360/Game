@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    tools:context=".fragments.TakePictureFragment">
+
+    <ImageView
+        android:id="@+id/ivProfile"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/iv_size"
+        android:background="@color/white"
+        android:contentDescription="@string/image_holder"
+        android:scaleType="fitCenter"
+        android:src="@android:drawable/ic_menu_gallery"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_baseline_insert_photo_240"
+        tools:srcCompat="@drawable/ic_baseline_insert_photo_240" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/new_block"
+        android:fontFamily="sans-serif-condensed"
+        android:text="@string/take_profile_picture"
+        android:textAlignment="textStart"
+        android:textColor="@color/colorPrimary"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivProfile" />
+
+    <ImageButton
+        android:id="@+id/ibFile"
+        android:layout_width="@dimen/ib_width"
+        android:layout_height="@dimen/ib_height"
+        android:layout_marginStart="@dimen/new_block"
+        android:layout_marginTop="@dimen/side_margin"
+        android:backgroundTint="#FFFFFF"
+        android:contentDescription="@string/folder"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_baseline_folder_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <ImageButton
+        android:id="@+id/ibCamera"
+        android:layout_width="@dimen/ib_width"
+        android:layout_height="@dimen/ib_height"
+        android:layout_marginTop="@dimen/side_margin"
+        android:layout_marginEnd="@dimen/new_block"
+        android:backgroundTint="#FFFFFF"
+        android:contentDescription="@string/camera"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_baseline_photo_camera_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/ibFile"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnSubmit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/new_block"
+        android:text="@string/submit"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ibFile"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/new_block"
+        android:text="@string/or"
+        android:textSize="@dimen/text_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <TextView
+        android:id="@+id/tvSkip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:text="@string/skip"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

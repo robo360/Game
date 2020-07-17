@@ -1,7 +1,5 @@
 package com.example.game.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +8,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.game.databinding.ActivityLoginBinding;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
@@ -30,9 +30,9 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (ParseUser.getCurrentUser() != null) {
-            goToActivity(MainActivity.class);
-        }
+//        if (ParseUser.getCurrentUser() != null) {
+//            goToActivity(MainActivity.class);
+//        }
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         etEmail = binding.etMail;

@@ -28,9 +28,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //Run some tests
-        createCommunity("Brazil vs Spain");
-        getCommunities();
-        getEvents();
+        //createCommunity("Brazil vs Spain");
+        //getCommunities();
+        //getEvents();
     }
 
     public void getEvents() {
