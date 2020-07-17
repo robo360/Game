@@ -90,11 +90,12 @@
 
         <TextView
             android:id="@+id/tvOrganizer"
-            android:layout_width="392dp"
+            android:layout_width="0dp"
             android:layout_height="27dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="12dp"
             android:gravity="center"
+            android:textAlignment="viewStart"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"

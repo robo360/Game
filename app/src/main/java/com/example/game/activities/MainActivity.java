@@ -3,6 +3,7 @@ package com.example.game.activities;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -13,6 +14,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.example.game.R;
 import com.example.game.databinding.ActivityMainBinding;
+import com.example.game.fragments.CreateEventFragment;
 import com.example.game.fragments.EventFeedFragment;
 import com.example.game.fragments.ProfileFragment;
 import com.example.game.fragments.SearchFragment;
@@ -40,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private BottomNavigationView bottomNavigationView;
     private Fragment fragment;
-    private List<Community> communities;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         bottomNavigationView = binding.bottomNavigation;
         toolbar = binding.toolbar;
+        fab = binding.fab;
 
         bottomNavigationView.setOnNavigationItemReselectedListener(new BottomNavigationView.OnNavigationItemReselectedListener() {
             @Override
@@ -74,6 +76,15 @@ public class MainActivity extends AppCompatActivity {
 
         // Set default selection
         bottomNavigationView.setSelectedItemId(R.id.action_event);
+
+        //set a listener on the FAB
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fragment = CreateEventFragment.newInstance();
+                fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
+            }
+        });
 
         //set a listener on the menu items
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
@@ -104,22 +115,6 @@ public class MainActivity extends AppCompatActivity {
                     Snackbar.make(toolbar, R.string.error_logout_message, BaseTransientBottomBar.LENGTH_SHORT);
                 } else {
                     NavigationUtil.goToActivity(MainActivity.this, LoginActivity.class);
-                }
-            }
-        });
-    }
-
-    public void getEvents() {
-        ParseQuery<Event> qEvents = ParseQuery.getQuery(Event.class);
-        qEvents.include(Event.KEY_CREATOR);
-        qEvents.include(Event.KEY_COMMUNITY);
-        qEvents.findInBackground(new FindCallback<Event>() {
-            @Override
-            public void done(List<Event> objects, ParseException e) {
-                if (e != null) {
-                    Log.e(TAG, "Error querying events: " + e);
-                } else {
-                    Log.i(TAG, "Results:" + objects.size());
                 }
             }
         });
