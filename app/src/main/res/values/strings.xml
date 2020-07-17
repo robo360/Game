@@ -8,8 +8,6 @@
     <string name="name">Name</string>
     <string name="signup">Sign Up</string>
     <string name="loginMessage">Have an account.\n Login here.</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="take_profile_picture">TAKE PROFILE PICTURE</string>
     <string name="or">OR</string>
     <string name="submit">Submit</string>
@@ -17,4 +15,19 @@
     <string name="camera">camera</string>
     <string name="folder">folder</string>
     <string name="skip">Skip</string>
+    <string name="create_event">Create Event</string>
+    <string name="create_community">Create Community</string>
+    <string name="logout">Logout</string>
+    <string name="home">Home</string>
+    <string name="recom">recom</string>
+    <string name="search">Search</string>
+    <string name="profile">Profile</string>
+    <string name="tab1">\@foryou</string>
+    <string name="tab2">\@soccer4ever</string>
+    <string name="empty"> </string>
+    <string name="error_logout_message">Enable to logout. Check your internet connection.</string>
+    <string name="error_logout">Error logging out:</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="logo">logo</string>
 </resources>
