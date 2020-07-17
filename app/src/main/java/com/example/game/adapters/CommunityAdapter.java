@@ -7,28 +7,28 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.example.game.fragments.CommunityFragment;
+import com.example.game.models.Community;
+
+import java.util.List;
 
 public class CommunityAdapter extends FragmentStateAdapter {
+    private List<Community> communities;
 
-    public CommunityAdapter(@NonNull Fragment fragment) {
+    public CommunityAdapter(@NonNull Fragment fragment, List<Community> communities) {
         super(fragment);
+        this.communities = communities;
     }
 
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        // Return a NEW fragment instance in createFragment(int)
-        Fragment fragment = new CommunityFragment();
-        Bundle args = new Bundle();
-        // Our object is just an integer :-P
-        args.putInt(CommunityFragment.ARG_OBJECT, position + 1);
-        fragment.setArguments(args);
-        return fragment;
+        Community community = communities.get(position);
+        return CommunityFragment.newInstance(community);
     }
 
     @Override
     public int getItemCount() {
-        return 100;
+        return communities.size();
     }
 }
 

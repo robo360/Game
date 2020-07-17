@@ -1,15 +1,15 @@
 package com.example.game.activities;
 
+import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuItem;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-
-import android.os.Bundle;
-import android.util.Log;
-import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.example.game.R;
 import com.example.game.databinding.ActivityMainBinding;
@@ -19,7 +19,6 @@ import com.example.game.fragments.SearchFragment;
 import com.example.game.helpers.NavigationUtil;
 import com.example.game.models.Community;
 import com.example.game.models.Event;
-import com.example.game.models.Subscription;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
@@ -41,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private BottomNavigationView bottomNavigationView;
     private Fragment fragment;
+    private List<Community> communities;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
             public void onNavigationItemReselected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.action_event:
+
                         fragment = EventFeedFragment.newInstance();
                         Toast.makeText(MainActivity.this, R.string.home, Toast.LENGTH_SHORT).show();
                         break;
@@ -119,22 +120,6 @@ public class MainActivity extends AppCompatActivity {
                     Log.e(TAG, "Error querying events: " + e);
                 } else {
                     Log.i(TAG, "Results:" + objects.size());
-                }
-            }
-        });
-    }
-
-    public void getCommunities() {
-        ParseQuery<Subscription> q = ParseQuery.getQuery(Subscription.class);
-        q.whereEqualTo(Subscription.KEY_USER, ParseUser.getCurrentUser());
-        q.include(Subscription.KEY_COMMUNITY);
-        q.findInBackground(new FindCallback<Subscription>() {
-            @Override
-            public void done(List<Subscription> objects, ParseException e) {
-                if (e != null) {
-                    Log.e(TAG, "Error querying events: " + e);
-                } else {
-                    Log.i(TAG, "Results:" + objects.get(0).getCommunity());
                 }
             }
         });
