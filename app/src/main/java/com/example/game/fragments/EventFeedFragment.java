@@ -113,4 +113,3 @@ public class EventFeedFragment extends Fragment {
         });
     }
 }
-
