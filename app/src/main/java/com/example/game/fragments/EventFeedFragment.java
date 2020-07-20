@@ -1,5 +1,6 @@
 package com.example.game.fragments;
 
+import android.nfc.Tag;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,15 +16,18 @@ import android.view.ViewGroup;
 import com.example.game.R;
 import com.example.game.adapters.CommunityAdapter;
 import com.example.game.models.Community;
+import com.example.game.models.Event;
 import com.example.game.models.Subscription;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class EventFeedFragment extends Fragment {
@@ -47,11 +51,51 @@ public class EventFeedFragment extends Fragment {
         ViewPager2 viewPager = view.findViewById(R.id.pager);
         viewPager.setAdapter(communityAdapter);
         TabLayout tabLayout = view.findViewById(R.id.tabLayout);
-        TabLayoutMediator tabLayoutMediator = new TabLayoutMediator(tabLayout,viewPager,(tab, position) -> tab.setText("@"+communities.get(position).getName()));
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                tab.removeBadge();
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+        TabLayoutMediator tabLayoutMediator = new TabLayoutMediator(tabLayout,viewPager,(tab, position) -> populateTab(tab, position));
         tabLayoutMediator.attach();
         getCommunities();
     }
 
+    public void populateTab(TabLayout.Tab tab, int position){
+        tab.setText("@"+communities.get(position).getName());
+        ParseQuery<Subscription> subscription = ParseQuery.getQuery(Subscription.class);
+        subscription.whereEqualTo(Subscription.KEY_COMMUNITY, communities.get(position));
+        subscription.whereEqualTo(Subscription.KEY_USER, ParseUser.getCurrentUser());
+        subscription.getFirstInBackground(new GetCallback<Subscription>() {
+            @Override
+            public void done(Subscription object, ParseException e) {
+                if(object != null){
+                    Date date = object.getUpdatedAt();
+                    ParseQuery<Event> eventsQuery = ParseQuery.getQuery(Event.class);
+                    eventsQuery.whereGreaterThan(Event.KEY_CREATED_AT, date);
+                    eventsQuery.findInBackground(new FindCallback<Event>() {
+                        @Override
+                        public void done(List<Event> objects, ParseException e) {
+                            if (position != 0){
+                                tab.getOrCreateBadge().setNumber(objects.size());
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -61,7 +105,7 @@ public class EventFeedFragment extends Fragment {
     public void getCommunities() {
         ParseUser user = ParseUser.getCurrentUser();
         ParseQuery<Subscription> q = ParseQuery.getQuery(Subscription.class);
-        //q.whereEqualTo(Subscription.KEY_USER, user);
+        q.whereEqualTo(Subscription.KEY_USER, user);
         q.include(Subscription.KEY_COMMUNITY);
         q.findInBackground(new FindCallback<Subscription>() {
             @Override

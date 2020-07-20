@@ -6,11 +6,6 @@ import android.graphics.ImageDecoder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -23,12 +18,15 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.example.game.R;
 import com.example.game.activities.MainActivity;
 import com.example.game.databinding.FragmentCreateEventBinding;
 import com.example.game.helpers.NavigationUtil;
 import com.example.game.models.Event;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
@@ -37,9 +35,6 @@ import com.parse.SaveCallback;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Set;
-
-import static android.app.Activity.RESULT_OK;
 
 public class CreateEventFragment extends Fragment {
     private static final String TAG = "CreateEventFragment";
@@ -66,6 +61,7 @@ public class CreateEventFragment extends Fragment {
         Button btnShare = binding.btnShare;
         EditText etTitle = binding.etTitle;
         EditText etDescription = binding.etDescription;
+        ImageButton ibLoc = binding.ibLoc;
         ImageButton ibFile = binding.ibFile;
         ivPoster = binding.ivPoster;
 
@@ -73,6 +69,14 @@ public class CreateEventFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 onPickPhoto(view);
+            }
+        });
+
+        ibLoc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MapsFragment mapsFragment = new MapsFragment();
+                getFragmentManager().beginTransaction().replace(R.id.flContainer, mapsFragment).commit();
             }
         });
 

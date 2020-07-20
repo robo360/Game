@@ -8,6 +8,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.example.game.fragments.CommunityFragment;
 import com.example.game.models.Community;
+import com.google.android.material.tabs.TabLayout;
 
 import java.util.List;
 

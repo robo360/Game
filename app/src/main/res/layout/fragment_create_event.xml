@@ -15,7 +15,7 @@
             android:id="@+id/etTitle"
             android:layout_width="0dp"
             android:layout_height="@dimen/et_size"
-            android:layout_marginTop="@dimen/new_block"
+            android:layout_marginTop="16dp"
             android:background="@drawable/edit_text_border"
             android:ems="10"
             android:hint="Title"
@@ -24,7 +24,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/titlePage" />
 
         <EditText
             android:id="@+id/etDescription"
@@ -102,5 +102,17 @@
             app:layout_constraintHorizontal_bias="0.51"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ibLoc" />
+
+        <TextView
+            android:id="@+id/titlePage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/create_event"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

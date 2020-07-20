@@ -9,17 +9,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.game.R;
+import com.example.game.fragments.CommunityFragment;
 import com.example.game.models.Community;
 import com.example.game.models.Event;
 import com.example.game.models.User;
 import com.parse.ParseException;
 import com.parse.ParseFile;
-
-import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -27,11 +27,17 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
     private Context context;
     List<Event> events;
     Community community;
+    CommunityFragment fragment;
 
-    public EventAdapter(Context context, List<Event> events, Community community) {
+    public EventAdapter(Context context, List<Event> events, Community community, CommunityFragment fragment) {
         this.context = context;
         this.events = events;
         this.community = community;
+        this.fragment = fragment;
+    }
+
+    public interface OnClickBtnDetail{
+        void onClickedBtnDetail(Event event, Community community);
     }
 
     @NonNull
@@ -61,12 +67,19 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
         TextView tvCommunity;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            btnDetail = itemView.findViewById(R.id.btnDetail);
+            btnDetail = itemView.findViewById(R.id.btnGo);
             tvTitle = itemView.findViewById(R.id.tvTitle);
             tvDate = itemView.findViewById(R.id.tvDate);
             tvOrganizer = itemView.findViewById(R.id.tvOrganizer);
             ivImage = itemView.findViewById(R.id.ivImage);
             tvCommunity = itemView.findViewById(R.id.tvCommunity);
+
+            btnDetail.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    fragment.onClickedBtnDetail(events.get(getAdapterPosition()), community);
+                }
+            });
         }
 
         public void bind(Event event) {

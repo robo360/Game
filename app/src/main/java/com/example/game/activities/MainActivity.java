@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.example.game.R;
 import com.example.game.databinding.ActivityMainBinding;
+import com.example.game.fragments.CreateCommunityFragment;
 import com.example.game.fragments.CreateEventFragment;
 import com.example.game.fragments.EventFeedFragment;
 import com.example.game.fragments.ProfileFragment;
@@ -96,9 +97,13 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.create_event:
                         Toast.makeText(MainActivity.this, R.string.create_event, Toast.LENGTH_SHORT).show();
+                        fragment = CreateEventFragment.newInstance();
+                        fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
                         break;
                     default:
                         Toast.makeText(MainActivity.this, R.string.create_community, Toast.LENGTH_SHORT).show();
+                        fragment = CreateCommunityFragment.newInstance();
+                        fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
                         break;
                 }
                 return true;
@@ -120,19 +125,4 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void createCommunity(String name) {
-        Community community = new Community();
-        community.setCreator(ParseUser.getCurrentUser());
-        community.setName(name);
-        community.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (e != null) {
-                    Log.e(TAG, "error making a community" + e);
-                } else {
-                    Log.i(TAG, "Successful created a community");
-                }
-            }
-        });
-    }
 }

@@ -28,6 +28,7 @@ public class Community extends ParseObject {
     public static final String KEY_CREATOR = "creator";
     public static final String KEY_POSTSCOUNT = "postsCount";
     public static final String KEY_CREATEDAT = "postsCount";
+    public static final String KEY_DESCRIPTION = "description";
 
     public ParseUser getCreator() {
         return getParseUser(KEY_CREATOR);
@@ -45,6 +46,10 @@ public class Community extends ParseObject {
         return getNumber(KEY_POSTSCOUNT);
     }
 
+    public String getDescription(){
+        return getString(KEY_DESCRIPTION);
+    }
+
     public void setCreator(ParseUser user) {
         put(KEY_CREATOR, user);
     }
@@ -59,5 +64,9 @@ public class Community extends ParseObject {
 
     public void setPostsCount(int count) {
         put(KEY_POSTSCOUNT, count);
+    }
+
+    public void setDescription(String description){
+        put(KEY_DESCRIPTION, description);
     }
 }

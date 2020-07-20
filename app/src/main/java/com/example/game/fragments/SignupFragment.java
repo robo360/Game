@@ -19,12 +19,20 @@ import com.example.game.R;
 import com.example.game.activities.LoginActivity;
 import com.example.game.databinding.FragmentSignupBinding;
 import com.example.game.helpers.NavigationUtil;
+import com.example.game.models.Community;
+import com.example.game.models.Subscription;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
+import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
+
+import java.util.List;
 
 public class SignupFragment extends Fragment {
     private static final String TAG = "SignupActivity";
@@ -110,6 +118,18 @@ public class SignupFragment extends Fragment {
                 if (e != null) {
                     Log.e(TAG, "Error Logging in: " + e);
                 } else {
+                    //Subscribe to public community
+                    ParseQuery<Community> communityParseQuery = ParseQuery.getQuery(Community.class);
+                    communityParseQuery.whereEqualTo(Community.KEY_NAME, "public");
+                    communityParseQuery.getFirstInBackground(new GetCallback<Community>() {
+                        @Override
+                        public void done(Community object, ParseException e) {
+                            Subscription subscription = new Subscription();
+                            subscription.setCommunity(object);
+                            subscription.setUser(ParseUser.getCurrentUser());
+                            subscription.saveInBackground();
+                        }
+                    });
                     Toast.makeText(getContext(), "Successful logged in", Toast.LENGTH_SHORT).show();
                     Fragment fragment = new TakePictureFragment();
                     getFragmentManager().beginTransaction().replace(R.id.flContainer, fragment).commit();
