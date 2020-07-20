@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.game.R;
+import com.example.game.helpers.AddressUtil;
 import com.example.game.models.Community;
 import com.example.game.models.Event;
 import com.example.game.models.User;
@@ -53,6 +55,7 @@ public class EventDetailFragment extends Fragment {
         ImageView ivImage = view.findViewById(R.id.ivImage);
         TextView tvCommunity = view.findViewById(R.id.tvCommunity);
         TextView tvDetail = view.findViewById(R.id.tvDetail);
+        TextView tvAddress = view.findViewById(R.id.tvAddress);
 
         tvCommunity.setText(String.format("@%s", community.getName()));
         try {
@@ -63,6 +66,10 @@ public class EventDetailFragment extends Fragment {
         tvDate.setText(event.getDate().toString());
         tvTitle.setText(event.getTitle());
         ParseFile image = event.getImage();
+        double latitude = event.getAddress().getLatitude();
+        double longitude = event.getAddress().getLongitude();
+        Log.i("EventAdapter", "Longitude" + longitude + "latitude"+ latitude);
+        tvAddress.setText(AddressUtil.getCompleteAddressString(getContext(), latitude, longitude));
         if(image != null){
             Glide.with(getContext()).load(event.getImage().getUrl()).into(ivImage);
         }

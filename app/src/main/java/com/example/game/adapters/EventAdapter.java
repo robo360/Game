@@ -1,6 +1,7 @@
 package com.example.game.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.game.R;
 import com.example.game.fragments.CommunityFragment;
+import com.example.game.helpers.AddressUtil;
 import com.example.game.models.Community;
 import com.example.game.models.Event;
 import com.example.game.models.User;
@@ -65,6 +67,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
         TextView tvDate;
         TextView tvOrganizer;
         TextView tvCommunity;
+        TextView tvAddress;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             btnDetail = itemView.findViewById(R.id.btnGo);
