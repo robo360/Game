@@ -6,11 +6,6 @@ import android.graphics.ImageDecoder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -23,13 +18,16 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.example.game.R;
 import com.example.game.activities.MainActivity;
 import com.example.game.databinding.FragmentCreateCommunityBinding;
-import com.example.game.databinding.FragmentCreateEventBinding;
+import com.example.game.helpers.ImageUtil;
 import com.example.game.helpers.NavigationUtil;
 import com.example.game.models.Community;
-import com.example.game.models.Event;
 import com.example.game.models.Subscription;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -94,23 +92,7 @@ public class CreateCommunityFragment extends Fragment {
                         if(e!= null){
                             Log.e(TAG, "Error making an event" + e);
                         } else{
-                            //go to make main Activity
-                            Subscription subscription = new Subscription();
-                            subscription.setUser(ParseUser.getCurrentUser());
-                            subscription.setCommunity(community);
-                            subscription.setFollowStatus(true);
-                            subscription.saveInBackground(new SaveCallback() {
-                                @Override
-                                public void done(ParseException e) {
-                                    if(e == null) {
-                                        Toast.makeText(getContext(), "Successful Created A community", Toast.LENGTH_SHORT).show();
-                                        NavigationUtil.goToActivity(getActivity(), MainActivity.class);
-                                    } else{
-                                        Log.e(TAG, "Error while making a subscription" + e);
-                                    }
-                                }
-                            });
-
+                           subscribeToCommunity(community);
                         }
                     }
                 });
@@ -125,6 +107,7 @@ public class CreateCommunityFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_create_community, container, false);
     }
+
     // Trigger gallery selection for a photo
     public void onPickPhoto(View view) {
         Intent intent = new Intent(Intent.ACTION_PICK,
@@ -139,63 +122,28 @@ public class CreateCommunityFragment extends Fragment {
         if (data != null && requestCode == PICK_PHOTO_CODE) {
             Uri photoUri = data.getData();
             // Load the image located at photoUri into selectedImage
-            image = loadFromUri(photoUri);
-            photoFile = new File(saveToInternalStorage(image));
+            image = ImageUtil.loadFromUri(getContext(), photoUri);
+            photoFile = new File(ImageUtil.saveToInternalStorage(getContext(),image));
             ivPoster.setImageBitmap(image);
         }
     }
 
-    public Bitmap loadFromUri(Uri photoUri) {
-        Bitmap image = null;
-        try {
-            // check version of Android on device
-            if (Build.VERSION.SDK_INT > 27) {
-                // on newer versions of Android, use the new decodeBitmap method
-                ImageDecoder.Source source = ImageDecoder.createSource(getContext().getContentResolver(), photoUri);
-                image = ImageDecoder.decodeBitmap(source);
-            } else {
-                // support older versions of Android by using getBitmap
-                image = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), photoUri);
+    private void subscribeToCommunity(Community community){
+        //Subscribe to that community and go to make main Activity
+        Subscription subscription = new Subscription();
+        subscription.setUser(ParseUser.getCurrentUser());
+        subscription.setCommunity(community);
+        subscription.setFollowStatus(true);
+        subscription.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if(e == null) {
+                    Toast.makeText(getContext(), "Successful Created A community", Toast.LENGTH_SHORT).show();
+                    NavigationUtil.goToActivity(getActivity(), MainActivity.class);
+                } else{
+                    Log.e(TAG, "Error while making a subscription" + e);
+                }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return image;
-    }
-
-    public File getPhotoFileUri(String fileName) {
-        // Get safe storage directory for photos
-        // Use `getExternalFilesDir` on Context to access package-specific directories.
-        // This way, we don't need to request external read/write runtime permissions.
-        File mediaStorageDir = new File(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES), TAG);
-
-        // Create the storage directory if it does not exist
-        if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()) {
-            Log.d(TAG, "failed to create directory");
-        }
-
-        // Return the file target for the photo based on filename
-        File file = new File(mediaStorageDir.getPath() + File.separator + fileName);
-
-        return file;
-    }
-
-    private String saveToInternalStorage(Bitmap bitmapImage) {
-        File file = getPhotoFileUri("profile.jpg");
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(file);
-            // Use the compress method on the BitMap object to write image to the OutputStream
-            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                fos.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return file.getAbsolutePath();
+        });
     }
 }

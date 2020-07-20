@@ -3,6 +3,7 @@ package com.example.game.fragments;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.ImageDecoder;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ import androidx.fragment.app.Fragment;
 import com.example.game.R;
 import com.example.game.activities.MainActivity;
 import com.example.game.databinding.FragmentCreateEventBinding;
+import com.example.game.helpers.ImageUtil;
 import com.example.game.helpers.NavigationUtil;
 import com.example.game.models.Event;
 import com.parse.ParseException;
@@ -76,6 +78,7 @@ public class CreateEventFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 MapsFragment mapsFragment = new MapsFragment();
+                assert getFragmentManager() != null;
                 getFragmentManager().beginTransaction().replace(R.id.flContainer, mapsFragment).commit();
             }
         });
@@ -125,64 +128,9 @@ public class CreateEventFragment extends Fragment {
         if (data != null && requestCode == PICK_PHOTO_CODE) {
             Uri photoUri = data.getData();
             // Load the image located at photoUri into selectedImage
-            image = loadFromUri(photoUri);
-            photoFile = new File(saveToInternalStorage(image));
+            image = ImageUtil.loadFromUri(getContext(), photoUri);
+            photoFile = new File(ImageUtil.saveToInternalStorage(getContext(), image));
             ivPoster.setImageBitmap(image);
         }
     }
-
-    public Bitmap loadFromUri(Uri photoUri) {
-        Bitmap image = null;
-        try {
-            // check version of Android on device
-            if (Build.VERSION.SDK_INT > 27) {
-                // on newer versions of Android, use the new decodeBitmap method
-                ImageDecoder.Source source = ImageDecoder.createSource(getContext().getContentResolver(), photoUri);
-                image = ImageDecoder.decodeBitmap(source);
-            } else {
-                // support older versions of Android by using getBitmap
-                image = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), photoUri);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return image;
-    }
-
-    public File getPhotoFileUri(String fileName) {
-        // Get safe storage directory for photos
-        // Use `getExternalFilesDir` on Context to access package-specific directories.
-        // This way, we don't need to request external read/write runtime permissions.
-        File mediaStorageDir = new File(getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES), TAG);
-
-        // Create the storage directory if it does not exist
-        if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()) {
-            Log.d(TAG, "failed to create directory");
-        }
-
-        // Return the file target for the photo based on filename
-        File file = new File(mediaStorageDir.getPath() + File.separator + fileName);
-
-        return file;
-    }
-
-    private String saveToInternalStorage(Bitmap bitmapImage) {
-        File file = getPhotoFileUri("profile.jpg");
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(file);
-            // Use the compress method on the BitMap object to write image to the OutputStream
-            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                fos.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return file.getAbsolutePath();
-    }
-
 }

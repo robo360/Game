@@ -105,11 +105,12 @@
             android:id="@+id/btnGo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:backgroundTint="#FFFFFF"
             android:scaleType="centerInside"
             app:layout_constraintBottom_toTopOf="@+id/ivImage"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.845"
+            app:layout_constraintHorizontal_bias="0.802"
             app:layout_constraintStart_toEndOf="@+id/tvCommunity"
             app:srcCompat="@drawable/ic_baseline_open_in_new_24" />
 
