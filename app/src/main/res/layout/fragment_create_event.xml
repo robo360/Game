@@ -11,6 +11,124 @@
         tools:context=".fragments.CreateEventFragment">
 
 
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ivPoster">
+
+            <EditText
+                android:id="@+id/etMonth"
+                android:layout_width="40dp"
+                android:layout_height="30dp"
+                android:ems="10"
+                android:gravity="center"
+                android:hint="MM"
+                android:inputType="textMultiLine"
+                android:padding="0dp"
+                android:paddingLeft="0dp"
+                android:paddingTop="0dp"
+                android:paddingEnd="0dp"
+                android:paddingRight="0dp"
+                android:paddingBottom="0dp"
+                android:textSize="18sp"
+                tools:layout_editor_absoluteX="46dp"
+                tools:layout_editor_absoluteY="348dp" />
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="/"
+                android:textSize="24sp"
+                tools:layout_editor_absoluteX="98dp"
+                tools:layout_editor_absoluteY="348dp" />
+
+            <EditText
+                android:id="@+id/etDay"
+                android:layout_width="40dp"
+                android:layout_height="30dp"
+                android:ems="10"
+                android:gravity="center"
+                android:hint="dd"
+                android:inputType="textMultiLine"
+                android:padding="0dp"
+                tools:layout_editor_absoluteX="118dp"
+                tools:layout_editor_absoluteY="348dp" />
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="/"
+                android:textSize="24sp"
+                tools:layout_editor_absoluteX="165dp"
+                tools:layout_editor_absoluteY="348dp" />
+
+            <EditText
+                android:id="@+id/etYear"
+                android:layout_width="40dp"
+                android:layout_height="30dp"
+                android:ems="10"
+                android:gravity="center"
+                android:hint="yyyy"
+                android:inputType="textMultiLine"
+                android:padding="0dp"
+                tools:layout_editor_absoluteX="184dp"
+                tools:layout_editor_absoluteY="346dp" />
+
+            <EditText
+                android:id="@+id/etTimeZone"
+                android:layout_width="40dp"
+                android:layout_height="30dp"
+                android:ems="10"
+                android:gravity="center"
+                android:hint="TZ"
+                android:inputType="textMultiLine"
+                android:padding="0dp"
+                tools:layout_editor_absoluteX="237dp"
+                tools:layout_editor_absoluteY="346dp" />
+
+            <EditText
+                android:id="@+id/etHour"
+                android:layout_width="40dp"
+                android:layout_height="30dp"
+                android:ems="10"
+                android:gravity="center"
+                android:hint="HH"
+                android:inputType="textMultiLine"
+                android:padding="0dp"
+                tools:layout_editor_absoluteX="289dp"
+                tools:layout_editor_absoluteY="346dp" />
+
+            <TextView
+                android:id="@+id/textView7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=":"
+                android:textSize="24sp"
+                tools:layout_editor_absoluteX="337dp"
+                tools:layout_editor_absoluteY="344dp" />
+
+            <EditText
+                android:id="@+id/etMinute"
+                android:layout_width="40dp"
+                android:layout_height="30dp"
+                android:layout_marginEnd="16dp"
+                android:ems="10"
+                android:gravity="center"
+                android:hint="mm"
+                android:inputType="textMultiLine"
+                android:padding="0dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:layout_editor_absoluteY="348dp" />
+        </LinearLayout>
+
         <EditText
             android:id="@+id/etTitle"
             android:layout_width="0dp"
@@ -55,19 +173,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/etDescription" />
 
-        <EditText
-            android:id="@+id/etDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="mm/dd/yyy"
-            android:inputType="date"
-            android:textAlignment="center"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.497"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ivPoster" />
-
         <ImageView
             android:id="@+id/ivPoster"
             android:layout_width="0dp"
@@ -85,18 +190,20 @@
             android:id="@+id/ibLoc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="28dp"
+            android:layout_marginTop="16dp"
             android:backgroundTint="#FFFFFF"
             android:src="@drawable/ic_baseline_location_on_24"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/etDate" />
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
         <Button
             android:id="@+id/btnShare"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="52dp"
+            android:gravity="center"
             android:text="Share"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.51"
@@ -114,5 +221,8 @@
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

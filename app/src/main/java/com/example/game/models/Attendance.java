@@ -48,6 +48,10 @@ public class Attendance extends ParseObject {
         put(KEY_USER, user);
     }
 
+    public void setEvent(Event event){
+        put(KEY_EVENT, event);
+    }
+
     public void setAttendStatus(boolean attendStatus) {
         put(KEY_ATTEND_STATUS, attendStatus);
     }

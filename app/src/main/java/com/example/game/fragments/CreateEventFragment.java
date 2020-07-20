@@ -2,12 +2,8 @@ package com.example.game.fragments;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.ImageDecoder;
-import android.media.Image;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,27 +22,26 @@ import androidx.fragment.app.Fragment;
 import com.example.game.R;
 import com.example.game.activities.MainActivity;
 import com.example.game.databinding.FragmentCreateEventBinding;
-import com.example.game.helpers.ImageUtil;
-import com.example.game.helpers.NavigationUtil;
+import com.example.game.utils.ImageUtil;
+import com.example.game.utils.NavigationUtil;
 import com.example.game.models.Event;
-import com.parse.ParseException;
+import com.example.game.utils.ValidatorsUtil;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Objects;
 
 public class CreateEventFragment extends Fragment {
     private static final String TAG = "CreateEventFragment";
     public static final int PICK_PHOTO_CODE = 1046;
-    public static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
-    public static final String PHOTO_FILE_NAME = "photo.jpg";
 
-    private FragmentCreateEventBinding binding;
     private ImageView ivPoster;
-    private Bitmap image;
     private File photoFile;
 
     public static CreateEventFragment newInstance() {
@@ -59,7 +54,7 @@ public class CreateEventFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        binding = FragmentCreateEventBinding.bind(view);
+        com.example.game.databinding.FragmentCreateEventBinding binding = FragmentCreateEventBinding.bind(view);
         Button btnShare = binding.btnShare;
         EditText etTitle = binding.etTitle;
         EditText etDescription = binding.etDescription;
@@ -67,43 +62,50 @@ public class CreateEventFragment extends Fragment {
         ImageButton ibFile = binding.ibFile;
         ivPoster = binding.ivPoster;
 
-        ibFile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onPickPhoto(view);
-            }
-        });
+        ibFile.setOnClickListener(this::onPickPhoto);
 
-        ibLoc.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                MapsFragment mapsFragment = new MapsFragment();
-                assert getFragmentManager() != null;
+        ibLoc.setOnClickListener(view1 -> {
+            MapsFragment mapsFragment = new MapsFragment();
+            if (getFragmentManager() != null) {
                 getFragmentManager().beginTransaction().replace(R.id.flContainer, mapsFragment).commit();
             }
         });
 
-        btnShare.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Event event = new Event();
-                event.setUser(ParseUser.getCurrentUser());
-                event.setTitle(etTitle.getText().toString());
-                event.setImage(new ParseFile(photoFile));
-                event.setDescription(etDescription.getText().toString());
-                event.saveInBackground(new SaveCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        if(e!= null){
-                            Log.i(TAG, "Error making an event" + e);
-                        } else{
-                            //go to make main Activity
-                            Toast.makeText(getContext(), "Successful Created an event", Toast.LENGTH_SHORT).show();
-                            NavigationUtil.goToActivity(getActivity(), MainActivity.class);
-                        }
-                    }
-                });
+        btnShare.setOnClickListener(view12 -> {
+            String dateString = binding.etMonth.getText().toString().replaceAll("\\s", "") + "/" +
+                    binding.etDay.getText().toString().replaceAll("\\s", "") + "/" +
+                    binding.etYear.getText().toString().replaceAll("\\s", "") + " " +
+                    //binding.etTimeZone.getText().toString().replaceAll("\\s", "");
+//                            + " " +
+                    binding.etHour.getText().toString().replaceAll("\\s", "") + ":" +
+                    binding.etMinute.getText().toString().replaceAll("\\s", "");
+            if(ValidatorsUtil.checkTimePattern(dateString)){
+                SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy hh:mm");
+                try {
+                    Date date = formatter.parse(dateString);
+                } catch (ParseException e) {
+                    Log.e(TAG, "Error while parsing time" + e);
+                    Snackbar.make(binding.etMonth, "Wrong Date and Time input. Please follow the format.", BaseTransientBottomBar.LENGTH_SHORT).show();
+                    return;
+                }
+            } else{
+                Snackbar.make(binding.etMonth, "Wrong Date and Time input. Please follow the format.", BaseTransientBottomBar.LENGTH_SHORT).show();
+                return;
             }
+            Event event = new Event();
+            event.setUser(ParseUser.getCurrentUser());
+            event.setTitle(etTitle.getText().toString());
+            event.setImage(new ParseFile(photoFile));
+            event.setDescription(etDescription.getText().toString());
+            event.saveInBackground(e -> {
+                if (e != null) {
+                    Log.i(TAG, "Error making an event" + e);
+                } else {
+                    //go to make main Activity
+                    Toast.makeText(getContext(), "Successful Created an event", Toast.LENGTH_SHORT).show();
+                    NavigationUtil.goToActivity(getActivity(), MainActivity.class);
+                }
+            });
         });
     }
 
@@ -118,7 +120,7 @@ public class CreateEventFragment extends Fragment {
     public void onPickPhoto(View view) {
         Intent intent = new Intent(Intent.ACTION_PICK,
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        if (intent.resolveActivity(getContext().getPackageManager()) != null) {
+        if (intent.resolveActivity(Objects.requireNonNull(getContext()).getPackageManager()) != null) {
             startActivityForResult(intent, PICK_PHOTO_CODE);
         }
     }
@@ -128,7 +130,7 @@ public class CreateEventFragment extends Fragment {
         if (data != null && requestCode == PICK_PHOTO_CODE) {
             Uri photoUri = data.getData();
             // Load the image located at photoUri into selectedImage
-            image = ImageUtil.loadFromUri(getContext(), photoUri);
+            Bitmap image = ImageUtil.loadFromUri(getContext(), photoUri);
             photoFile = new File(ImageUtil.saveToInternalStorage(getContext(), image));
             ivPoster.setImageBitmap(image);
         }

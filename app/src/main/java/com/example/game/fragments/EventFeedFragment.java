@@ -47,7 +47,7 @@ public class EventFeedFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         communities = new ArrayList<>();
-        communityAdapter =  new CommunityAdapter(this, communities);
+        communityAdapter = new CommunityAdapter(this, communities);
         ViewPager2 viewPager = view.findViewById(R.id.pager);
         viewPager.setAdapter(communityAdapter);
         TabLayout tabLayout = view.findViewById(R.id.tabLayout);
@@ -67,27 +67,27 @@ public class EventFeedFragment extends Fragment {
 
             }
         });
-        TabLayoutMediator tabLayoutMediator = new TabLayoutMediator(tabLayout,viewPager,(tab, position) -> populateTab(tab, position));
+        TabLayoutMediator tabLayoutMediator = new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> populateTab(tab, position));
         tabLayoutMediator.attach();
         getCommunities();
     }
 
-    public void populateTab(TabLayout.Tab tab, int position){
-        tab.setText("@"+communities.get(position).getName());
+    public void populateTab(TabLayout.Tab tab, int position) {
+        tab.setText("@" + communities.get(position).getName());
         ParseQuery<Subscription> subscription = ParseQuery.getQuery(Subscription.class);
         subscription.whereEqualTo(Subscription.KEY_COMMUNITY, communities.get(position));
         subscription.whereEqualTo(Subscription.KEY_USER, ParseUser.getCurrentUser());
         subscription.getFirstInBackground(new GetCallback<Subscription>() {
             @Override
             public void done(Subscription object, ParseException e) {
-                if(object != null){
+                if (object != null) {
                     Date date = object.getUpdatedAt();
                     ParseQuery<Event> eventsQuery = ParseQuery.getQuery(Event.class);
                     eventsQuery.whereGreaterThan(Event.KEY_CREATED_AT, date);
                     eventsQuery.findInBackground(new FindCallback<Event>() {
                         @Override
                         public void done(List<Event> objects, ParseException e) {
-                            if (position != 0){
+                            if (position != 0) {
                                 tab.getOrCreateBadge().setNumber(objects.size());
                             }
                         }
@@ -96,12 +96,14 @@ public class EventFeedFragment extends Fragment {
             }
         });
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_event_feed, container, false);
     }
+
     public void getCommunities() {
         ParseUser user = ParseUser.getCurrentUser();
         ParseQuery<Subscription> q = ParseQuery.getQuery(Subscription.class);
@@ -114,7 +116,7 @@ public class EventFeedFragment extends Fragment {
                     Log.e(TAG, "Error querying events: " + e);
                 } else {
                     Log.i(TAG, "Subscriptions: " + objects.size());
-                    for(Subscription subscription : objects){
+                    for (Subscription subscription : objects) {
                         communities.add((Community) subscription.getCommunity());
                     }
                     communityAdapter.notifyDataSetChanged();

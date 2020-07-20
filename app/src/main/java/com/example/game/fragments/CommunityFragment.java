@@ -88,9 +88,9 @@ public class CommunityFragment extends Fragment implements EventAdapter.OnClickB
         eventParseQuery.findInBackground(new FindCallback<Event>() {
             @Override
             public void done(List<Event> objects, ParseException e) {
-                if(e != null){
+                if (e != null) {
                     Log.e(TAG, "Error querying events: " + e);
-                } else{
+                } else {
                     events.addAll(objects);
                     adapter.notifyDataSetChanged();
                 }

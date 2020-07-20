@@ -1,4 +1,4 @@
-package com.example.game.helpers;
+package com.example.game.utils;
 
 import android.content.Context;
 import android.location.Address;

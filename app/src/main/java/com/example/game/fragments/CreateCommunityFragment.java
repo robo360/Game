@@ -2,11 +2,8 @@ package com.example.game.fragments;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.ImageDecoder;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,8 +22,8 @@ import androidx.fragment.app.Fragment;
 import com.example.game.R;
 import com.example.game.activities.MainActivity;
 import com.example.game.databinding.FragmentCreateCommunityBinding;
-import com.example.game.helpers.ImageUtil;
-import com.example.game.helpers.NavigationUtil;
+import com.example.game.utils.ImageUtil;
+import com.example.game.utils.NavigationUtil;
 import com.example.game.models.Community;
 import com.example.game.models.Subscription;
 import com.parse.ParseException;
@@ -35,8 +32,6 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 public class CreateCommunityFragment extends Fragment {
     private static final String TAG = "CreateCommunityFragment";
@@ -89,10 +84,10 @@ public class CreateCommunityFragment extends Fragment {
                 community.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {
-                        if(e!= null){
+                        if (e != null) {
                             Log.e(TAG, "Error making an event" + e);
-                        } else{
-                           subscribeToCommunity(community);
+                        } else {
+                            subscribeToCommunity(community);
                         }
                     }
                 });
@@ -123,12 +118,12 @@ public class CreateCommunityFragment extends Fragment {
             Uri photoUri = data.getData();
             // Load the image located at photoUri into selectedImage
             image = ImageUtil.loadFromUri(getContext(), photoUri);
-            photoFile = new File(ImageUtil.saveToInternalStorage(getContext(),image));
+            photoFile = new File(ImageUtil.saveToInternalStorage(getContext(), image));
             ivPoster.setImageBitmap(image);
         }
     }
 
-    private void subscribeToCommunity(Community community){
+    private void subscribeToCommunity(Community community) {
         //Subscribe to that community and go to make main Activity
         Subscription subscription = new Subscription();
         subscription.setUser(ParseUser.getCurrentUser());
@@ -137,10 +132,10 @@ public class CreateCommunityFragment extends Fragment {
         subscription.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
-                if(e == null) {
+                if (e == null) {
                     Toast.makeText(getContext(), "Successful Created A community", Toast.LENGTH_SHORT).show();
                     NavigationUtil.goToActivity(getActivity(), MainActivity.class);
-                } else{
+                } else {
                     Log.e(TAG, "Error while making a subscription" + e);
                 }
             }

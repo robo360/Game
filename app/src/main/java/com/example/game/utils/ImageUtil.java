@@ -1,7 +1,6 @@
-package com.example.game.helpers;
+package com.example.game.utils;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageDecoder;
@@ -12,8 +11,6 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
-
-import androidx.core.content.FileProvider;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -58,7 +55,7 @@ public class ImageUtil {
     }
 
     public static String saveToInternalStorage(Context context, Bitmap bitmapImage) {
-        File file = getPhotoFileUri(context,"profile.jpg");
+        File file = getPhotoFileUri(context, "profile.jpg");
         FileOutputStream fos = null;
         try {
             fos = new FileOutputStream(file);

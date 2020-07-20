@@ -19,21 +19,14 @@ import com.example.game.fragments.CreateEventFragment;
 import com.example.game.fragments.EventFeedFragment;
 import com.example.game.fragments.ProfileFragment;
 import com.example.game.fragments.SearchFragment;
-import com.example.game.helpers.NavigationUtil;
-import com.example.game.models.Community;
-import com.example.game.models.Event;
+import com.example.game.utils.NavigationUtil;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
-import com.parse.FindCallback;
 import com.parse.LogOutCallback;
 import com.parse.ParseException;
-import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
-
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";

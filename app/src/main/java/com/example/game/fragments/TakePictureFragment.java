@@ -2,12 +2,7 @@ package com.example.game.fragments;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.ImageDecoder;
-import android.graphics.Matrix;
-import android.media.ExifInterface;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,7 +10,6 @@ import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,8 +24,8 @@ import android.widget.Toast;
 import com.example.game.R;
 import com.example.game.activities.MainActivity;
 import com.example.game.databinding.FragmentTakePictureBinding;
-import com.example.game.helpers.ImageUtil;
-import com.example.game.helpers.NavigationUtil;
+import com.example.game.utils.ImageUtil;
+import com.example.game.utils.NavigationUtil;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.parse.ParseException;
@@ -49,13 +43,8 @@ public class TakePictureFragment extends Fragment {
     private static final String TAG = "TakePictureFragment";
     public static final String PHOTO_FILE_NAME = "photo.jpg";
 
-    private FragmentTakePictureBinding binding;
-    private ImageButton ibFile;
-    private ImageButton ibCamera;
     private Button btnSubmit;
     private ImageView ivProfile;
-    private TextView tvSkip;
-    private Bitmap image;
     private File photoFile;
 
     public static TakePictureFragment newInstance() {
@@ -68,12 +57,12 @@ public class TakePictureFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        binding = FragmentTakePictureBinding.bind(view);
-        ibCamera = binding.ibCamera;
-        ibFile = binding.ibFile;
+        com.example.game.databinding.FragmentTakePictureBinding binding = FragmentTakePictureBinding.bind(view);
+        ImageButton ibCamera = binding.ibCamera;
+        ImageButton ibFile = binding.ibFile;
         btnSubmit = binding.btnSubmit;
         ivProfile = binding.ivProfile;
-        tvSkip = binding.tvSkip;
+        TextView tvSkip = binding.tvSkip;
 
         //set a listener on all elements
         ibFile.setOnClickListener(new View.OnClickListener() {
@@ -132,7 +121,7 @@ public class TakePictureFragment extends Fragment {
         if (data != null && requestCode == PICK_PHOTO_CODE) {
             Uri photoUri = data.getData();
             // Load the image located at photoUri into selectedImage
-            image = ImageUtil.loadFromUri(getContext(), photoUri);
+            Bitmap image = ImageUtil.loadFromUri(getContext(), photoUri);
             photoFile = new File(ImageUtil.saveToInternalStorage(getContext(), image));
             ivProfile.setImageBitmap(image);
         }
