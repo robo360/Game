@@ -31,21 +31,18 @@ import com.parse.ParseUser;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
-    private ActivityMainBinding binding;
-    private FloatingActionButton fab;
     private Toolbar toolbar;
-    private BottomNavigationView bottomNavigationView;
     private Fragment fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final FragmentManager fragmentManager = getSupportFragmentManager();
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        com.example.game.databinding.ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        bottomNavigationView = binding.bottomNavigation;
+        BottomNavigationView bottomNavigationView = binding.bottomNavigation;
+        FloatingActionButton fab = binding.fab;
         toolbar = binding.toolbar;
-        fab = binding.fab;
 
         bottomNavigationView.setOnNavigationItemReselectedListener(new BottomNavigationView.OnNavigationItemReselectedListener() {
             @Override
@@ -105,15 +102,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void logout() {
-        ParseUser.getCurrentUser().logOutInBackground(new LogOutCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (e != null) {
-                    Log.e(TAG, getString(R.string.error_logout) + e);
-                    Snackbar.make(toolbar, R.string.error_logout_message, BaseTransientBottomBar.LENGTH_SHORT);
-                } else {
-                    NavigationUtil.goToActivity(MainActivity.this, LoginActivity.class);
-                }
+        ParseUser.getCurrentUser().logOutInBackground(e -> {
+            if (e != null) {
+                Log.e(TAG, getString(R.string.error_logout) + e);
+                Snackbar.make(toolbar, R.string.error_logout_message, BaseTransientBottomBar.LENGTH_SHORT);
+            } else {
+                NavigationUtil.goToActivity(MainActivity.this, LoginActivity.class);
             }
         });
     }

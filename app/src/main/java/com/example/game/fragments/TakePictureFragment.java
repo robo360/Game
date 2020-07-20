@@ -28,12 +28,11 @@ import com.example.game.utils.ImageUtil;
 import com.example.game.utils.NavigationUtil;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
-import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
 
 import java.io.File;
+import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -65,37 +64,23 @@ public class TakePictureFragment extends Fragment {
         TextView tvSkip = binding.tvSkip;
 
         //set a listener on all elements
-        ibFile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onPickPhoto(view);
-                btnSubmit.setVisibility(View.VISIBLE);
-            }
+        ibFile.setOnClickListener(view1 -> {
+            onPickPhoto();
+            btnSubmit.setVisibility(View.VISIBLE);
         });
 
-        ibCamera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                LaunchCamera();
-                btnSubmit.setVisibility(View.VISIBLE);
-            }
+        ibCamera.setOnClickListener(view12 -> {
+            LaunchCamera();
+            btnSubmit.setVisibility(View.VISIBLE);
         });
 
-        tvSkip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                NavigationUtil.goToActivity(getActivity(), MainActivity.class);
-            }
-        });
+        tvSkip.setOnClickListener(view13 -> NavigationUtil.goToActivity(getActivity(), MainActivity.class));
 
-        btnSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (photoFile == null || ivProfile.getDrawable() == null) {
-                    Log.e(TAG, "Picture cannot be empty cannot be empty");
-                } else {
-                    save(ParseUser.getCurrentUser(), new ParseFile(photoFile));
-                }
+        btnSubmit.setOnClickListener(view14 -> {
+            if (photoFile == null || ivProfile.getDrawable() == null) {
+                Log.e(TAG, "Picture cannot be empty cannot be empty");
+            } else {
+                save(ParseUser.getCurrentUser(), new ParseFile(photoFile));
             }
         });
     }
@@ -108,10 +93,10 @@ public class TakePictureFragment extends Fragment {
     }
 
     // Trigger gallery selection for a photo
-    public void onPickPhoto(View view) {
+    public void onPickPhoto() {
         Intent intent = new Intent(Intent.ACTION_PICK,
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        if (intent.resolveActivity(getContext().getPackageManager()) != null) {
+        if (intent.resolveActivity(Objects.requireNonNull(getContext()).getPackageManager()) != null) {
             startActivityForResult(intent, PICK_PHOTO_CODE);
         }
     }
@@ -142,7 +127,7 @@ public class TakePictureFragment extends Fragment {
         // create Intent to take a picture and return control to the calling application
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Create a File reference for future access
-        photoFile = ImageUtil.getPhotoFileUri(getContext(), PHOTO_FILE_NAME);
+        photoFile = ImageUtil.getPhotoFileUri(Objects.requireNonNull(getContext()), PHOTO_FILE_NAME);
         Uri fileProvider = FileProvider.getUriForFile(getContext(), "com.example.game", photoFile);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider);
         // make sure if the intent can be handled
@@ -152,16 +137,13 @@ public class TakePictureFragment extends Fragment {
     }
 
     private void save(final ParseUser currentUser, final ParseFile image) {
-        ParseUser.getCurrentUser().put("image", image);
-        ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (e != null) {
-                    Log.e(TAG, "Error signing up: " + e);
-                    Snackbar.make(btnSubmit, "Error signing up" + e, BaseTransientBottomBar.LENGTH_SHORT);
-                } else {
-                    NavigationUtil.goToActivity(getActivity(), MainActivity.class);
-                }
+        currentUser.put("image", image);
+        currentUser.saveInBackground(e -> {
+            if (e != null) {
+                Log.e(TAG, "Error signing up: " + e);
+                Snackbar.make(btnSubmit, "Error signing up" + e, BaseTransientBottomBar.LENGTH_SHORT);
+            } else {
+                NavigationUtil.goToActivity(getActivity(), MainActivity.class);
             }
         });
     }

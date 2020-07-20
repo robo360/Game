@@ -1,6 +1,5 @@
 package com.example.game.fragments;
 
-import android.nfc.Tag;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -20,9 +19,6 @@ import com.example.game.models.Event;
 import com.example.game.models.Subscription;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
-import com.parse.FindCallback;
-import com.parse.GetCallback;
-import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
@@ -66,8 +62,10 @@ public class EventFeedFragment extends Fragment {
             public void onTabReselected(TabLayout.Tab tab) {
 
             }
+
         });
-        TabLayoutMediator tabLayoutMediator = new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> populateTab(tab, position));
+
+        TabLayoutMediator tabLayoutMediator = new TabLayoutMediator(tabLayout, viewPager, this::populateTab);
         tabLayoutMediator.attach();
         getCommunities();
     }
@@ -77,22 +75,16 @@ public class EventFeedFragment extends Fragment {
         ParseQuery<Subscription> subscription = ParseQuery.getQuery(Subscription.class);
         subscription.whereEqualTo(Subscription.KEY_COMMUNITY, communities.get(position));
         subscription.whereEqualTo(Subscription.KEY_USER, ParseUser.getCurrentUser());
-        subscription.getFirstInBackground(new GetCallback<Subscription>() {
-            @Override
-            public void done(Subscription object, ParseException e) {
-                if (object != null) {
-                    Date date = object.getUpdatedAt();
-                    ParseQuery<Event> eventsQuery = ParseQuery.getQuery(Event.class);
-                    eventsQuery.whereGreaterThan(Event.KEY_CREATED_AT, date);
-                    eventsQuery.findInBackground(new FindCallback<Event>() {
-                        @Override
-                        public void done(List<Event> objects, ParseException e) {
-                            if (position != 0) {
-                                tab.getOrCreateBadge().setNumber(objects.size());
-                            }
-                        }
-                    });
-                }
+        subscription.getFirstInBackground((object, e) -> {
+            if (object != null) {
+                Date date = object.getUpdatedAt();
+                ParseQuery<Event> eventsQuery = ParseQuery.getQuery(Event.class);
+                eventsQuery.whereGreaterThan(Event.KEY_CREATED_AT, date);
+                eventsQuery.findInBackground((objects, e1) -> {
+                    if (position != 0 && objects.size() !=0) {
+                        tab.getOrCreateBadge().setNumber(objects.size());
+                    }
+                });
             }
         });
     }
@@ -109,18 +101,14 @@ public class EventFeedFragment extends Fragment {
         ParseQuery<Subscription> q = ParseQuery.getQuery(Subscription.class);
         q.whereEqualTo(Subscription.KEY_USER, user);
         q.include(Subscription.KEY_COMMUNITY);
-        q.findInBackground(new FindCallback<Subscription>() {
-            @Override
-            public void done(List<Subscription> objects, ParseException e) {
-                if (e != null) {
-                    Log.e(TAG, "Error querying events: " + e);
-                } else {
-                    Log.i(TAG, "Subscriptions: " + objects.size());
-                    for (Subscription subscription : objects) {
-                        communities.add((Community) subscription.getCommunity());
-                    }
-                    communityAdapter.notifyDataSetChanged();
+        q.findInBackground((objects, e) -> {
+            if (e != null) {
+                Log.e(TAG, getString(R.string.error_events_query) + e);
+            } else {
+                for (Subscription subscription : objects) {
+                    communities.add((Community) subscription.getCommunity());
                 }
+                communityAdapter.notifyDataSetChanged();
             }
         });
     }

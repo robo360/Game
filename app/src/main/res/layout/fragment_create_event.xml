@@ -72,7 +72,7 @@
 
             <EditText
                 android:id="@+id/etYear"
-                android:layout_width="40dp"
+                android:layout_width="50dp"
                 android:layout_height="30dp"
                 android:ems="10"
                 android:gravity="center"
@@ -83,24 +83,12 @@
                 tools:layout_editor_absoluteY="346dp" />
 
             <EditText
-                android:id="@+id/etTimeZone"
-                android:layout_width="40dp"
-                android:layout_height="30dp"
-                android:ems="10"
-                android:gravity="center"
-                android:hint="TZ"
-                android:inputType="textMultiLine"
-                android:padding="0dp"
-                tools:layout_editor_absoluteX="237dp"
-                tools:layout_editor_absoluteY="346dp" />
-
-            <EditText
                 android:id="@+id/etHour"
                 android:layout_width="40dp"
                 android:layout_height="30dp"
                 android:ems="10"
                 android:gravity="center"
-                android:hint="HH"
+                android:hint="hh"
                 android:inputType="textMultiLine"
                 android:padding="0dp"
                 tools:layout_editor_absoluteX="289dp"

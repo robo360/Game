@@ -36,17 +36,11 @@ import java.io.File;
 public class CreateCommunityFragment extends Fragment {
     private static final String TAG = "CreateCommunityFragment";
     public static final int PICK_PHOTO_CODE = 1046;
-    public static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
-    public static final String PHOTO_FILE_NAME = "photo.jpg";
 
     private FragmentCreateCommunityBinding binding;
     private ImageView ivPoster;
     private Bitmap image;
     private File photoFile;
-
-    public CreateCommunityFragment() {
-        // Required empty public constructor
-    }
 
     public static CreateCommunityFragment newInstance() {
         CreateCommunityFragment fragment = new CreateCommunityFragment();
@@ -66,33 +60,25 @@ public class CreateCommunityFragment extends Fragment {
         ImageButton ibFile = binding.ibFile;
         ivPoster = binding.ivPoster;
 
-        ibFile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onPickPhoto(view);
-            }
-        });
+        ibFile.setOnClickListener(view1 -> onPickPhoto(view1));
 
-        btnShare.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Community community = new Community();
-                community.setCreator(ParseUser.getCurrentUser());
-                community.setName(etTitle.getText().toString());
-                community.setImage(new ParseFile(photoFile));
-                community.setDescription(etDescription.getText().toString());
-                community.saveInBackground(new SaveCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        if (e != null) {
-                            Log.e(TAG, "Error making an event" + e);
-                        } else {
-                            subscribeToCommunity(community);
-                        }
+        btnShare.setOnClickListener(view12 -> {
+            Community community = new Community();
+            community.setCreator(ParseUser.getCurrentUser());
+            community.setName(etTitle.getText().toString());
+            community.setImage(new ParseFile(photoFile));
+            community.setDescription(etDescription.getText().toString());
+            community.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e != null) {
+                        Log.e(TAG, "Error making an event" + e);
+                    } else {
+                        subscribeToCommunity(community);
                     }
-                });
+                }
+            });
 
-            }
         });
     }
 

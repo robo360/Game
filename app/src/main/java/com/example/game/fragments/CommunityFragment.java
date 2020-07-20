@@ -33,6 +33,7 @@ import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class CommunityFragment extends Fragment implements EventAdapter.OnClickBtnDetail {
     public static final String COMMUNITY = "community";
@@ -40,12 +41,6 @@ public class CommunityFragment extends Fragment implements EventAdapter.OnClickB
 
     private EventAdapter adapter;
     private List<Event> events;
-    private Community community;
-    private RecyclerView rvEvents;
-
-    public CommunityFragment() {
-        // Required empty public constructor
-    }
 
     public static Fragment newInstance(Community community) {
         CommunityFragment fragment = new CommunityFragment();
@@ -59,8 +54,8 @@ public class CommunityFragment extends Fragment implements EventAdapter.OnClickB
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Bundle args = getArguments();
-        community = Parcels.unwrap(getArguments().getParcelable(COMMUNITY));
-        rvEvents = view.findViewById(R.id.rvEvents);
+        Community community = Parcels.unwrap(getArguments() != null ? getArguments().getParcelable(COMMUNITY) : null);
+        RecyclerView rvEvents = view.findViewById(R.id.rvEvents);
         events = new ArrayList<>();
         adapter = new EventAdapter(getContext(), events, community, this);
         rvEvents.setAdapter(adapter);
@@ -69,31 +64,24 @@ public class CommunityFragment extends Fragment implements EventAdapter.OnClickB
         ParseQuery<Subscription> subscriptionParseQuery = ParseQuery.getQuery(Subscription.class);
         subscriptionParseQuery.whereEqualTo(Subscription.KEY_COMMUNITY, community);
         subscriptionParseQuery.whereEqualTo(Subscription.KEY_USER, ParseUser.getCurrentUser());
-        subscriptionParseQuery.getFirstInBackground(new GetCallback<Subscription>() {
-            @Override
-            public void done(Subscription object, ParseException e) {
-                object.setInteractionCount(object.getInteractionCount().intValue() + 1);
-                object.saveInBackground();
-            }
+        subscriptionParseQuery.getFirstInBackground((object, e) -> {
+            object.setInteractionCount(object.getInteractionCount().intValue() + 1);
+            object.saveInBackground();
         });
+
         getQueryEvents(community);
     }
 
     private void getQueryEvents(Community community) {
 
         ParseQuery<Event> eventParseQuery = ParseQuery.getQuery(Event.class);
-//        if (community.getName() != "public"){
-//            eventParseQuery.whereEqualTo(Event.KEY_COMMUNITY, community);
-//        }
-        eventParseQuery.findInBackground(new FindCallback<Event>() {
-            @Override
-            public void done(List<Event> objects, ParseException e) {
-                if (e != null) {
-                    Log.e(TAG, "Error querying events: " + e);
-                } else {
-                    events.addAll(objects);
-                    adapter.notifyDataSetChanged();
-                }
+        eventParseQuery.orderByDescending(Event.KEY_CREATED_AT);
+        eventParseQuery.findInBackground((objects, e) -> {
+            if (e != null) {
+                Log.e(TAG, getString(R.string.error_events_query) + e);
+            } else {
+                events.addAll(objects);
+                adapter.notifyDataSetChanged();
             }
         });
     }
@@ -108,6 +96,6 @@ public class CommunityFragment extends Fragment implements EventAdapter.OnClickB
     @Override
     public void onClickedBtnDetail(Event event, Community community) {
         EventDetailFragment fragment = EventDetailFragment.newInstance(event, community);
-        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.flContainer, fragment).commit();
+        Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction().replace(R.id.flContainer, fragment).commit();
     }
 }

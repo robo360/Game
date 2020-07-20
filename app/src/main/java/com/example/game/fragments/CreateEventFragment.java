@@ -75,8 +75,6 @@ public class CreateEventFragment extends Fragment {
             String dateString = binding.etMonth.getText().toString().replaceAll("\\s", "") + "/" +
                     binding.etDay.getText().toString().replaceAll("\\s", "") + "/" +
                     binding.etYear.getText().toString().replaceAll("\\s", "") + " " +
-                    //binding.etTimeZone.getText().toString().replaceAll("\\s", "");
-//                            + " " +
                     binding.etHour.getText().toString().replaceAll("\\s", "") + ":" +
                     binding.etMinute.getText().toString().replaceAll("\\s", "");
             if(ValidatorsUtil.checkTimePattern(dateString)){

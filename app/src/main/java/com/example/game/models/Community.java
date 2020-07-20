@@ -27,7 +27,7 @@ public class Community extends ParseObject {
     public static final String KEY_IMAGE = "image";
     public static final String KEY_CREATOR = "creator";
     public static final String KEY_POSTSCOUNT = "postsCount";
-    public static final String KEY_CREATEDAT = "postsCount";
+    public static final String KEY_CREATED_AT = "createdAt";
     public static final String KEY_DESCRIPTION = "description";
 
     public ParseUser getCreator() {

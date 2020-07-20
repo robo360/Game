@@ -1,14 +1,11 @@
 package com.example.game.adapters;
 
-import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.example.game.fragments.CommunityFragment;
 import com.example.game.models.Community;
-import com.google.android.material.tabs.TabLayout;
 
 import java.util.List;
 
@@ -32,4 +29,3 @@ public class CommunityAdapter extends FragmentStateAdapter {
         return communities.size();
     }
 }
-
