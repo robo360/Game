@@ -39,7 +39,6 @@
     <string name="address">Address</string>
     <string name="details">Details</string>
     <string name="error_events_query">\"Error querying events: \"</string>
-    <string name="google_places_api">AIzaSyDXHdTYvOfRA6iZZY-JTgiwm-4-t06G-9I</string>
     <string name="pattern_time">MM/dd/yyyy hh:mm</string>
     <string name="wrong_date_message">Wrong Date and Time input. Please follow the format.</string>
     <string name="no_address_message">You cannot create an event without an address.</string>
