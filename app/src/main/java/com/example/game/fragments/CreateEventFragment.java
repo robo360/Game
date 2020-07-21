@@ -163,7 +163,7 @@ public class CreateEventFragment extends Fragment {
 
     private void openPlaces(View view) {
         // Initialize Places.
-        Places.initialize(getApplicationContext(), getString(R.string.google_places_api));
+        Places.initialize(getApplicationContext(), getString(R.string.google_places_key));
         List<Place.Field> fields = Arrays.asList(Place.Field.values());
         Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
                 .build(view.getContext());
