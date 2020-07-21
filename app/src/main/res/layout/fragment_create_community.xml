@@ -7,9 +7,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scrollbarAlwaysDrawVerticalTrack="true"
-        tools:context=".fragments.CreateEventFragment">
-
+        android:scrollbarAlwaysDrawVerticalTrack="true">
 
         <EditText
             android:id="@+id/etTitle"
@@ -46,7 +44,7 @@
             android:layout_width="@dimen/ib_width"
             android:layout_height="@dimen/ib_width"
             android:layout_marginTop="@dimen/side_margin"
-            android:backgroundTint="#FFFFFF"
+            android:backgroundTint="@color/white"
             android:contentDescription="@string/folder"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_baseline_folder_24"

@@ -12,4 +12,7 @@
     <dimen name="eight_dp">8dp</dimen>
     <dimen name="tv_height">24dp</dimen>
     <dimen name="tv_large_width">320dp</dimen>
+    <dimen name="et_time_height">30dp</dimen>
+    <dimen name="et_time_width">40dp</dimen>
+    <dimen name="et_time_width_large">50dp</dimen>
 </resources>

@@ -1,34 +1,24 @@
 package com.example.game.fragments;
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager2.widget.ViewPager2;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.game.R;
 import com.example.game.adapters.EventAdapter;
 import com.example.game.models.Community;
 import com.example.game.models.Event;
 import com.example.game.models.Subscription;
-import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayoutMediator;
-import com.parse.FindCallback;
-import com.parse.GetCallback;
-import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
-import org.parceler.Parcel;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
@@ -51,28 +41,32 @@ public class CommunityFragment extends Fragment implements EventAdapter.OnClickB
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Bundle args = getArguments();
-        Community community = Parcels.unwrap(getArguments() != null ? getArguments().getParcelable(COMMUNITY) : null);
-        RecyclerView rvEvents = view.findViewById(R.id.rvEvents);
-        events = new ArrayList<>();
-        adapter = new EventAdapter(getContext(), events, community, this);
-        rvEvents.setAdapter(adapter);
-        rvEvents.setLayoutManager(new LinearLayoutManager(getContext()));
-        //add an interaction to a list
-        ParseQuery<Subscription> subscriptionParseQuery = ParseQuery.getQuery(Subscription.class);
-        subscriptionParseQuery.whereEqualTo(Subscription.KEY_COMMUNITY, community);
-        subscriptionParseQuery.whereEqualTo(Subscription.KEY_USER, ParseUser.getCurrentUser());
-        subscriptionParseQuery.getFirstInBackground((object, e) -> {
-            object.setInteractionCount(object.getInteractionCount().intValue() + 1);
-            object.saveInBackground();
-        });
+        if (getArguments() != null) {
+            Bundle args = getArguments();
+            Community community = Parcels.unwrap(args.getParcelable(COMMUNITY));
+            RecyclerView rvEvents = view.findViewById(R.id.rvEvents);
+            events = new ArrayList<>();
+            adapter = new EventAdapter(getContext(), events, community, this);
+            rvEvents.setAdapter(adapter);
+            rvEvents.setLayoutManager(new LinearLayoutManager(getContext()));
+            //add an interaction to a list
+            ParseQuery<Subscription> subscriptionParseQuery = ParseQuery.getQuery(Subscription.class);
+            subscriptionParseQuery.whereEqualTo(Subscription.KEY_COMMUNITY, community);
+            subscriptionParseQuery.whereEqualTo(Subscription.KEY_USER, ParseUser.getCurrentUser());
+            subscriptionParseQuery.getFirstInBackground((object, e) -> {
+                object.setInteractionCount(object.getInteractionCount().intValue() + 1);
+                object.saveInBackground();
+            });
 
-        getQueryEvents(community);
+            getQueryEvents();
+        } else {
+            Log.e(TAG, "Missing community argument:" + new NullPointerException().getMessage());
+        }
     }
 
-    private void getQueryEvents(Community community) {
+    private void getQueryEvents() {
 
         ParseQuery<Event> eventParseQuery = ParseQuery.getQuery(Event.class);
         eventParseQuery.orderByDescending(Event.KEY_CREATED_AT);

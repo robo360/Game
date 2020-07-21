@@ -22,14 +22,12 @@ import androidx.fragment.app.Fragment;
 import com.example.game.R;
 import com.example.game.activities.MainActivity;
 import com.example.game.databinding.FragmentCreateCommunityBinding;
-import com.example.game.utils.ImageUtil;
-import com.example.game.utils.NavigationUtil;
 import com.example.game.models.Community;
 import com.example.game.models.Subscription;
-import com.parse.ParseException;
+import com.example.game.utils.ImageUtil;
+import com.example.game.utils.NavigationUtil;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
 
 import java.io.File;
 
@@ -37,9 +35,7 @@ public class CreateCommunityFragment extends Fragment {
     private static final String TAG = "CreateCommunityFragment";
     public static final int PICK_PHOTO_CODE = 1046;
 
-    private FragmentCreateCommunityBinding binding;
     private ImageView ivPoster;
-    private Bitmap image;
     private File photoFile;
 
     public static CreateCommunityFragment newInstance() {
@@ -52,14 +48,14 @@ public class CreateCommunityFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        binding = FragmentCreateCommunityBinding.bind(view);
+        com.example.game.databinding.FragmentCreateCommunityBinding binding = FragmentCreateCommunityBinding.bind(view);
         Button btnShare = binding.btnShare;
         EditText etTitle = binding.etTitle;
         EditText etDescription = binding.etDescription;
         ImageButton ibFile = binding.ibFile;
         ivPoster = binding.ivPoster;
 
-        ibFile.setOnClickListener(view1 -> onPickPhoto(view1));
+        ibFile.setOnClickListener(this::onPickPhoto);
 
         btnShare.setOnClickListener(view12 -> {
             Community community = new Community();
@@ -67,14 +63,11 @@ public class CreateCommunityFragment extends Fragment {
             community.setName(etTitle.getText().toString());
             community.setImage(new ParseFile(photoFile));
             community.setDescription(etDescription.getText().toString());
-            community.saveInBackground(new SaveCallback() {
-                @Override
-                public void done(ParseException e) {
-                    if (e != null) {
-                        Log.e(TAG, "Error making an event" + e);
-                    } else {
-                        subscribeToCommunity(community);
-                    }
+            community.saveInBackground(e -> {
+                if (e != null) {
+                    Log.e(TAG, "Error making an event" + e);
+                } else {
+                    subscribeToCommunity(community);
                 }
             });
 
@@ -92,7 +85,7 @@ public class CreateCommunityFragment extends Fragment {
     public void onPickPhoto(View view) {
         Intent intent = new Intent(Intent.ACTION_PICK,
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        if (intent.resolveActivity(getContext().getPackageManager()) != null) {
+        if (intent.resolveActivity(view.getContext().getPackageManager()) != null) {
             startActivityForResult(intent, PICK_PHOTO_CODE);
         }
     }
@@ -102,7 +95,7 @@ public class CreateCommunityFragment extends Fragment {
         if (data != null && requestCode == PICK_PHOTO_CODE) {
             Uri photoUri = data.getData();
             // Load the image located at photoUri into selectedImage
-            image = ImageUtil.loadFromUri(getContext(), photoUri);
+            Bitmap image = ImageUtil.loadFromUri(getContext(), photoUri);
             photoFile = new File(ImageUtil.saveToInternalStorage(getContext(), image));
             ivPoster.setImageBitmap(image);
         }
@@ -114,15 +107,12 @@ public class CreateCommunityFragment extends Fragment {
         subscription.setUser(ParseUser.getCurrentUser());
         subscription.setCommunity(community);
         subscription.setFollowStatus(true);
-        subscription.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (e == null) {
-                    Toast.makeText(getContext(), "Successful Created A community", Toast.LENGTH_SHORT).show();
-                    NavigationUtil.goToActivity(getActivity(), MainActivity.class);
-                } else {
-                    Log.e(TAG, "Error while making a subscription" + e);
-                }
+        subscription.saveInBackground(e -> {
+            if (e == null) {
+                Toast.makeText(getContext(), "Successful Created A community", Toast.LENGTH_SHORT).show();
+                NavigationUtil.goToActivity(getActivity(), MainActivity.class);
+            } else {
+                Log.e(TAG, "Error while making a subscription" + e);
             }
         });
     }

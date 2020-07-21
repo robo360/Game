@@ -21,7 +21,6 @@ import com.example.game.models.Attendance;
 import com.example.game.models.Community;
 import com.example.game.models.Event;
 import com.example.game.models.User;
-import com.example.game.utils.AddressUtil;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseQuery;
@@ -98,7 +97,6 @@ public class EventDetailFragment extends Fragment {
         }
         tvDetail.setText(event.getDescription());
 
-        //add a listener on btnGo
         btnGo.setOnClickListener(view1 -> {
             saveAttendanceChange();
         });

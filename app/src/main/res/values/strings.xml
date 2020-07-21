@@ -43,4 +43,17 @@
     <string name="pattern_time">MM/dd/yyyy hh:mm</string>
     <string name="wrong_date_message">Wrong Date and Time input. Please follow the format.</string>
     <string name="no_address_message">You cannot create an event without an address.</string>
+    <string name="description">Description</string>
+    <string name="hh">hh</string>
+    <string name="mm">mm</string>
+    <string name="colon">:</string>
+    <string name="slash">/</string>
+    <string name="dd">dd</string>
+    <string name="yyyy">yyyy</string>
+    <string name="community">Community</string>
+    <string name="mm_Uppercase">MM</string>
+    <string name="title">Title</string>
+    <string name="poster">Poster</string>
+    <string name="share">Share</string>
+    <string name="set_location">Set Location</string>
 </resources>

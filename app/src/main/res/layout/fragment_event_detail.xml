@@ -31,7 +31,7 @@
 
         <TextView
             android:id="@+id/tvCommunity"
-            android:layout_width="@dimen/tv_large_width"
+            android:layout_width="0dp"
             android:layout_height="@dimen/tv_height"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
@@ -41,8 +41,7 @@
             android:gravity="center_vertical"
             android:textColor="@color/black"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintEnd_toStartOf="@+id/btnGo"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="/@public" />
@@ -111,8 +110,6 @@
             android:scaleType="fitXY"
             app:layout_constraintBottom_toTopOf="@+id/ivImage"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.68"
-            app:layout_constraintStart_toEndOf="@+id/tvCommunity"
             app:srcCompat="@drawable/ic_baseline_check_24" />
 
         <View

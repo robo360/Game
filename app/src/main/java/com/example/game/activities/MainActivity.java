@@ -2,11 +2,8 @@ package com.example.game.activities;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
@@ -26,8 +23,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
-import com.parse.LogOutCallback;
-import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
@@ -51,25 +46,21 @@ public class MainActivity extends AppCompatActivity {
         toolbar = binding.toolbar;
         communities = new ArrayList<>();
         getCommunityNames();
-        bottomNavigationView.setOnNavigationItemReselectedListener(new BottomNavigationView.OnNavigationItemReselectedListener() {
-            @Override
-            public void onNavigationItemReselected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.action_event:
-
-                        fragment = EventFeedFragment.newInstance();
-                        Toast.makeText(MainActivity.this, R.string.home, Toast.LENGTH_SHORT).show();
-                        break;
-                    case R.id.action_search:
-                        fragment = SearchFragment.newInstance();
-                        Toast.makeText(MainActivity.this, R.string.search, Toast.LENGTH_SHORT).show();
-                        break;
-                    default:
-                        fragment = ProfileFragment.newInstance();
-                        Toast.makeText(MainActivity.this, R.string.profile, Toast.LENGTH_SHORT).show();
-                }
-                fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
+        bottomNavigationView.setOnNavigationItemReselectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.action_event:
+                    fragment = EventFeedFragment.newInstance();
+                    Toast.makeText(MainActivity.this, R.string.home, Toast.LENGTH_SHORT).show();
+                    break;
+                case R.id.action_search:
+                    fragment = SearchFragment.newInstance();
+                    Toast.makeText(MainActivity.this, R.string.search, Toast.LENGTH_SHORT).show();
+                    break;
+                default:
+                    fragment = ProfileFragment.newInstance();
+                    Toast.makeText(MainActivity.this, R.string.profile, Toast.LENGTH_SHORT).show();
             }
+            fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
         });
 
         // Set default selection
@@ -103,7 +94,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void logout() {
-        ParseUser.getCurrentUser().logOutInBackground(e -> {
+        ParseUser.getCurrentUser();
+        ParseUser.logOutInBackground(e -> {
             if (e != null) {
                 Log.e(TAG, getString(R.string.error_logout) + e);
                 Snackbar.make(toolbar, R.string.error_logout_message, BaseTransientBottomBar.LENGTH_SHORT);
