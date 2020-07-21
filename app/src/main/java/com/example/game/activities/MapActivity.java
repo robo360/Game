@@ -38,8 +38,9 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.Objects;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
@@ -49,7 +50,6 @@ import static com.google.android.gms.location.LocationServices.getFusedLocationP
 @RuntimePermissions
 public class MapActivity extends AppCompatActivity implements GoogleMap.OnMapLongClickListener {
     private final static String KEY_LOCATION = "location";
-    private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 
     private GoogleMap map;
     Location mCurrentLocation;
@@ -215,33 +215,26 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMapLon
         alertDialogBuilder.setView(messageView);
         final AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // Define color of marker icon
-                        BitmapDescriptor defaultMarker =
-                                BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
-                        // Extract content from alert dialog
-                        String title = ((EditText) alertDialog.findViewById(R.id.etTitle)).
-                                getText().toString();
-                        String snippet = ((EditText) alertDialog.findViewById(R.id.etSnippet)).
-                                getText().toString();
-                        // Creates and adds marker to the map
-                        Marker marker = map.addMarker(new MarkerOptions()
-                                .position(latLng)
-                                .title(title)
-                                .snippet(snippet)
-                                .icon(defaultMarker));
-                    }
+                (dialog, which) -> {
+                    // Define color of marker icon
+                    BitmapDescriptor defaultMarker =
+                            BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
+                    // Extract content from alert dialog
+                    String title = ((EditText) Objects.requireNonNull(alertDialog.findViewById(R.id.etTitle))).
+                            getText().toString();
+                    String snippet = ((EditText) Objects.requireNonNull(alertDialog.findViewById(R.id.etSnippet))).
+                            getText().toString();
+                    // Creates and adds marker to the map
+                    map.addMarker(new MarkerOptions()
+                            .position(latLng)
+                            .title(title)
+                            .snippet(snippet)
+                            .icon(defaultMarker));
                 });
 
         // Configure dialog button (Cancel)
         alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
+                (dialog, id) -> dialog.cancel());
 
         // Display the dialog
         alertDialog.show();
@@ -259,12 +252,8 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMapLon
             mDialog = null;
         }
 
-        // Set the dialog to display
-        public void setDialog(Dialog dialog) {
-            mDialog = dialog;
-        }
-
         // Return a Dialog to the DialogFragment.
+        @NonNull
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             return mDialog;
