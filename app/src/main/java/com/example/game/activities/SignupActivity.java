@@ -14,7 +14,7 @@ public class SignupActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        com.example.game.databinding.ActivitySignupBinding binding = ActivitySignupBinding.inflate(getLayoutInflater());
+        ActivitySignupBinding binding = ActivitySignupBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         final FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment fragment = SignupFragment.newInstance();

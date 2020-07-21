@@ -87,12 +87,10 @@ public class EventDetailFragment extends Fragment {
         }
         tvDate.setText(Objects.requireNonNull(event).getDate().toString());
         tvTitle.setText(event.getTitle());
-        try{
-            Double latitude = event.getAddress().getLatitude();
-            Double longitude = event.getAddress().getLongitude();
-            tvAddress.setText(AddressUtil.getCompleteAddressString(getContext(), latitude, longitude));
-        } catch (Exception e){
+        if(event.getAddressString() == null){
             tvAddress.setText(R.string.no_address);
+        }else{
+            tvAddress.setText(event.getAddressString());
         }
         ParseFile image = event.getImage();
         if (image != null) {

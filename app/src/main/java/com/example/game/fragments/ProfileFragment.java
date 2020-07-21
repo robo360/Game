@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 
 import com.example.game.R;
 
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends Fragment  {
     public ProfileFragment() {
         // Required empty public constructor
     }

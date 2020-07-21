@@ -34,6 +34,7 @@ public class Event extends ParseObject {
     public static final String KEY_COMMUNITY = "community";
     public static final String KEY_DESCRIPTION = "description";
     public static final String KEY_DATE = "date";
+    public static final String KEY_ADDRESS_STRING = "addressString";
 
     public ParseUser getUser() {
         return getParseUser(KEY_CREATOR);
@@ -63,6 +64,10 @@ public class Event extends ParseObject {
         return getString(KEY_DESCRIPTION);
     }
 
+    public String getAddressString(){
+        return getString(KEY_ADDRESS_STRING);
+    }
+
     public void setUser(ParseUser user) {
         put(KEY_CREATOR, user);
     }
@@ -89,5 +94,9 @@ public class Event extends ParseObject {
 
     public void setDescription(String description){
         put(KEY_DESCRIPTION, description);
+    }
+
+    public void setAddressString(String addressString){
+        put(KEY_ADDRESS_STRING, addressString);
     }
 }
