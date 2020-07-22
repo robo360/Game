@@ -55,4 +55,7 @@
     <string name="poster">Poster</string>
     <string name="share">Share</string>
     <string name="set_location">Set Location</string>
+    <string name="app_label">Game</string>
+    <string name="search_hint">Search for an event or community</string>
+    <string name="event">event</string>
 </resources>

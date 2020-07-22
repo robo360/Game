@@ -1,5 +1,7 @@
 package com.example.game.activities;
 
+import android.app.SearchManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -55,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.action_search:
                     fragment = SearchFragment.newInstance();
                     Toast.makeText(MainActivity.this, R.string.search, Toast.LENGTH_SHORT).show();
+//                    onSearchRequested();
                     break;
                 default:
                     fragment = ProfileFragment.newInstance();
@@ -91,6 +94,16 @@ public class MainActivity extends AppCompatActivity {
             }
             return true;
         });
+
+        //handle a search Intent
+        Intent intent = getIntent();
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            fragment = SearchFragment.newInstance();
+            fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
+            Toast.makeText(MainActivity.this, R.string.search, Toast.LENGTH_SHORT).show();
+            //doMySearch(query);
+        }
     }
 
     private void logout() {
