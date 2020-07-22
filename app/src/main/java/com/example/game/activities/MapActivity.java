@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -49,11 +50,14 @@ import static com.google.android.gms.location.LocationServices.getFusedLocationP
 
 @RuntimePermissions
 public class MapActivity extends AppCompatActivity implements GoogleMap.OnMapLongClickListener {
-    private final static String KEY_LOCATION = "location";
+    private static final String KEY_LOCATION = "location";
+    private static final long UPDATE_INTERVAL = 60000;
+    private static final long FASTEST_INTERVAL = 5000;
 
+    @Nullable
     private GoogleMap map;
-    Location mCurrentLocation;
-
+    @Nullable
+    private Location currentLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +69,7 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMapLon
         }
 
         if (savedInstanceState != null && savedInstanceState.keySet().contains(KEY_LOCATION)) {
-            mCurrentLocation = savedInstanceState.getParcelable(KEY_LOCATION);
+            currentLocation = savedInstanceState.getParcelable(KEY_LOCATION);
         }
 
         SupportMapFragment mapFragment = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map));
@@ -126,6 +130,7 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMapLon
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
         if(grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED){
             getMyLocation();
             startLocationUpdates();
@@ -138,15 +143,16 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMapLon
     @Override
     protected void onResume() {
         super.onResume();
-        if (mCurrentLocation != null) {
+
+        if (currentLocation != null) {
             Toast.makeText(this, "GPS location was found!", Toast.LENGTH_SHORT).show();
-            LatLng latLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+            LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
             map.animateCamera(cameraUpdate);
         } else {
             Toast.makeText(this, "Current location was null, enable GPS on emulator!", Toast.LENGTH_SHORT).show();
         }
-       startLocationUpdates();
+        startLocationUpdates();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -154,9 +160,7 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMapLon
     protected void startLocationUpdates() {
         LocationRequest mLocationRequest = new LocationRequest();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-        long UPDATE_INTERVAL = 60000;
         mLocationRequest.setInterval(UPDATE_INTERVAL);
-        long FASTEST_INTERVAL = 5000;
         mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
         builder.addLocationRequest(mLocationRequest);
@@ -187,15 +191,15 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMapLon
             return;
         }
 
-        mCurrentLocation = location;
-        String msg = "Updated Location: " +
-                location.getLatitude() + "," +
-                location.getLongitude();
+        currentLocation = location;
+        StringBuilder msg = new StringBuilder().append("Updated Location:")
+                .append(location.getLatitude())
+                .append(location.getLongitude());
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putParcelable(KEY_LOCATION, mCurrentLocation);
+        savedInstanceState.putParcelable(KEY_LOCATION, currentLocation);
         super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -205,13 +209,13 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMapLon
         showAlertDialogForPoint(latLng);
     }
 
+    /*
+    method creates an alert dialog box using the message item.
+     */
     private void showAlertDialogForPoint(final LatLng latLng) {
-        // inflate message_item.xml view
         View messageView = LayoutInflater.from(MapActivity.this).
                 inflate(R.layout.message_item, null);
-        // Create alert dialog builder
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        // set message_item.xml to AlertDialog builder
         alertDialogBuilder.setView(messageView);
         final AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK",
@@ -232,32 +236,26 @@ public class MapActivity extends AppCompatActivity implements GoogleMap.OnMapLon
                             .icon(defaultMarker));
                 });
 
-        // Configure dialog button (Cancel)
         alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel",
                 (dialog, id) -> dialog.cancel());
-
-        // Display the dialog
         alertDialog.show();
     }
 
-    // Define a DialogFragment that displays the error dialog
+    /*
+    class ErrorDialog fragment define a DialogFragment that displays the error dialog
+     */
     public static class ErrorDialogFragment extends DialogFragment {
-
-        // Global field to contain the error dialog
         private Dialog mDialog;
 
-        // Default constructor. Sets the dialog field to null
         public ErrorDialogFragment() {
             super();
             mDialog = null;
         }
 
-        // Return a Dialog to the DialogFragment.
         @NonNull
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             return mDialog;
         }
     }
-
 }
