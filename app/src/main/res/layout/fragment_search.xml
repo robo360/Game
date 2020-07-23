@@ -48,8 +48,8 @@
             android:layout_marginRight="@dimen/eight_dp"
             android:layout_weight="2"
             android:text="@string/event"
-            android:textColor="@color/colorPrimary"
-            app:strokeColor="@color/colorPrimary" />
+            android:textColor="@color/gray"
+            app:strokeColor="@color/gray" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnCommunity"
@@ -60,8 +60,8 @@
             android:layout_marginRight="@dimen/eight_dp"
             android:layout_weight="2"
             android:text="@string/community"
-            android:textColor="@color/colorPrimary"
-            app:strokeColor="@color/colorPrimary" />
+            android:textColor="@color/gray"
+            app:strokeColor="@color/gray" />
     </LinearLayout>
 
     <FrameLayout

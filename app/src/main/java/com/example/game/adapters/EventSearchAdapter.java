@@ -8,49 +8,56 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.game.R;
 import com.example.game.databinding.ItemSearchBinding;
-import com.example.game.models.Community;
+import com.example.game.fragments.EventSearchFragment;
+import com.example.game.models.Event;
 import com.example.game.models.User;
 import com.google.android.material.button.MaterialButton;
 import com.parse.ParseFile;
 
 import java.util.List;
 
-public class CommunitySearchAdapter extends RecyclerView.Adapter<CommunitySearchAdapter.ViewHolder> {
-    private List<Community> communities;
+public class EventSearchAdapter extends RecyclerView.Adapter<EventSearchAdapter.ViewHolder> {
+    private List<Event> events;
     private Context context;
+    private EventSearchFragment fragment;
 
-    public CommunitySearchAdapter(List<Community> communities, Context context){
-        this.communities = communities;
+    public EventSearchAdapter(List<Event> events, Context context, EventSearchFragment fragment){
+        this.events = events;
         this.context = context;
+        this.fragment= fragment;
+    }
+
+    public interface OnViewClickHandler{
+        void btnOnClickedListener(Event event);
     }
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public EventSearchAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_search, parent, false);
-        return new CommunitySearchAdapter.ViewHolder(view);
+        return new EventSearchAdapter.ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Community community = communities.get(position);
-        holder.bind(community);
+    public void onBindViewHolder(@NonNull EventSearchAdapter.ViewHolder holder, int position) {
+        Event event = events.get(position);
+        holder.bind(event);
     }
 
     @Override
     public int getItemCount() {
-        return communities.size();
+        return events.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         private TextView tvTitle;
         private TextView tvCreator;
-        private MaterialButton btnAction;
         private ImageView ivProfile;
 
         public ViewHolder(@NonNull View itemView) {
@@ -58,19 +65,23 @@ public class CommunitySearchAdapter extends RecyclerView.Adapter<CommunitySearch
             ItemSearchBinding binding = ItemSearchBinding.bind(itemView);
             tvCreator = binding.creator;
             tvTitle = binding.tvTitle;
-            btnAction = binding.btnAction;
+            MaterialButton btnAction = binding.btnAction;
             ivProfile = binding.ivProfile;
+
+            btnAction.setText(R.string.view);
+
+            btnAction.setOnClickListener(view -> fragment.btnOnClickedListener(events.get(getAdapterPosition())));
         }
 
-        public void bind(Community community) {
-            tvTitle.setText(community.getName());
-            if(community.getCreator() != null){
-                tvCreator.setText(String.format("by %s", community.getCreator().getString(User.KEY_NAME)));
+        public void bind(Event event) {
+            tvTitle.setText(event.getTitle());
+            if(event.getUser() != null){
+                tvCreator.setText(String.format("by %s", event.getUser().getString(User.KEY_NAME)));
             } else {
                 tvCreator.setText(String.format("by %s", context.getString(R.string.app_label)));
             }
 
-            ParseFile image = community.getImage();
+            ParseFile image = event.getImage();
             if(image != null){
                 Glide.with(context).load(image.getUrl()).into(ivProfile);
             } else {

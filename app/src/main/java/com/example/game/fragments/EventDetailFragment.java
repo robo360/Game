@@ -57,7 +57,7 @@ public class EventDetailFragment extends Fragment {
         FragmentEventDetailBinding binding = FragmentEventDetailBinding.bind(view);
         TextView tvTitle = binding.tvTitle;
         TextView tvDate = binding.tvDate;
-        TextView tvOrganizer = binding.tvOrganizer;
+        TextView tvOrganizer = binding.tvCreator;
         ImageView ivImage = binding.ivImage;
         TextView tvCommunity = binding.tvCommunity;
         TextView tvDetail = binding.tvDetail;

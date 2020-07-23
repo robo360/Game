@@ -5,9 +5,17 @@
     android:layout_height="match_parent"
     tools:context=".fragments.EventSearchFragment">
 
+    <TextView
+        android:id="@+id/tvMessage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:textSize="@dimen/text_size"
+        android:visibility="gone"/>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvEventsRes"
+        android:id="@+id/rvEventsSearch"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </FrameLayout>
