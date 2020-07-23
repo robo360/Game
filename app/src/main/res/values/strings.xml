@@ -8,8 +8,6 @@
     <string name="name">Name</string>
     <string name="signup">Sign Up</string>
     <string name="loginMessage">Have an account.\n Login here.</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="take_profile_picture">TAKE PROFILE PICTURE</string>
     <string name="or">OR</string>
     <string name="submit">Submit</string>
@@ -17,4 +15,44 @@
     <string name="camera">camera</string>
     <string name="folder">folder</string>
     <string name="skip">Skip</string>
+    <string name="create_event">Create Event</string>
+    <string name="create_community">Create Community</string>
+    <string name="logout">Logout</string>
+    <string name="home">Home</string>
+    <string name="recom">recom</string>
+    <string name="search">Search</string>
+    <string name="profile">Profile</string>
+    <string name="tab1">\@foryou</string>
+    <string name="tab2">\@soccer4ever</string>
+    <string name="empty"> </string>
+    <string name="error_logout_message">Enable to logout. Check your internet connection.</string>
+    <string name="error_logout">Error logging out:</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="logo">logo</string>
+    <string name="going">Going</string>
+    <string name="no_date">No Date Message</string>
+    <string name="no_title">No Title</string>
+    <string name="no_address">No address provided</string>
+    <string name="not_attend">Will not attend</string>
+    <string name="profile_picture">Profile picture</string>
+    <string name="address">Address</string>
+    <string name="details">Details</string>
+    <string name="error_events_query">\"Error querying events: \"</string>
+    <string name="pattern_time">MM/dd/yyyy hh:mm</string>
+    <string name="wrong_date_message">Wrong Date and Time input. Please follow the format.</string>
+    <string name="no_address_message">You cannot create an event without an address.</string>
+    <string name="description">Description</string>
+    <string name="hh">hh</string>
+    <string name="mm">mm</string>
+    <string name="colon">:</string>
+    <string name="slash">/</string>
+    <string name="dd">dd</string>
+    <string name="yyyy">yyyy</string>
+    <string name="community">Community</string>
+    <string name="mm_Uppercase">MM</string>
+    <string name="title">Title</string>
+    <string name="poster">Poster</string>
+    <string name="share">Share</string>
+    <string name="set_location">Set Location</string>
 </resources>

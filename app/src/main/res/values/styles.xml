@@ -5,5 +5,10 @@
         <item name="colorPrimary">#039BE5</item>
         <item name="colorPrimaryDark">#1E88E5</item>
         <item name="colorAccent">#00ACC1</item>
+        <item name="android:textColor">@color/gray</item>
+        <item name="android:windowBackground">@color/white</item>
+        <item name="android:textColorSecondary">@color/white</item>
+        <item name="android:itemBackground">@color/white</item>
+        <item name="android:paddingStart">-0dp</item>
     </style>
 </resources>

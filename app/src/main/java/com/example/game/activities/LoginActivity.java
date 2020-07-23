@@ -30,9 +30,9 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        if (ParseUser.getCurrentUser() != null) {
-//            goToActivity(MainActivity.class);
-//        }
+        if (ParseUser.getCurrentUser() != null) {
+            goToActivity(MainActivity.class);
+        }
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         etEmail = binding.etMail;

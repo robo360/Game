@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/create_event"
+        android:title="@string/create_event"/>
+    <item android:id="@+id/community"
+        android:title="@string/create_community"/>
+    <item android:id="@+id/logout"
+        android:title="@string/logout" />
+</menu>
