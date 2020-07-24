@@ -96,9 +96,10 @@ public class EventDetailFragment extends Fragment {
         }
         tvDate.setText(Objects.requireNonNull(event).getDate().toString());
         tvTitle.setText(event.getTitle());
+
         if (event.getAddressString() == null) {
             tvAddress.setText(R.string.no_address);
-        }else{
+        } else {
             tvAddress.setText(event.getAddressString());
         }
         ParseFile image = event.getImage();

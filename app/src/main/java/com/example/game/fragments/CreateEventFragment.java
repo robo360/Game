@@ -53,8 +53,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-import static android.app.Activity.RESULT_CANCELED;
-import static android.app.Activity.RESULT_OK;
 import static com.parse.Parse.getApplicationContext;
 
 public class CreateEventFragment extends Fragment {
@@ -139,6 +137,7 @@ public class CreateEventFragment extends Fragment {
             }
             event.setUser(ParseUser.getCurrentUser());
             event.setTitle(etTitle.getText().toString());
+
             if (addressLatLng != null) {
                 event.setAddress(new ParseGeoPoint(addressLatLng.latitude, addressLatLng.longitude));
                 event.setAddressString(addressString);
@@ -192,27 +191,17 @@ public class CreateEventFragment extends Fragment {
             Bitmap image = ImageUtil.loadFromUri(getContext(), photoUri);
             photoFile = new File(ImageUtil.saveToInternalStorage(getContext(), image));
             ivPoster.setImageBitmap(image);
-        }
-        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
-            if (resultCode == RESULT_OK) {
+        } else if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
+            if (resultCode == AutocompleteActivity.RESULT_OK) {
                 Place place;
-                if (data != null) {
-                    place = Autocomplete.getPlaceFromIntent(data);
-                    Log.i(TAG, "Place: " + place.getName() + ", " + place.getId() + place.getAddress() + place.getLatLng());
-                    addressLatLng = place.getLatLng();
-                    addressString = place.getAddress();
-                    tvAddressDisplay.setText(addressString);
-                } else {
-                    Snackbar.make(tvAddressDisplay, R.string.no_address_message, BaseTransientBottomBar.LENGTH_SHORT).show();
-                }
-
-            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+                place = Autocomplete.getPlaceFromIntent(Objects.requireNonNull(data));
+                addressLatLng = place.getLatLng();
+                addressString = place.getAddress();
+                tvAddressDisplay.setText(addressString);
+            } else {
                 if (data != null) {
                     Log.i(TAG, Objects.requireNonNull(Autocomplete.getStatusFromIntent(data).getStatusMessage()));
                 }
-                Snackbar.make(tvAddressDisplay, R.string.no_address_message, BaseTransientBottomBar.LENGTH_SHORT).show();
-            } else if (resultCode == RESULT_CANCELED) {
-                // The user canceled the operation.
                 Snackbar.make(tvAddressDisplay, R.string.no_address_message, BaseTransientBottomBar.LENGTH_SHORT).show();
             }
         }
