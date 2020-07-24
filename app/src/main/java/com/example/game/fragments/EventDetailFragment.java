@@ -35,7 +35,7 @@ public class EventDetailFragment extends Fragment {
     public static final String KEY_EVENT = "event";
     public static final String KEY_COMMUNITY = "community";
 
-    private Event event;
+    @Nullable private Event event;
     private TextView tvGoing;
     private ImageButton btnGo;
 
@@ -52,8 +52,11 @@ public class EventDetailFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Bundle args = getArguments();
-        Community community = Parcels.unwrap(args.getParcelable(KEY_COMMUNITY));
-        event = Parcels.unwrap(Objects.requireNonNull(args).getParcelable(KEY_EVENT));
+        @Nullable Community community = null;
+        if (args != null) {
+            community = Parcels.unwrap(args.getParcelable(KEY_COMMUNITY));
+            event = Parcels.unwrap(args.getParcelable(KEY_EVENT));
+        }
         FragmentEventDetailBinding binding = FragmentEventDetailBinding.bind(view);
         TextView tvTitle = binding.tvTitle;
         TextView tvDate = binding.tvDate;
@@ -71,14 +74,21 @@ public class EventDetailFragment extends Fragment {
         attendance.whereEqualTo(Attendance.KEY_USER, ParseUser.getCurrentUser());
         attendance.whereEqualTo(Attendance.KEY_ATTEND_STATUS, true);
         attendance.getFirstInBackground((object, e) -> {
-            if (object != null) {
+            if (object != null && e == null) {
                 btnGo.setVisibility(View.GONE);
                 tvGoing.setVisibility(View.VISIBLE);
+            } else {
+                btnGo.setVisibility(View.VISIBLE);
             }
         });
 
         //fill the rest of the views:
-        tvCommunity.setText(String.format("@%s", Objects.requireNonNull(community).getName()));
+        try {
+            tvCommunity.setText(String.format("@%s", Objects.requireNonNull(community).fetchIfNeeded().get(Community.KEY_NAME)));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
         try {
             tvOrganizer.setText(Objects.requireNonNull(Objects.requireNonNull(event).getUser().fetchIfNeeded().get(User.KEY_NAME)).toString());
         } catch (ParseException e) {
@@ -86,7 +96,7 @@ public class EventDetailFragment extends Fragment {
         }
         tvDate.setText(Objects.requireNonNull(event).getDate().toString());
         tvTitle.setText(event.getTitle());
-        if(event.getAddressString() == null){
+        if (event.getAddressString() == null) {
             tvAddress.setText(R.string.no_address);
         }else{
             tvAddress.setText(event.getAddressString());
@@ -97,19 +107,14 @@ public class EventDetailFragment extends Fragment {
         }
         tvDetail.setText(event.getDescription());
 
-        btnGo.setOnClickListener(view1 -> {
-            saveAttendanceChange();
-        });
+        btnGo.setOnClickListener(view1 -> saveAttendanceChange());
 
-        tvGoing.setOnClickListener(view12 -> {
-            saveAttendanceChange();
-        });
+        tvGoing.setOnClickListener(view12 -> saveAttendanceChange());
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment:
         return inflater.inflate(R.layout.fragment_event_detail, container, false);
     }
 

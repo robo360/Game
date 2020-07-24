@@ -59,4 +59,9 @@
     <string name="search_hint">Search for an event or community</string>
     <string name="event">event</string>
     <string name="view">View</string>
+    <string name="marked_events">Marked events</string>
+    <string name="created_events">Created events</string>
+    <string name="following">Following</string>
+    <string name="no_marked_events_message">No events marked going yet.</string>
+    <string name="no_created_events">No Events created yet.</string>
 </resources>

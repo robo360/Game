@@ -18,38 +18,28 @@ import com.example.game.adapters.EventSearchAdapter;
 import com.example.game.databinding.FragmentEventSearchBinding;
 import com.example.game.models.Community;
 import com.example.game.models.Event;
-import com.parse.FindCallback;
-import com.parse.ParseException;
 import com.parse.ParseQuery;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class EventSearchFragment extends Fragment implements EventSearchAdapter.OnViewClickHandler {
-    public static final String QUERY = "QUERY";
     private static final String TAG = "EventSearchFragment";
 
-    private String query;
-    private List<Event> events;
-    private EventSearchAdapter adapter;
-    private TextView tvMessage;
-    private RecyclerView rvEventsSearch;
+    public String query;
+    public List<Event> events;
+    public EventSearchAdapter adapter;
+    public TextView tvMessage;
+    public RecyclerView rvEventsSearch;
 
-    public static EventSearchFragment newInstance(String query) {
-        EventSearchFragment fragment = new EventSearchFragment();
-        Bundle args = new Bundle();
-        args.putString(QUERY, query);
-        fragment.setArguments(args);
-        return fragment;
+    public EventSearchFragment(String query) {
+        this.query = query;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Bundle args = getArguments();
-        if (args != null) {
-            query = args.getString(QUERY);
-        }
         FragmentEventSearchBinding binding = FragmentEventSearchBinding.bind(view);
         tvMessage = binding.tvMessage;
         events = new ArrayList<>();
@@ -64,29 +54,24 @@ public class EventSearchFragment extends Fragment implements EventSearchAdapter.
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_event_search, container, false);
     }
 
     public void getEvents(String query) {
         ParseQuery<Event> q = ParseQuery.getQuery(Event.class);
-        if( query.length() != 0 ){
-            q.whereContains(Community.KEY_NAME, query);
+        if (query.length() != 0) {
+            q.whereContains(Event.KEY_TITLE, query);
         }
         q.include(Community.KEY_CREATOR);
-        q.findInBackground(new FindCallback<Event>() {
-            @Override
-            public void done(List<Event> objects, ParseException e) {
-                if (objects.size() > 0) {
-                    events.addAll(objects);
-                    adapter.notifyDataSetChanged();
-                    Log.e(TAG, "Results: " + objects);
-                } else {
-                    tvMessage.setVisibility(View.VISIBLE);
-                    tvMessage.setText(String.format("No communities matches '%s'", query));
-                    rvEventsSearch.setVisibility(View.GONE);
-                    Log.e(TAG, "Error: " + e);
-                }
+        q.findInBackground((objects, e) -> {
+            if (objects.size() > 0) {
+                events.addAll(objects);
+                adapter.notifyDataSetChanged();
+            } else {
+                tvMessage.setVisibility(View.VISIBLE);
+                tvMessage.setText(String.format("No Events matches '%s'", query));
+                rvEventsSearch.setVisibility(View.GONE);
+                Log.e(TAG, "Error: " + e);
             }
         });
     }
@@ -94,6 +79,6 @@ public class EventSearchFragment extends Fragment implements EventSearchAdapter.
     @Override
     public void btnOnClickedListener(Event event) {
         EventDetailFragment fragment = EventDetailFragment.newInstance(event, (Community) event.getCommunity());
-        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.flContainer, fragment).commit();
+        Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction().replace(R.id.flContainer, fragment).commit();
     }
 }

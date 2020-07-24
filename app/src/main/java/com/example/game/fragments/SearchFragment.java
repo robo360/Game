@@ -1,7 +1,6 @@
 package com.example.game.fragments;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,12 +13,11 @@ import androidx.fragment.app.FragmentManager;
 
 import com.example.game.R;
 import com.example.game.databinding.FragmentSearchBinding;
-import com.example.game.models.Event;
 import com.google.android.material.button.MaterialButton;
 
-public class SearchFragment extends Fragment {
-    private static final String TAG = "SearchFragment";
+import java.util.Objects;
 
+public class SearchFragment extends Fragment {
     private FragmentManager searchFragmentManager;
     private MaterialButton btnEvent;
     private MaterialButton btnCommunity;
@@ -39,15 +37,19 @@ public class SearchFragment extends Fragment {
         SearchView searchView = binding.searchView;
         btnEvent = binding.btnFilter;
         btnCommunity = binding.btnCommunity;
-        searchFragmentManager = getActivity().getSupportFragmentManager();
+        searchFragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
         query = "";
+
+        searchView.setOnClickListener(view13 -> {
+            searchView.setIconifiedByDefault(false);
+            searchView.requestFocus();
+        });
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
-                Log.i(TAG, "Query: " + s);
+                // TODO: send the query to the right window
                 query = s;
-                //TODO: send the query to the right window
                 createCommunitySearchFragment(s);
                 return true;
             }
@@ -65,23 +67,27 @@ public class SearchFragment extends Fragment {
         createCommunitySearchFragment(query);
     }
 
-    public void createCommunitySearchFragment(String query){
-        Fragment fragment = CommunitySearchFragment.newInstance(query);
+    public void createCommunitySearchFragment(String query) {
+        // change color to mark the selected option
         btnCommunity.setStrokeColorResource(R.color.colorPrimary);
-        btnCommunity.setTextColor(getContext().getResources().getColor(R.color.colorPrimary));
+        btnCommunity.setTextColor(Objects.requireNonNull(getContext()).getResources().getColor(R.color.colorPrimary));
         btnEvent.setStrokeColorResource(R.color.gray);
         btnEvent.setTextColor(getContext().getResources().getColor(R.color.gray));
+
+        Fragment fragment = new CommunitySearchFragment(query);
         searchFragmentManager.beginTransaction()
                 .replace(R.id.SearchFlContainer, fragment)
                 .commit();
     }
 
-    public void createEventSearchFragment(String query){
+    public void createEventSearchFragment(String query) {
+        // change colors to mark the selected option
         btnEvent.setStrokeColorResource(R.color.colorPrimary);
-        btnEvent.setTextColor(getContext().getResources().getColor(R.color.colorPrimary));
+        btnEvent.setTextColor(Objects.requireNonNull(getContext()).getResources().getColor(R.color.colorPrimary));
         btnCommunity.setStrokeColorResource(R.color.gray);
         btnCommunity.setTextColor(getContext().getResources().getColor(R.color.gray));
-        Fragment fragment = EventSearchFragment.newInstance(query);
+
+        Fragment fragment = new EventSearchFragment(query);
         searchFragmentManager.beginTransaction()
                 .replace(R.id.SearchFlContainer, fragment)
                 .commit();
@@ -90,7 +96,6 @@ public class SearchFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_search, container, false);
     }
 }

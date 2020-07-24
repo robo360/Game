@@ -8,7 +8,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -18,6 +17,7 @@ import com.example.game.fragments.EventSearchFragment;
 import com.example.game.models.Event;
 import com.example.game.models.User;
 import com.google.android.material.button.MaterialButton;
+import com.parse.ParseException;
 import com.parse.ParseFile;
 
 import java.util.List;
@@ -74,9 +74,17 @@ public class EventSearchAdapter extends RecyclerView.Adapter<EventSearchAdapter.
         }
 
         public void bind(Event event) {
-            tvTitle.setText(event.getTitle());
-            if(event.getUser() != null){
-                tvCreator.setText(String.format("by %s", event.getUser().getString(User.KEY_NAME)));
+            try {
+                tvTitle.setText(event.fetchIfNeeded().getString(Event.KEY_TITLE));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            if (event.getUser() != null) {
+                try {
+                    tvCreator.setText(String.format("by %s", event.getUser().fetchIfNeeded().getString(User.KEY_NAME)));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
             } else {
                 tvCreator.setText(String.format("by %s", context.getString(R.string.app_label)));
             }

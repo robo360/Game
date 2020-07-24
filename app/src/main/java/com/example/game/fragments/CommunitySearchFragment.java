@@ -17,38 +17,27 @@ import com.example.game.R;
 import com.example.game.adapters.CommunitySearchAdapter;
 import com.example.game.databinding.FragmentCommunitySearchBinding;
 import com.example.game.models.Community;
-import com.parse.FindCallback;
-import com.parse.ParseException;
 import com.parse.ParseQuery;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CommunitySearchFragment extends Fragment {
-    public static final String QUERY = "QUERY";
     private static final String TAG = "CommunitySearchFragment";
 
+    public List<Community> communities;
+    public CommunitySearchAdapter adapter;
+    public TextView tvMessage;
+    public RecyclerView rvCommunitiesSearch;
     private String query;
-    private List<Community> communities;
-    private CommunitySearchAdapter adapter;
-    private TextView tvMessage;
-    private RecyclerView rvCommunitiesSearch;
 
-    public static CommunitySearchFragment newInstance(String query) {
-        CommunitySearchFragment fragment = new CommunitySearchFragment();
-        Bundle args = new Bundle();
-        args.putString(QUERY, query);
-        fragment.setArguments(args);
-        return fragment;
+    public CommunitySearchFragment(String query) {
+        this.query = query;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Bundle args = getArguments();
-        if (args != null) {
-            query = args.getString(QUERY);
-        }
         FragmentCommunitySearchBinding binding = FragmentCommunitySearchBinding.bind(view);
         tvMessage = binding.tvMessage;
         communities = new ArrayList<>();
@@ -69,24 +58,22 @@ public class CommunitySearchFragment extends Fragment {
 
     public void getCommunities(String query) {
         ParseQuery<Community> q = ParseQuery.getQuery(Community.class);
-        if( query.length() != 0 ){
+        if (query.length() != 0) {
             q.whereContains(Community.KEY_NAME, query);
         }
         q.include(Community.KEY_CREATOR);
-        q.findInBackground(new FindCallback<Community>() {
-            @Override
-            public void done(List<Community> objects, ParseException e) {
-                if (objects.size() > 0) {
-                    communities.addAll(objects);
-                    adapter.notifyDataSetChanged();
-                    Log.e(TAG, "Results: " + objects);
-                } else {
-                    tvMessage.setVisibility(View.VISIBLE);
-                    tvMessage.setText(String.format("No communities matches '%s'", query));
-                    rvCommunitiesSearch.setVisibility(View.GONE);
-                    Log.e(TAG, "Error: " + e);
-                }
+        q.findInBackground((objects, e) -> {
+            if (objects.size() > 0) {
+                communities.addAll(objects);
+                adapter.notifyDataSetChanged();
+                Log.e(TAG, "Results: " + objects);
+            } else {
+                tvMessage.setVisibility(View.VISIBLE);
+                tvMessage.setText(String.format("No communities matches '%s'", query));
+                rvCommunitiesSearch.setVisibility(View.GONE);
+                Log.e(TAG, "Error: " + e);
             }
         });
     }
+
 }

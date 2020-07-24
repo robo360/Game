@@ -40,6 +40,18 @@
         app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCommunity"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/eight_dp"
+            android:layout_marginRight="@dimen/eight_dp"
+            android:layout_weight="2"
+            android:text="@string/community"
+            android:textColor="@color/gray"
+            app:strokeColor="@color/gray" />
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnFilter"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="0dp"
@@ -51,17 +63,6 @@
             android:textColor="@color/gray"
             app:strokeColor="@color/gray" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnCommunity"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/eight_dp"
-            android:layout_marginRight="@dimen/eight_dp"
-            android:layout_weight="2"
-            android:text="@string/community"
-            android:textColor="@color/gray"
-            app:strokeColor="@color/gray" />
     </LinearLayout>
 
     <FrameLayout
