@@ -14,13 +14,10 @@
         android:background="@color/white"
         android:contentDescription="@string/image_holder"
         android:scaleType="fitCenter"
-        android:src="@android:drawable/ic_menu_gallery"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_baseline_insert_photo_240"
-        tools:srcCompat="@drawable/ic_baseline_insert_photo_240" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textView"

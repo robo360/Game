@@ -2,6 +2,7 @@ package com.example.game.activities;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,6 +10,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.bumptech.glide.Glide;
 import com.example.game.R;
 import com.example.game.databinding.ActivityMainBinding;
 import com.example.game.fragments.CreateCommunityFragment;
@@ -18,11 +20,14 @@ import com.example.game.fragments.ProfileFragment;
 import com.example.game.fragments.SearchFragment;
 import com.example.game.models.Community;
 import com.example.game.models.Subscription;
+import com.example.game.models.User;
 import com.example.game.utils.NavigationUtil;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
+import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
@@ -43,6 +48,23 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         BottomNavigationView bottomNavigationView = binding.bottomNavigation;
         FloatingActionButton fab = binding.fab;
+        ImageView ivProfile = binding.ivProfile;
+
+        ivProfile.setOnClickListener(view -> {
+            fragment = ProfileFragment.newInstance();
+            Toast.makeText(MainActivity.this, R.string.profile, Toast.LENGTH_SHORT).show();
+            fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
+        });
+
+        try {
+            ParseFile imageProfile = (ParseFile) ParseUser.getCurrentUser().fetchIfNeeded().get(User.KEY_IMAGE);
+            if (imageProfile != null) {
+                Toast.makeText(this, "Profile loading", Toast.LENGTH_SHORT).show();
+                Glide.with(this).load(imageProfile.getUrl()).circleCrop().into(ivProfile);
+            }
+        } catch (ParseException e) {
+            Log.e(TAG, "Error while loading profile" + e);
+        }
         toolbar = binding.toolbar;
         communities = new ArrayList<>();
         getCommunityNames();
@@ -63,16 +85,13 @@ public class MainActivity extends AppCompatActivity {
             fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
         });
 
-        // Set default selection
         bottomNavigationView.setSelectedItemId(R.id.action_event);
 
-        //set a listener on the FAB
         fab.setOnClickListener(view -> {
             fragment = CreateEventFragment.newInstance(communities);
             fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
         });
 
-        //set a listener on the menu items
         toolbar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.logout:
