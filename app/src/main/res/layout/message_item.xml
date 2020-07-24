@@ -5,18 +5,22 @@ android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:padding="10dp">
 
-<EditText
-    android:id="@+id/etTitle"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_alignLeft="@+id/etSnippet"
-    android:paddingTop="20dp"
-    android:hint="Title" />
+    <EditText
+        android:id="@+id/etTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/etSnippet"
+        android:hint="@string/title"
+        android:importantForAutofill="no"
+        android:inputType="textUri|textLongMessage"
+        android:paddingTop="20dp" />
 
-<EditText
-    android:id="@+id/etSnippet"
-    android:layout_below="@id/etTitle"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:hint="Snippet" />
+    <EditText
+        android:id="@+id/etSnippet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/etTitle"
+        android:hint="@string/snippet"
+        android:importantForAutofill="no"
+        android:inputType="textAutoCorrect" />
 </RelativeLayout>
