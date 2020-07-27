@@ -68,4 +68,6 @@
     <string name="follow">Follow</string>
     <string name="event_title">Event Title</string>
     <string name="snippet">Snippet</string>
+    <string name="map">map</string>
+    <string name="grant_permission_request_message">Please Grant Permission</string>
 </resources>

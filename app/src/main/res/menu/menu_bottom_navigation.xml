@@ -6,7 +6,12 @@
         android:id="@+id/action_event"
         android:icon="@drawable/ic_baseline_event_24"
         android:title="@string/empty"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_map"
+        android:icon="@drawable/ic_baseline_explore_24"
+        android:title="@string/empty"
+        app:showAsAction="always" />
     <item
         android:id="@+id/action_search"
         android:icon="@drawable/ic_baseline_search_24"
