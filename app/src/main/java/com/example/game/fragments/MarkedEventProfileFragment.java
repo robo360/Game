@@ -15,7 +15,7 @@ import java.util.List;
 public class MarkedEventProfileFragment extends EventSearchFragment {
     private static final String TAG = "CreatedEventFragment";
 
-    //Argument 'query' required for EventSearchFragment
+    // Argument 'query' required for EventSearchFragment
     public MarkedEventProfileFragment(String query) {
         super(query);
     }
