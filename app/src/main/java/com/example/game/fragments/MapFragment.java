@@ -54,9 +54,9 @@ import permissions.dispatcher.NeedsPermission;
 
 public class MapFragment extends Fragment {
     private static final String KEY_LOCATION = "location";
+    private static final String TAG = "MapFragment";
     private static final long UPDATE_INTERVAL = 60000;
     private static final long FASTEST_INTERVAL = 5000;
-    public static final String TAG = "MapFragment";
 
     @Nullable
     private GoogleMap map;
@@ -89,7 +89,7 @@ public class MapFragment extends Fragment {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     loadMap(map);
                     events = new ArrayList<>();
-                    addEvents();
+                    addEventsMarkers();
                 }
             });
         } else {
@@ -107,10 +107,11 @@ public class MapFragment extends Fragment {
     protected void loadMap(GoogleMap googleMap) {
         map = googleMap;
         if (map != null) {
-            getMyLocation();
-            startLocationUpdates();
             map.setMapStyle(MapStyleOptions.loadRawResourceStyle(
                     Objects.requireNonNull(getContext()), R.raw.map_style_json));
+
+            getMyLocation();
+            startLocationUpdates();
 
             if (currentLocation != null) {
                 LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
@@ -145,8 +146,7 @@ public class MapFragment extends Fragment {
                 .addOnSuccessListener(location -> {
                     if (location != null) {
                         onLocationChanged(location);
-                        currentLocation = location;
-                        LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+                        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
                         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
                         if (map != null) {
                             map.animateCamera(cameraUpdate);
@@ -222,7 +222,7 @@ public class MapFragment extends Fragment {
         super.onSaveInstanceState(savedInstanceState);
     }
 
-    private void addEvents() {
+    private void addEventsMarkers() {
         ParseQuery<Event> eventParseQuery = ParseQuery.getQuery(Event.class);
         eventParseQuery.orderByDescending(Event.KEY_CREATED_AT);
 
@@ -246,6 +246,7 @@ public class MapFragment extends Fragment {
             }
         });
 
+        //set a listener on the marker info window
         if (map != null) {
             map.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                 @Override

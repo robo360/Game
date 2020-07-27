@@ -159,6 +159,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /*
+    used to uncheck bottom Navigation boxes when we use backPress
+    to ensure the the current fragment does not wrongly correspond to a selected navigation item.
+     */
     private void uncheckBottomNavigationItems(){
         int size = bottomNavigationView.getMenu().size();
         for (int i = 0; i < size; i++) {
