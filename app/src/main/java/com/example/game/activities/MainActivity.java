@@ -16,6 +16,7 @@ import com.example.game.databinding.ActivityMainBinding;
 import com.example.game.fragments.CreateCommunityFragment;
 import com.example.game.fragments.CreateEventFragment;
 import com.example.game.fragments.EventFeedFragment;
+import com.example.game.fragments.MapFragment;
 import com.example.game.fragments.ProfileFragment;
 import com.example.game.fragments.SearchFragment;
 import com.example.game.models.Community;
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private Fragment fragment;
     private ArrayList<String> communities;
+    private BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +48,9 @@ public class MainActivity extends AppCompatActivity {
         final FragmentManager fragmentManager = getSupportFragmentManager();
         ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        BottomNavigationView bottomNavigationView = binding.bottomNavigation;
         FloatingActionButton fab = binding.fab;
         ImageView ivProfile = binding.ivProfile;
+        bottomNavigationView = binding.bottomNavigation;
 
         ivProfile.setOnClickListener(view -> {
             fragment = ProfileFragment.newInstance();
@@ -68,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         toolbar = binding.toolbar;
         communities = new ArrayList<>();
         getCommunityNames();
-        bottomNavigationView.setOnNavigationItemReselectedListener(item -> {
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.action_event:
                     fragment = EventFeedFragment.newInstance();
@@ -78,11 +80,17 @@ public class MainActivity extends AppCompatActivity {
                     fragment = SearchFragment.newInstance();
                     Toast.makeText(MainActivity.this, R.string.search, Toast.LENGTH_SHORT).show();
                     break;
+                case R.id.action_map:
+                    //NavigationUtil.goToActivity(this, MapActivity.class);
+                    fragment = MapFragment.newInstance();
+                    Toast.makeText(MainActivity.this, R.string.map, Toast.LENGTH_SHORT).show();
+                    break;
                 default:
                     fragment = ProfileFragment.newInstance();
                     Toast.makeText(MainActivity.this, R.string.profile, Toast.LENGTH_SHORT).show();
             }
-            fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
+            fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(TAG).commit();
+            return true;
         });
 
         bottomNavigationView.setSelectedItemId(R.id.action_event);
@@ -140,4 +148,22 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public void onBackPressed() {
+        uncheckBottomNavigationItems();
+        if (getFragmentManager().getBackStackEntryCount() > 0) {
+            getFragmentManager().popBackStack();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    private void uncheckBottomNavigationItems(){
+        int size = bottomNavigationView.getMenu().size();
+        for (int i = 0; i < size; i++) {
+            bottomNavigationView.getMenu().getItem(i).setChecked(false);
+        }
+    }
+
 }
