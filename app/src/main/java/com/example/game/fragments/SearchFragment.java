@@ -1,19 +1,27 @@
 package com.example.game.fragments;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.game.R;
+import com.example.game.databinding.FragmentSearchBinding;
+import com.google.android.material.button.MaterialButton;
+
+import java.util.Objects;
 
 public class SearchFragment extends Fragment {
-    public SearchFragment() {
-        // Required empty public constructor
-    }
+    private FragmentManager searchFragmentManager;
+    private MaterialButton btnEvent;
+    private MaterialButton btnCommunity;
+    private String query;
 
     public static SearchFragment newInstance() {
         SearchFragment fragment = new SearchFragment();
@@ -23,9 +31,71 @@ public class SearchFragment extends Fragment {
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        FragmentSearchBinding binding = FragmentSearchBinding.bind(view);
+        SearchView searchView = binding.searchView;
+        btnEvent = binding.btnFilter;
+        btnCommunity = binding.btnCommunity;
+        searchFragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
+        query = "";
+
+        searchView.setOnClickListener(view13 -> {
+            searchView.setIconifiedByDefault(false);
+            searchView.requestFocus();
+        });
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                // TODO: send the query to the right window
+                query = s;
+                createCommunitySearchFragment(s);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                return false;
+            }
+        });
+
+        btnCommunity.setOnClickListener(view1 -> createCommunitySearchFragment(query));
+
+        btnEvent.setOnClickListener(view12 -> createEventSearchFragment(query));
+
+        createCommunitySearchFragment(query);
+    }
+
+    public void createCommunitySearchFragment(String query) {
+        // change color to mark the selected option
+        btnCommunity.setStrokeColorResource(R.color.colorPrimary);
+        btnCommunity.setTextColor(Objects.requireNonNull(getContext()).getResources().getColor(R.color.colorPrimary));
+        btnEvent.setStrokeColorResource(R.color.gray);
+        btnEvent.setTextColor(getContext().getResources().getColor(R.color.gray));
+
+        Fragment fragment = new CommunitySearchFragment(query);
+        searchFragmentManager.beginTransaction()
+                .replace(R.id.SearchFlContainer, fragment)
+                .commit();
+    }
+
+    public void createEventSearchFragment(String query) {
+        // change colors to mark the selected option
+        btnEvent.setStrokeColorResource(R.color.colorPrimary);
+        btnEvent.setTextColor(Objects.requireNonNull(getContext()).getResources().getColor(R.color.colorPrimary));
+        btnCommunity.setStrokeColorResource(R.color.gray);
+        btnCommunity.setTextColor(getContext().getResources().getColor(R.color.gray));
+
+        Fragment fragment = new EventSearchFragment(query);
+        searchFragmentManager.beginTransaction()
+                .replace(R.id.SearchFlContainer, fragment)
+                .commit();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_search, container, false);
     }
 }

@@ -32,7 +32,7 @@
         <TextView
             android:id="@+id/tvCommunity"
             android:layout_width="0dp"
-            android:layout_height="@dimen/tv_height"
+            android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:layout_marginStart="@dimen/side_margin"
@@ -41,7 +41,7 @@
             android:gravity="center_vertical"
             android:textColor="@color/black"
             android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@+id/btnGo"
+            app:layout_constraintEnd_toStartOf="@+id/tvGoing"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="/@public" />
@@ -70,6 +70,8 @@
             android:layout_marginStart="@dimen/side_margin"
             android:layout_marginTop="@dimen/side_margin"
             android:textAlignment="textStart"
+            android:textColor="@color/black"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ivImage"
@@ -89,7 +91,7 @@
             tools:text="June 8" />
 
         <TextView
-            android:id="@+id/tvOrganizer"
+            android:id="@+id/tvCreator"
             android:layout_width="0dp"
             android:layout_height="@dimen/tv_height"
             android:layout_marginStart="@dimen/side_margin"
@@ -108,6 +110,7 @@
             android:backgroundTint="@color/white"
             android:contentDescription="@string/going"
             android:scaleType="fitXY"
+            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/ivImage"
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/ic_baseline_check_24" />
@@ -121,7 +124,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvOrganizer" />
+            app:layout_constraintTop_toBottomOf="@+id/tvCreator" />
 
         <TextView
             android:id="@+id/tvDetailLabel"
@@ -193,7 +196,7 @@
         <TextView
             android:id="@+id/tvGoing"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/tv_height"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/side_margin"
             android:layout_marginEnd="@dimen/eight_dp"
             android:gravity="center"
@@ -201,8 +204,6 @@
             android:textColor="@color/colorPrimary"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.714"
-            app:layout_constraintStart_toEndOf="@+id/tvCommunity"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

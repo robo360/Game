@@ -9,6 +9,5 @@
         <item name="android:windowBackground">@color/white</item>
         <item name="android:textColorSecondary">@color/white</item>
         <item name="android:itemBackground">@color/white</item>
-        <item name="android:paddingStart">-0dp</item>
     </style>
 </resources>

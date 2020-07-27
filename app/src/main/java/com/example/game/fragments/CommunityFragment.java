@@ -56,8 +56,10 @@ public class CommunityFragment extends Fragment implements EventAdapter.OnClickB
             subscriptionParseQuery.whereEqualTo(Subscription.KEY_COMMUNITY, community);
             subscriptionParseQuery.whereEqualTo(Subscription.KEY_USER, ParseUser.getCurrentUser());
             subscriptionParseQuery.getFirstInBackground((object, e) -> {
-                object.setInteractionCount(object.getInteractionCount().intValue() + 1);
-                object.saveInBackground();
+                if(e != null){
+                    object.setInteractionCount(object.getInteractionCount().intValue() + 1);
+                    object.saveInBackground();
+                }
             });
 
             getQueryEvents();
