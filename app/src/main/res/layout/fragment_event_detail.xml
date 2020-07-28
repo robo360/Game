@@ -23,6 +23,7 @@
             android:layout_marginTop="@dimen/side_margin"
             android:contentDescription="@string/profile_picture"
             android:scaleType="centerCrop"
+            android:transitionName="@string/image"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"

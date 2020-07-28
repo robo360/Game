@@ -1,5 +1,6 @@
 package com.example.game.fragments;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -7,15 +8,18 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.transition.Fade;
 
 import com.example.game.R;
 import com.example.game.adapters.EventAdapter;
 import com.example.game.models.Community;
 import com.example.game.models.Event;
 import com.example.game.models.Subscription;
+import com.example.game.utils.AnimationUtils;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
@@ -85,13 +89,22 @@ public class CommunityFragment extends Fragment implements EventAdapter.OnClickB
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_community, container, false);
     }
 
     @Override
-    public void onClickedBtnDetail(Event event, Community community) {
+    public void onClickedBtnDetail(Event event, Community community, View view) {
         EventDetailFragment fragment = EventDetailFragment.newInstance(event, community);
-        Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction().replace(R.id.flContainer, fragment).commit();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            fragment.setSharedElementEnterTransition(new AnimationUtils.DetailsTransition());
+            fragment.setEnterTransition(new Fade());
+            setExitTransition(new Fade());
+            fragment.setSharedElementReturnTransition(new AnimationUtils.DetailsTransition());
+        }
+        ViewCompat.setTransitionName(view.findViewById(R.id.ivImage), "image");
+        Objects.requireNonNull(getActivity()).getSupportFragmentManager()
+                .beginTransaction().addSharedElement(view, "image")
+                .addToBackStack(TAG).replace(R.id.flContainer, fragment)
+                .commit();
     }
 }

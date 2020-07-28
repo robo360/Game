@@ -92,7 +92,7 @@ public class EventDetailFragment extends Fragment {
         try {
             tvOrganizer.setText(Objects.requireNonNull(Objects.requireNonNull(event).getUser().fetchIfNeeded().get(User.KEY_NAME)).toString());
         } catch (ParseException e) {
-            Log.e(TAG, "Error in getting the user:" + e);
+            tvOrganizer.setText(getString(R.string.app_label));
         }
         tvDate.setText(Objects.requireNonNull(event).getDate().toString());
         tvTitle.setText(event.getTitle());

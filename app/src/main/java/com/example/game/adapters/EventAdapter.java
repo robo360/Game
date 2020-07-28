@@ -41,7 +41,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
     }
 
     public interface OnClickBtnDetail{
-        void onClickedBtnDetail(Event event, Community community);
+        void onClickedBtnDetail(Event event, Community community, View view);
     }
 
     @NonNull
@@ -79,7 +79,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
             tvOrganizer = binding.tvOrganizer;
             ivImage = binding.ivImage;
             tvCommunity = binding.tvCommunity;
-            btnDetail.setOnClickListener(view -> fragment.onClickedBtnDetail(events.get(getAdapterPosition()), community));
+            btnDetail.setOnClickListener(view -> fragment.onClickedBtnDetail(events.get(getAdapterPosition()), community, ivImage));
         }
 
         public void bind(Event event) {
