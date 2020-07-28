@@ -169,5 +169,4 @@ public class MainActivity extends AppCompatActivity {
             bottomNavigationView.getMenu().getItem(i).setChecked(false);
         }
     }
-
 }
