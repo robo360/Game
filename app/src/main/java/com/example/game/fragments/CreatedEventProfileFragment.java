@@ -11,7 +11,7 @@ import com.parse.ParseUser;
 public class CreatedEventProfileFragment extends EventSearchFragment {
     private static final String TAG = "CreatedEventFragment";
 
-    //Argument 'query' required for EventSearchFragment
+    // Argument 'query' required for EventSearchFragment
     public CreatedEventProfileFragment(String query) {
         super(query);
     }
