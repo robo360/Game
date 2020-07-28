@@ -57,6 +57,7 @@ public class MapFragment extends Fragment {
     private static final String TAG = "MapFragment";
     private static final long UPDATE_INTERVAL = 60000;
     private static final long FASTEST_INTERVAL = 5000;
+    private static final float ZOOM_LEVEL = 17;
 
     @Nullable
     private GoogleMap map;
@@ -66,8 +67,6 @@ public class MapFragment extends Fragment {
 
     public static MapFragment newInstance() {
         MapFragment fragment = new MapFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
         return fragment;
     }
 
@@ -82,7 +81,7 @@ public class MapFragment extends Fragment {
             currentLocation = savedInstanceState.getParcelable(KEY_LOCATION);
         }
 
-        SupportMapFragment mapFragment = ((SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map));
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
 
         if (mapFragment != null) {
             mapFragment.getMapAsync((GoogleMap map) -> {
@@ -115,7 +114,7 @@ public class MapFragment extends Fragment {
 
             if (currentLocation != null) {
                 LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, ZOOM_LEVEL);
                 if (map != null) {
                     map.animateCamera(cameraUpdate);
                 } else {
@@ -147,7 +146,7 @@ public class MapFragment extends Fragment {
                     if (location != null) {
                         onLocationChanged(location);
                         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
+                        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, ZOOM_LEVEL);
                         if (map != null) {
                             map.animateCamera(cameraUpdate);
                         } else {
