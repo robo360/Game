@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.view.ViewCompat;
@@ -24,6 +23,7 @@ import com.example.game.models.Event;
 import com.example.game.models.Subscription;
 import com.example.game.utils.AnimationUtils;
 import com.example.game.utils.ConstantUtils;
+import com.example.game.utils.EndlessRecyclerViewScrollListener;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -67,7 +67,8 @@ public class CommunityFragment extends Fragment implements EventAdapter.OnClickB
             adapter = new EventAdapter(getContext(), events, community, this);
 
             rvEvents.setAdapter(adapter);
-            rvEvents.setLayoutManager(new LinearLayoutManager(getContext()));
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+            rvEvents.setLayoutManager(linearLayoutManager);
             //add an interaction to a list
             ParseQuery<Subscription> subscriptionParseQuery = ParseQuery.getQuery(Subscription.class);
             subscriptionParseQuery.whereEqualTo(Subscription.KEY_COMMUNITY, community);
@@ -82,6 +83,13 @@ public class CommunityFragment extends Fragment implements EventAdapter.OnClickB
             if (community != null) {
                 populateRecyclerView(community);
             }
+
+            rvEvents.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+                @Override
+                public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                    populateWithCommunityEventsWithSkip(community, totalItemsCount);
+                }
+            });
 
             swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
@@ -176,6 +184,28 @@ public class CommunityFragment extends Fragment implements EventAdapter.OnClickB
         eventParseQuery.orderByDescending(Event.KEY_CREATED_AT);
         eventParseQuery.include(Event.KEY_COMMUNITY);
         eventParseQuery.whereEqualTo(Event.KEY_COMMUNITY, community);
+        eventParseQuery.setLimit(ConstantUtils.MAX_EVENTS_COUNT);
+        eventParseQuery.findInBackground((objects, e) -> {
+            if (e != null) {
+                Log.e(TAG, getString(R.string.error_events_query) + e);
+            } else {
+                if(objects.size() > 0 ){
+                    events.addAll(objects);
+                    adapter.notifyDataSetChanged();
+                } else {
+                    binding.tvMessage.setVisibility(View.VISIBLE);
+                    binding.tvMessage.setText(R.string.no_event_in_community);
+                }
+            }
+        });
+    }
+
+    private void populateWithCommunityEventsWithSkip(Community community, int skip) {
+        ParseQuery<Event> eventParseQuery = ParseQuery.getQuery(Event.class);
+        eventParseQuery.orderByDescending(Event.KEY_CREATED_AT);
+        eventParseQuery.include(Event.KEY_COMMUNITY);
+        eventParseQuery.whereEqualTo(Event.KEY_COMMUNITY, community);
+        eventParseQuery.setSkip(skip);
         eventParseQuery.setLimit(ConstantUtils.MAX_EVENTS_COUNT);
         eventParseQuery.findInBackground((objects, e) -> {
             if (e != null) {
