@@ -25,6 +25,7 @@ import androidx.fragment.app.Fragment;
 import com.example.game.R;
 import com.example.game.models.Community;
 import com.example.game.models.Event;
+import com.example.game.models.Subscription;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -45,6 +46,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +65,7 @@ public class MapFragment extends Fragment {
     @Nullable
     private Location currentLocation;
     private List<Event> events;
+    private List<Community> communities;
 
     public static MapFragment newInstance() {
         MapFragment fragment = new MapFragment();
@@ -91,7 +94,7 @@ public class MapFragment extends Fragment {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     loadMap(map);
                     events = new ArrayList<>();
-                    addEventsMarkers();
+                    populate();
                 }
             });
         } else {
@@ -224,10 +227,10 @@ public class MapFragment extends Fragment {
         super.onSaveInstanceState(savedInstanceState);
     }
 
-    private void addEventsMarkers() {
+    private void addEventsMarkers(Community community) {
         ParseQuery<Event> eventParseQuery = ParseQuery.getQuery(Event.class);
         eventParseQuery.orderByDescending(Event.KEY_CREATED_AT);
-
+        eventParseQuery.whereEqualTo(Event.KEY_COMMUNITY, community);
         eventParseQuery.findInBackground((objects, e) -> {
             if (e != null) {
                 Log.e(TAG, getString(R.string.error_events_query) + e);
@@ -269,5 +272,20 @@ public class MapFragment extends Fragment {
                 }
             });
         }
+    }
+    public void populate() {
+        ParseUser user = ParseUser.getCurrentUser();
+        ParseQuery<Subscription> q = ParseQuery.getQuery(Subscription.class);
+        q.whereEqualTo(Subscription.KEY_USER, user);
+        q.include(Subscription.KEY_COMMUNITY);
+        q.findInBackground((objects, e) -> {
+            if (e != null) {
+                Log.e(TAG, getString(R.string.error_events_query) + e);
+            } else {
+                for (Subscription subscription : objects) {
+                    addEventsMarkers(subscription.getCommunity());
+                }
+            }
+        });
     }
 }

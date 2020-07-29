@@ -30,7 +30,6 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import org.parceler.Parcels;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -87,9 +86,13 @@ public class CommunityFragment extends Fragment implements EventAdapter.OnClickB
             rvEvents.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearLayoutManager) {
                 @Override
                 public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                    populateWithCommunityEventsWithSkip(community, totalItemsCount);
+                    if (!community.getName().equals(ConstantUtils.BASE_COMMUNITY)) {
+                        populateWithCommunityEventsWithSkip(community, totalItemsCount);
+
+                    }
                 }
             });
+
 
             swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
@@ -103,6 +106,7 @@ public class CommunityFragment extends Fragment implements EventAdapter.OnClickB
                     android.R.color.holo_green_light,
                     android.R.color.holo_orange_light,
                     android.R.color.holo_red_light);
+
         } else {
             Log.e(TAG, "Missing community argument:" + new NullPointerException().getMessage());
         }
