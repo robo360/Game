@@ -10,6 +10,7 @@ import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MarkedEventProfileFragment extends EventSearchFragment {
@@ -22,9 +23,16 @@ public class MarkedEventProfileFragment extends EventSearchFragment {
 
     @Override
     public void getEvents(String query) {
-        ParseQuery<Attendance> q = ParseQuery.getQuery(Attendance.class);
-        q.whereEqualTo(Attendance.KEY_USER, ParseUser.getCurrentUser());
-        q.whereEqualTo(Attendance.KEY_ATTEND_STATUS, true);
+        ParseQuery<Attendance> qLiked = ParseQuery.getQuery(Attendance.class);
+        qLiked.whereEqualTo(Attendance.KEY_USER, ParseUser.getCurrentUser());
+        qLiked.whereEqualTo(Attendance.KEY_LIKE_STATUS, true);
+        ParseQuery<Attendance> qAttend = ParseQuery.getQuery(Attendance.class);
+        qAttend.whereEqualTo(Attendance.KEY_USER, ParseUser.getCurrentUser());
+        qAttend.whereEqualTo(Attendance.KEY_ATTEND_STATUS, true);
+        List<ParseQuery<Attendance>> queryList = new ArrayList<>();
+        queryList.add(qLiked);
+        queryList.add(qAttend);
+        ParseQuery<Attendance> q =  ParseQuery.or(queryList);
         q.findInBackground((List<Attendance> objects, ParseException e) -> {
             if (objects.size() > 0) {
                 for (Attendance object : objects) {

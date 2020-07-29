@@ -72,4 +72,6 @@
     <string name="grant_permission_request_message">Please Grant Permission</string>
     <string name="image">image</string>
     <string name="foryou">foryou</string>
+    <string name="bookmark">bookmark</string>
+    <string name="no_event_in_community">No events in this community</string>
 </resources>

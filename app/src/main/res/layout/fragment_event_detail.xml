@@ -67,13 +67,11 @@
         <TextView
             android:id="@+id/tvTitle"
             android:layout_width="0dp"
-            android:layout_height="@dimen/tv_height"
+            android:layout_height="21dp"
             android:layout_marginStart="@dimen/side_margin"
-            android:layout_marginTop="@dimen/side_margin"
+            android:layout_marginTop="16dp"
             android:textAlignment="textStart"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btnBookMark"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ivImage"
             tools:text="Title of the event" />
@@ -82,21 +80,22 @@
             android:id="@+id/tvDate"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/side_margin"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="@dimen/side_margin"
             android:gravity="center_vertical"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btnBookMark"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvTitle"
             tools:text="June 8" />
 
         <TextView
-            android:id="@+id/tvCreator"
+            android:id="@+id/tvOrganizer"
             android:layout_width="0dp"
             android:layout_height="@dimen/tv_height"
             android:layout_marginStart="@dimen/side_margin"
             android:layout_marginTop="@dimen/side_margin"
+            android:layout_marginEnd="@dimen/side_margin"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -116,6 +115,21 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/ic_baseline_check_24" />
 
+        <ImageButton
+            android:id="@+id/btnBookMark"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            android:backgroundTint="#FFFFFF"
+            android:contentDescription="@string/bookmark"
+            android:scaleType="centerInside"
+            android:tint="@color/black"
+            app:layout_constraintBottom_toBottomOf="@+id/tvDate"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ivImage"
+            app:layout_constraintVertical_bias="0.551"
+            app:srcCompat="@drawable/ic_baseline_bookmark_border_24" />
+
         <View
             android:id="@+id/divider"
             android:layout_width="0dp"
@@ -125,7 +139,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvCreator" />
+            app:layout_constraintTop_toBottomOf="@+id/tvOrganizer" />
 
         <TextView
             android:id="@+id/tvDetailLabel"

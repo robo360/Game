@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.view.ViewCompat;
@@ -16,6 +17,7 @@ import androidx.transition.Fade;
 
 import com.example.game.R;
 import com.example.game.adapters.EventAdapter;
+import com.example.game.databinding.FragmentCommunityBinding;
 import com.example.game.models.Community;
 import com.example.game.models.Event;
 import com.example.game.models.Subscription;
@@ -27,6 +29,7 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import org.parceler.Parcels;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,10 +39,11 @@ import java.util.Objects;
 
 public class CommunityFragment extends Fragment implements EventAdapter.OnClickBtnDetail {
     public static final String COMMUNITY = "community";
-    public static final String TAG = "CommunityFragment";
+    private static final String TAG = "CommunityFragment";
 
     private EventAdapter adapter;
     private List<Event> events;
+    private FragmentCommunityBinding binding;
 
     public static Fragment newInstance(Community community) {
         CommunityFragment fragment = new CommunityFragment();
@@ -52,10 +56,11 @@ public class CommunityFragment extends Fragment implements EventAdapter.OnClickB
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        binding = FragmentCommunityBinding.bind(view);
         if (getArguments() != null) {
             Bundle args = getArguments();
             Community community = Parcels.unwrap(args.getParcelable(COMMUNITY));
-            RecyclerView rvEvents = view.findViewById(R.id.rvEvents);
+            RecyclerView rvEvents = binding.rvEvents;
             events = new ArrayList<>();
             adapter = new EventAdapter(getContext(), events, community, this);
             rvEvents.setAdapter(adapter);
@@ -159,8 +164,13 @@ public class CommunityFragment extends Fragment implements EventAdapter.OnClickB
             if (e != null) {
                 Log.e(TAG, getString(R.string.error_events_query) + e);
             } else {
-                events.addAll(objects);
-                adapter.notifyDataSetChanged();
+                if(objects.size() > 0 ){
+                    events.addAll(objects);
+                    adapter.notifyDataSetChanged();
+                } else {
+                    binding.tvMessage.setVisibility(View.VISIBLE);
+                    binding.tvMessage.setText(R.string.no_event_in_community);
+                }
             }
         });
     }

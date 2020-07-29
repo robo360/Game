@@ -98,7 +98,7 @@ public class ProfileFragment extends Fragment {
 
         try {
             tvName.setText(user.fetchIfNeeded().getString(User.KEY_NAME));
-            tvFollowing.setText(String.format("%s following", user.fetchIfNeeded().getNumber(User.KEY_POSTS_COUNT)));
+            tvFollowing.setText(String.format("%s following", user.fetchIfNeeded().getNumber(User.KEY_FOLLOWING_COUNT)));
         } catch (ParseException e) {
             e.printStackTrace();
         }
