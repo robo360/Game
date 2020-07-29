@@ -50,7 +50,7 @@ public class LoginActivity extends AppCompatActivity {
                 String password = etPassword.getText().toString();
 
                 if (email.isEmpty() || password.isEmpty()) {
-                    Snackbar.make(btnLogin, "Email or password cannot be empty", BaseTransientBottomBar.LENGTH_SHORT);
+                    Snackbar.make(btnLogin, "Email or password cannot be empty", BaseTransientBottomBar.LENGTH_SHORT).show();
                 } else {
                     //Send Async request
                     ParseUser.logInInBackground(email, password, new LogInCallback() {
@@ -58,7 +58,7 @@ public class LoginActivity extends AppCompatActivity {
                         public void done(ParseUser user, ParseException e) {
                             if (e != null) {
                                 Log.e(TAG, "Error while logging in" + e);
-                                Snackbar.make(btnLogin, "Error" + e, BaseTransientBottomBar.LENGTH_SHORT).show();
+                                Snackbar.make(btnLogin, "Wrong email or password" , BaseTransientBottomBar.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
                                 goToActivity(MainActivity.class);

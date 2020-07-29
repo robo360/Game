@@ -71,6 +71,8 @@ public class MapFragment extends Fragment {
         return fragment;
     }
 
+    //TODO: include a boundary and query in the boundary, also add a zoom in and out feature.
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);

@@ -27,7 +27,8 @@ import java.util.Date;
 import java.util.List;
 
 public class EventFeedFragment extends Fragment {
-    public static final String TAG = "EventFeedFragment";
+    private static final String TAG = "EventFeedFragment";
+    public static final String BASE_COMMUNITY = "public";
 
     private List<Community> communities;
     private CommunityAdapter communityAdapter;
@@ -71,7 +72,12 @@ public class EventFeedFragment extends Fragment {
     }
 
     public void populateTab(TabLayout.Tab tab, int position) {
-        tab.setText("@" + communities.get(position).getName());
+        if (communities.get(position).getName().equals(BASE_COMMUNITY)){
+            tab.setText("@" + getString(R.string.foryou));
+        } else {
+            tab.setText("@" + communities.get(position).getName());
+        }
+        //set a badge
         ParseQuery<Subscription> subscription = ParseQuery.getQuery(Subscription.class);
         subscription.whereEqualTo(Subscription.KEY_COMMUNITY, communities.get(position));
         subscription.whereEqualTo(Subscription.KEY_USER, ParseUser.getCurrentUser());
@@ -80,6 +86,7 @@ public class EventFeedFragment extends Fragment {
                 Date date = object.getUpdatedAt();
                 ParseQuery<Event> eventsQuery = ParseQuery.getQuery(Event.class);
                 eventsQuery.whereGreaterThan(Event.KEY_CREATED_AT, date);
+                eventsQuery.whereEqualTo(Event.KEY_COMMUNITY, communities.get(position));
                 eventsQuery.findInBackground((objects, e1) -> {
                     if (position != 0 && objects.size() !=0) {
                         tab.getOrCreateBadge().setNumber(objects.size());

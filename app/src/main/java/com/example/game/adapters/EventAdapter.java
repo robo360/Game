@@ -41,7 +41,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
     }
 
     public interface OnClickBtnDetail{
-        void onClickedBtnDetail(Event event, Community community, View view);
+        void onClickedBtnDetail(Event event, View view);
     }
 
     @NonNull
@@ -79,7 +79,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
             tvOrganizer = binding.tvOrganizer;
             ivImage = binding.ivImage;
             tvCommunity = binding.tvCommunity;
-            btnDetail.setOnClickListener(view -> fragment.onClickedBtnDetail(events.get(getAdapterPosition()), community, ivImage));
+            btnDetail.setOnClickListener(view -> fragment.onClickedBtnDetail(events.get(getAdapterPosition()), ivImage));
         }
 
         public void bind(Event event) {
@@ -89,7 +89,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
                 Log.e(TAG, "Error getting the name of the user:" +e);
             }
 
-            tvCommunity.setText(MessageFormat.format("@{0}", community.getName()));
+            tvCommunity.setText(MessageFormat.format("@{0}", event.getCommunity().getName()));
             tvDate.setText(event.getDate().toString());
             tvTitle.setText(event.getTitle());
             ParseFile image = event.getImage();

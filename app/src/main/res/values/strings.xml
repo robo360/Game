@@ -71,4 +71,5 @@
     <string name="map">map</string>
     <string name="grant_permission_request_message">Please Grant Permission</string>
     <string name="image">image</string>
+    <string name="foryou">foryou</string>
 </resources>

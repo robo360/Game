@@ -20,12 +20,17 @@ import com.example.game.models.Community;
 import com.example.game.models.Event;
 import com.example.game.models.Subscription;
 import com.example.game.utils.AnimationUtils;
+import com.example.game.utils.ConstantUtils;
+import com.parse.FindCallback;
+import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -66,16 +71,90 @@ public class CommunityFragment extends Fragment implements EventAdapter.OnClickB
                 }
             });
 
-            getQueryEvents();
+            if (community != null) {
+                populateRecyclerView(community);
+            }
         } else {
             Log.e(TAG, "Missing community argument:" + new NullPointerException().getMessage());
         }
     }
 
-    private void getQueryEvents() {
+    private void populateRecyclerView(Community community) {
+        if (community.getName().equals(ConstantUtils.BASE_COMMUNITY)) {
+            populateWithSuggestions(community);
+        } else {
+            populateWithCommunityEvents(community);
+        }
+    }
 
+    private void populateWithSuggestions(Community community) {
+        ParseQuery<Subscription> subscriptionParseQuery = ParseQuery.getQuery(Subscription.class);
+        subscriptionParseQuery.whereEqualTo(Subscription.KEY_USER, ParseUser.getCurrentUser());
+        subscriptionParseQuery.include(Subscription.KEY_COMMUNITY);
+        subscriptionParseQuery.findInBackground(new FindCallback<Subscription>() {
+            @Override
+            public void done(List<Subscription> objects, ParseException e) {
+                if (objects.size() == 1) {
+                    populateWithCommunityEvents(community);
+                } else {
+                    populateWithPdf(objects);
+                }
+            }
+        });
+    }
+
+    private void populateWithPdf(List<Subscription> subscriptions) {
+        HashMap<Community, Float> pdf = calculatePdf(subscriptions);
+        for (Community community : pdf.keySet()) {
+            int limit = (int) (pdf.get(community) * ConstantUtils.MAX_EVENTS_COUNT);
+            ParseQuery<Event> eventParseQuery = ParseQuery.getQuery(Event.class);
+            eventParseQuery.include(Event.KEY_COMMUNITY);
+            eventParseQuery.orderByDescending(Event.KEY_CREATED_AT);
+            eventParseQuery.whereEqualTo(Event.KEY_COMMUNITY, community);
+            eventParseQuery.setLimit(ConstantUtils.MAX_EVENTS_COUNT);
+            eventParseQuery.findInBackground((objects, e) -> {
+                if (e != null) {
+                    Log.e(TAG, getString(R.string.error_events_query) + e);
+                } else {
+                    Collections.shuffle(objects);
+                    if (objects.size() >= limit) {
+                        events.addAll(objects.subList(0, limit));
+                    } else {
+                        events.addAll(objects);
+                    }
+                    adapter.notifyDataSetChanged();
+                }
+            });
+        }
+    }
+
+    private HashMap<Community, Float> calculatePdf(List<Subscription> subscriptions) {
+        HashMap<Community, Float> pdf = new HashMap<>();
+        float totalInteractions = 0;
+
+        for (Subscription subscription : subscriptions) {
+            Community community = subscription.getCommunity();
+            if (!community.getName().equals(ConstantUtils.BASE_COMMUNITY)) {
+                totalInteractions += subscription.getInteractionCount().floatValue();
+            }
+        }
+
+        for (Subscription subscription : subscriptions) {
+            Community community = subscription.getCommunity();
+            if (!community.getName().equals(ConstantUtils.BASE_COMMUNITY)) {
+                float frequency = subscription.getInteractionCount().floatValue() / totalInteractions;
+                pdf.put(subscription.getCommunity(), frequency);
+            }
+        }
+        return pdf;
+    }
+
+    private void populateWithCommunityEvents(Community community) {
         ParseQuery<Event> eventParseQuery = ParseQuery.getQuery(Event.class);
         eventParseQuery.orderByDescending(Event.KEY_CREATED_AT);
+        eventParseQuery.include(Event.KEY_COMMUNITY);
+        eventParseQuery.whereEqualTo(Event.KEY_COMMUNITY, community);
+        eventParseQuery.setLimit(ConstantUtils.MAX_EVENTS_COUNT);
         eventParseQuery.findInBackground((objects, e) -> {
             if (e != null) {
                 Log.e(TAG, getString(R.string.error_events_query) + e);
@@ -93,8 +172,8 @@ public class CommunityFragment extends Fragment implements EventAdapter.OnClickB
     }
 
     @Override
-    public void onClickedBtnDetail(Event event, Community community, View view) {
-        EventDetailFragment fragment = EventDetailFragment.newInstance(event, community);
+    public void onClickedBtnDetail(Event event, View view) {
+        EventDetailFragment fragment = EventDetailFragment.newInstance(event, event.getCommunity());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             fragment.setSharedElementEnterTransition(new AnimationUtils.DetailsTransition());
             fragment.setEnterTransition(new Fade());
