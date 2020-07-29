@@ -88,6 +88,18 @@ public class EventDetailFragment extends Fragment {
             }
         });
 
+        ParseQuery<Attendance> attendance1 = ParseQuery.getQuery(Attendance.class);
+        attendance1.whereEqualTo(Attendance.KEY_USER, ParseUser.getCurrentUser());
+        attendance1.whereEqualTo(Attendance.KEY_LIKE_STATUS, true);
+        attendance1.getFirstInBackground(new GetCallback<Attendance>() {
+            @Override
+            public void done(Attendance object, ParseException e) {
+                if(e == null){
+                    btnBookMark.setImageDrawable(getContext().getDrawable(R.drawable.ic_baseline_bookmark_24));
+                }
+            }
+        });
+
         //fill the rest of the views:
         try {
             tvCommunity.setText(String.format("@%s", Objects.requireNonNull(community).fetchIfNeeded().get(Community.KEY_NAME)));

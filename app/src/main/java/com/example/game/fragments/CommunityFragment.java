@@ -13,6 +13,7 @@ import androidx.core.view.ViewCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.transition.Fade;
 
 import com.example.game.R;
@@ -61,8 +62,10 @@ public class CommunityFragment extends Fragment implements EventAdapter.OnClickB
             Bundle args = getArguments();
             Community community = Parcels.unwrap(args.getParcelable(COMMUNITY));
             RecyclerView rvEvents = binding.rvEvents;
+            SwipeRefreshLayout swipeContainer = binding.swipeContainer;
             events = new ArrayList<>();
             adapter = new EventAdapter(getContext(), events, community, this);
+
             rvEvents.setAdapter(adapter);
             rvEvents.setLayoutManager(new LinearLayoutManager(getContext()));
             //add an interaction to a list
@@ -79,12 +82,26 @@ public class CommunityFragment extends Fragment implements EventAdapter.OnClickB
             if (community != null) {
                 populateRecyclerView(community);
             }
+
+            swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    populateRecyclerView(community);
+                    swipeContainer.setRefreshing(false);
+                }
+            });
+            // Configure the refreshing colors
+            swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                    android.R.color.holo_green_light,
+                    android.R.color.holo_orange_light,
+                    android.R.color.holo_red_light);
         } else {
             Log.e(TAG, "Missing community argument:" + new NullPointerException().getMessage());
         }
     }
 
     private void populateRecyclerView(Community community) {
+        events.clear();
         if (community.getName().equals(ConstantUtils.BASE_COMMUNITY)) {
             populateWithSuggestions(community);
         } else {
