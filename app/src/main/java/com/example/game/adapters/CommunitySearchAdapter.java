@@ -25,6 +25,7 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.util.List;
+import java.util.Objects;
 
 public class CommunitySearchAdapter extends RecyclerView.Adapter<CommunitySearchAdapter.ViewHolder> {
     private static final String TAG = "CommunitySearchAdapter";
@@ -81,6 +82,7 @@ public class CommunitySearchAdapter extends RecyclerView.Adapter<CommunitySearch
                         btnAction.setVisibility(View.GONE);
                         tvStatus.setVisibility(View.VISIBLE);
                         Toast.makeText(context, "Followed", Toast.LENGTH_SHORT).show();
+                        AddFollowing();
                     } else {
                         Toast.makeText(context, "Was not able to follow", Toast.LENGTH_SHORT).show();
                         Log.e(TAG, "Error while following a community:" + e);
@@ -88,6 +90,13 @@ public class CommunitySearchAdapter extends RecyclerView.Adapter<CommunitySearch
                 });
 
             });
+        }
+
+        public void AddFollowing(){
+            ParseUser user = ParseUser.getCurrentUser();
+            int count = Objects.requireNonNull(user.getNumber(User.KEY_FOLLOWING_COUNT)).intValue();
+            user.put(User.KEY_FOLLOWING_COUNT, count + 1);
+            user.saveEventually();
         }
 
         public void bind(Community community) {

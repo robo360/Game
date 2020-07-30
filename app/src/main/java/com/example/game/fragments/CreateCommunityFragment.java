@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -52,10 +51,9 @@ public class CreateCommunityFragment extends Fragment {
         Button btnShare = binding.btnShare;
         EditText etTitle = binding.etTitle;
         EditText etDescription = binding.etDescription;
-        ImageButton ibFile = binding.ibFile;
         ivPoster = binding.ivPoster;
 
-        ibFile.setOnClickListener(this::onPickPhoto);
+        binding.ivPoster.setOnClickListener(this::onPickPhoto);
 
         btnShare.setOnClickListener(view12 -> {
             Community community = new Community();

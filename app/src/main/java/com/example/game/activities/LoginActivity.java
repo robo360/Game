@@ -46,7 +46,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //check whether the fields are not empty else login
-                String email = etEmail.getText().toString();
+                String email = etEmail.getText().toString().replaceAll(" ", "");
                 String password = etPassword.getText().toString();
 
                 if (email.isEmpty() || password.isEmpty()) {

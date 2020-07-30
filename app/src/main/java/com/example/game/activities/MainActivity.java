@@ -109,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
                     logout();
                     break;
                 case R.id.create_event:
+                    getCommunityNames();
                     Toast.makeText(MainActivity.this, R.string.create_event, Toast.LENGTH_SHORT).show();
                     fragment = CreateEventFragment.newInstance(communities);
                     fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();

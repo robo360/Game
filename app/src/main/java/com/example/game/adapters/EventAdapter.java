@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,7 +24,6 @@ import com.example.game.models.Event;
 import com.example.game.models.Subscription;
 import com.example.game.models.User;
 import com.parse.GetCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseQuery;
@@ -33,8 +31,6 @@ import com.parse.ParseUser;
 
 import java.text.MessageFormat;
 import java.util.List;
-
-import static android.view.GestureDetector.*;
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
     private static final String TAG ="EventAdapter";
@@ -123,7 +119,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
             ivImage.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View view, MotionEvent motionEvent) {
-
                     gestureDetector.onTouchEvent(motionEvent);
                     return true;
                 }

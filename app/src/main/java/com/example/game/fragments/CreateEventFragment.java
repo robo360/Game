@@ -1,5 +1,7 @@
 package com.example.game.fragments;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -12,10 +14,12 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -44,10 +48,13 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.io.File;
+import java.sql.Time;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -63,15 +70,22 @@ public class CreateEventFragment extends Fragment {
 
     private ImageView ivPoster;
     private File photoFile;
+    private DatePickerDialog datePickerDialog;
+    private TimePickerDialog timePickerDialog;
     private String addressString;
     private LatLng addressLatLng;
     private TextView tvAddressDisplay;
     private Community community;
+    private int year;
+    private int month;
+    private int day;
+    private int hour;
+    private int minute;
 
-    public static CreateEventFragment newInstance(ArrayList<String> comments) {
+    public static CreateEventFragment newInstance(ArrayList<String> communities) {
         CreateEventFragment fragment = new CreateEventFragment();
         Bundle args = new Bundle();
-        args.putStringArrayList(COMMUNITIES, comments);
+        args.putStringArrayList(COMMUNITIES, communities);
         fragment.setArguments(args);
         return fragment;
     }
@@ -88,8 +102,9 @@ public class CreateEventFragment extends Fragment {
         Button btnShare = binding.btnShare;
         EditText etTitle = binding.etTitle;
         EditText etDescription = binding.etDescription;
+        ImageButton btnDate = binding.ibDate;
+        ImageButton btnTime = binding.ibTime;
         ImageButton ibLoc = binding.ibLoc;
-        ImageButton ibFile = binding.ibFile;
         ivPoster = binding.ivPoster;
         tvAddressDisplay = binding.tvAddressDisplay;
         AutoCompleteTextView autoTvCommunity = binding.autoTvCommunity;
@@ -110,29 +125,74 @@ public class CreateEventFragment extends Fragment {
             communityParseQuery.getFirstInBackground((object, e) -> community = object);
         });
 
-        ibFile.setOnClickListener(this::onPickPhoto);
+        ivPoster.setOnClickListener(this::onPickPhoto);
 
         ibLoc.setOnClickListener(this::openPlaces);
+        View.OnClickListener dateClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Calendar calendar = Calendar.getInstance();
+                year = calendar.get(Calendar.YEAR);
+                month = calendar.get(Calendar.MONTH);
+                day = calendar.get(Calendar.DAY_OF_MONTH);
+                datePickerDialog = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+                        DecimalFormat formatter = new DecimalFormat("00");
+                        year = i;
+                        month = i1;
+                        day = i2;
+                        binding.tvDisplayDate.setText(String.format("%s/%s/%s",
+                                formatter.format(month), formatter.format(day), year));
+                    }
+                }, year, month, day);
+
+                datePickerDialog.show();
+            }
+        };
+
+        View.OnClickListener timeClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                hour = 12;
+                minute = 0;
+                timePickerDialog = new TimePickerDialog(getContext(), new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int i, int i1) {
+                        DecimalFormat formatter = new DecimalFormat("00");
+                        hour = i ;
+                        minute = i1;
+                        binding.tvDisplayTime.setText(String.format("%s:%s",
+                                formatter.format(hour), formatter.format(minute)));
+                    }
+                }, hour,minute, false);
+
+                timePickerDialog.show();
+            }
+        };
+        btnDate.setOnClickListener(dateClickListener);
+        btnTime.setOnClickListener(timeClickListener);
+        binding.tvDisplayDate.setOnClickListener(dateClickListener);
+        binding.tvDisplayTime.setOnClickListener(timeClickListener);
 
         btnShare.setOnClickListener(view12 -> {
             Event event = new Event();
-            String dateString = binding.etMonth.getText().toString().replaceAll("\\s", "") + "/" +
-                    binding.etDay.getText().toString().replaceAll("\\s", "") + "/" +
-                    binding.etYear.getText().toString().replaceAll("\\s", "") + " " +
-                    binding.etHour.getText().toString().replaceAll("\\s", "") + ":" +
-                    binding.etMinute.getText().toString().replaceAll("\\s", "");
+            DecimalFormat formatter = new DecimalFormat("00");
+            String dateString = String.format("%s/%s/%s %s:%s",
+                    formatter.format(month), formatter.format(day), year,
+                    formatter.format(hour), formatter.format(minute));
             if (ValidatorsUtil.checkTimePattern(dateString)) {
-                SimpleDateFormat formatter = new SimpleDateFormat(getString(R.string.pattern_time), Locale.US);
+                SimpleDateFormat format = new SimpleDateFormat(getString(R.string.pattern_time), Locale.US);
                 try {
-                    Date date = formatter.parse(dateString);
+                    Date date = format.parse(dateString);
                     event.setDate(date);
                 } catch (ParseException e) {
                     Log.e(TAG, "Error while parsing time" + e);
-                    Snackbar.make(binding.etMonth, getString(R.string.wrong_date_message), BaseTransientBottomBar.LENGTH_SHORT).show();
+                    Snackbar.make(binding.ibDate, getString(R.string.wrong_date_message), BaseTransientBottomBar.LENGTH_SHORT).show();
                     return;
                 }
             } else {
-                Snackbar.make(binding.etMonth, R.string.wrong_date_message, BaseTransientBottomBar.LENGTH_SHORT).show();
+                Snackbar.make(binding.ibLoc, R.string.wrong_date_message, BaseTransientBottomBar.LENGTH_SHORT).show();
                 return;
             }
             event.setUser(ParseUser.getCurrentUser());

@@ -63,15 +63,17 @@ public class CommunitySearchFragment extends Fragment {
         }
         q.include(Community.KEY_CREATOR);
         q.findInBackground((objects, e) -> {
-            if (objects.size() > 0) {
-                communities.addAll(objects);
-                adapter.notifyDataSetChanged();
-                Log.e(TAG, "Results: " + objects);
-            } else {
-                tvMessage.setVisibility(View.VISIBLE);
-                tvMessage.setText(String.format("No communities matches '%s'", query));
-                rvCommunitiesSearch.setVisibility(View.GONE);
-                Log.e(TAG, "Error: " + e);
+            if(e == null){
+                if (objects.size() > 0) {
+                    communities.addAll(objects);
+                    adapter.notifyDataSetChanged();
+                    Log.e(TAG, "Results: " + objects);
+                } else {
+                    tvMessage.setVisibility(View.VISIBLE);
+                    tvMessage.setText(String.format("No communities matches '%s'", query));
+                    rvCommunitiesSearch.setVisibility(View.GONE);
+                    Log.e(TAG, "Error: " + e);
+                }
             }
         });
     }
