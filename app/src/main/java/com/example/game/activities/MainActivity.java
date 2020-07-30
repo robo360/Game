@@ -1,6 +1,5 @@
 package com.example.game.activities;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
@@ -10,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.transition.Fade;
 
 import com.bumptech.glide.Glide;
 import com.example.game.R;
@@ -24,7 +22,6 @@ import com.example.game.fragments.SearchFragment;
 import com.example.game.models.Community;
 import com.example.game.models.Subscription;
 import com.example.game.models.User;
-import com.example.game.utils.AnimationUtils;
 import com.example.game.utils.NavigationUtil;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -100,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
 
         fab.setOnClickListener(view -> {
             fragment = CreateEventFragment.newInstance(communities);
-            fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
+            fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(TAG).commit();
         });
 
         toolbar.setOnMenuItemClickListener(item -> {
@@ -117,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
                 default:
                     Toast.makeText(MainActivity.this, R.string.create_community, Toast.LENGTH_SHORT).show();
                     fragment = CreateCommunityFragment.newInstance();
-                    fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
+                    fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(TAG).commit();
                     break;
             }
             return true;

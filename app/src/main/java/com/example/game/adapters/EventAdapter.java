@@ -123,9 +123,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
                     return true;
                 }
             });
-
-
         }
+
 
         public void bind(Event event) {
             try {
@@ -204,10 +203,11 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
                     Subscription subscription = new Subscription();
                     subscription.setCommunity(event.getCommunity());
                     subscription.setUser(ParseUser.getCurrentUser());
-                    subscription.setInteractionCount( 1 );
+                    subscription.setInteractionCount(1);
                     subscription.saveEventually();
                 }
             }
         });
     }
+
 }
