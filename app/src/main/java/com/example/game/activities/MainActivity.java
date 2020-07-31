@@ -81,7 +81,6 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, R.string.search, Toast.LENGTH_SHORT).show();
                     break;
                 case R.id.action_map:
-                    //NavigationUtil.goToActivity(this, MapActivity.class);
                     fragment = MapFragment.newInstance();
                     Toast.makeText(MainActivity.this, R.string.map, Toast.LENGTH_SHORT).show();
                     break;
