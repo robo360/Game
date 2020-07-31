@@ -68,19 +68,21 @@ public class CommunityFragment extends Fragment implements EventAdapter.OnClickB
             rvEvents.setAdapter(adapter);
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
             rvEvents.setLayoutManager(linearLayoutManager);
-            //add an interaction to a list
-            ParseQuery<Subscription> subscriptionParseQuery = ParseQuery.getQuery(Subscription.class);
-            subscriptionParseQuery.whereEqualTo(Subscription.KEY_COMMUNITY, community);
-            subscriptionParseQuery.whereEqualTo(Subscription.KEY_USER, ParseUser.getCurrentUser());
-            subscriptionParseQuery.getFirstInBackground((object, e) -> {
-                if(e != null){
-                    object.setInteractionCount(object.getInteractionCount().intValue() + 1);
-                    object.saveInBackground();
-                }
-            });
 
             if (community != null) {
                 populateRecyclerView(community);
+                if(!community.getName().equals(ConstantUtils.BASE_COMMUNITY)){
+                    ParseQuery<Subscription> subscriptionParseQuery = ParseQuery.getQuery(Subscription.class);
+                    subscriptionParseQuery.whereEqualTo(Subscription.KEY_COMMUNITY, community);
+                    subscriptionParseQuery.whereEqualTo(Subscription.KEY_USER, ParseUser.getCurrentUser());
+                    subscriptionParseQuery.getFirstInBackground((object, e) -> {
+                        if(e == null){
+                            object.setInteractionCount(object.getInteractionCount().intValue() + 1);
+                            object.saveInBackground();
+                        }
+                    });
+                }
+
             }
 
             rvEvents.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearLayoutManager) {
@@ -151,12 +153,20 @@ public class CommunityFragment extends Fragment implements EventAdapter.OnClickB
                     Log.e(TAG, getString(R.string.error_events_query) + e);
                 } else {
                     Collections.shuffle(objects);
-                    if (objects.size() >= limit) {
+                    if (objects.size() == 0) {
+                        binding.tvMessage.setVisibility(View.VISIBLE);
+                        binding.tvMessage.setText(R.string.no_event_in_community);
+                    } else if (objects.size() >= limit) {
+                        binding.tvMessage.setVisibility(View.GONE);
                         events.addAll(objects.subList(0, limit));
+                        Collections.shuffle(events);
+                        adapter.notifyDataSetChanged();
                     } else {
+                        binding.tvMessage.setVisibility(View.GONE);
                         events.addAll(objects);
+                        Collections.shuffle(events);
+                        adapter.notifyDataSetChanged();
                     }
-                    adapter.notifyDataSetChanged();
                 }
             });
         }

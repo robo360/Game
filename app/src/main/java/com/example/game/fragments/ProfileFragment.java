@@ -3,9 +3,11 @@ package com.example.game.fragments;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -85,6 +87,31 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+        binding.ibOptions.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PopupMenu menu = new PopupMenu(getContext(), view);
+                menu.inflate(R.menu.pop_down_menu);
+                menu.show();
+                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        if(menuItem.getItemId() == R.id.action_change_profile){
+                            createTakePictureFragment();
+                        }
+                        return true;
+                    }
+                });
+            }
+        });
+
+        ivProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                createTakePictureFragment();
+            }
+        });
+
         ParseUser user = ParseUser.getCurrentUser();
 
         try {
@@ -130,4 +157,14 @@ public class ProfileFragment extends Fragment {
         fragment = new CommunityProfileFragment(QUERY);
         profileFragmentManager.beginTransaction().replace(R.id.profileFlContainer, fragment).commit();
     }
+
+    private void createTakePictureFragment(){
+        Fragment fragment;
+        fragment = TakePictureFragment.newInstance();
+        Objects.requireNonNull(getActivity())
+                .getSupportFragmentManager().beginTransaction()
+                .addToBackStack("MainActivity").replace(R.id.flContainer, fragment)
+                .commit();
+    }
+
 }

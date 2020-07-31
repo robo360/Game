@@ -108,7 +108,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ibLoc" />
 
-        <AutoCompleteTextView
+        <TextView
             android:id="@+id/autoTvCommunity"
             android:layout_width="0dp"
             android:layout_height="@dimen/et_size"

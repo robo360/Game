@@ -116,6 +116,13 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
                 }
             });
 
+            tvTitle.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    fragment.onClickedBtnDetail(events.get(getAdapterPosition()), ivImage);
+                }
+            });
+
             ivImage.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View view, MotionEvent motionEvent) {

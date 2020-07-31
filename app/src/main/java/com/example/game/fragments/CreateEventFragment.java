@@ -2,6 +2,7 @@ package com.example.game.fragments;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -40,8 +41,11 @@ import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
+import com.parse.GetCallback;
+import com.parse.Parse;
 import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseQuery;
@@ -75,6 +79,7 @@ public class CreateEventFragment extends Fragment {
     private String addressString;
     private LatLng addressLatLng;
     private TextView tvAddressDisplay;
+    private ArrayAdapter<String> adapter;
     private Community community;
     private int year;
     private int month;
@@ -107,23 +112,9 @@ public class CreateEventFragment extends Fragment {
         ImageButton ibLoc = binding.ibLoc;
         ivPoster = binding.ivPoster;
         tvAddressDisplay = binding.tvAddressDisplay;
-        AutoCompleteTextView autoTvCommunity = binding.autoTvCommunity;
-        ArrayAdapter<String> adapter = null;
         if (communities != null) {
-            adapter = new ArrayAdapter<>(view.getContext(), android.R.layout.simple_dropdown_item_1line, communities);
+            adapter = new ArrayAdapter<>(view.getContext(), android.R.layout.simple_list_item_single_choice, communities);
         }
-        autoTvCommunity.setAdapter(adapter);
-
-        autoTvCommunity.setOnItemClickListener((adapterView, view13, i, l) -> {
-            String communityName = (String) adapterView.getItemAtPosition(i);
-            if (communityName == null) {
-                Log.e(TAG, "Community cannot be null");
-                return;
-            }
-            ParseQuery<Community> communityParseQuery = ParseQuery.getQuery(Community.class);
-            communityParseQuery.whereEqualTo(Community.KEY_NAME, communityName);
-            communityParseQuery.getFirstInBackground((object, e) -> community = object);
-        });
 
         ivPoster.setOnClickListener(this::onPickPhoto);
 
@@ -174,6 +165,44 @@ public class CreateEventFragment extends Fragment {
         btnTime.setOnClickListener(timeClickListener);
         binding.tvDisplayDate.setOnClickListener(dateClickListener);
         binding.tvDisplayTime.setOnClickListener(timeClickListener);
+        binding.autoTvCommunity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i(TAG, "Adapter elements:" + adapter.getCount());
+                MaterialAlertDialogBuilder communityDialog = new MaterialAlertDialogBuilder(getContext())
+                        .setTitle("Select Community")
+                        .setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                            }
+                        })
+                        .setPositiveButton("DONE", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                            }
+                        })
+                        .setSingleChoiceItems(adapter, 1, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                binding.autoTvCommunity.setText(adapter.getItem(i));
+                                ParseQuery<Community> communityParseQuery = ParseQuery.getQuery(Community.class);
+                                communityParseQuery.whereEqualTo(Community.KEY_NAME, adapter.getItem(i));
+                                communityParseQuery.getFirstInBackground(new GetCallback<Community>() {
+                                    @Override
+                                    public void done(Community object, com.parse.ParseException e) {
+                                        if(e == null){
+                                            community = object;
+                                            Toast.makeText(getContext(), "Community set", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                communityDialog.show();
+            }
+        });
 
         btnShare.setOnClickListener(view12 -> {
             Event event = new Event();

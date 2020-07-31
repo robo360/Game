@@ -87,6 +87,7 @@ public class CommunitySearchAdapter extends RecyclerView.Adapter<CommunitySearch
                         btnAction.setVisibility(View.GONE);
                         tvStatus.setVisibility(View.VISIBLE);
                         Toast.makeText(context, "Followed", Toast.LENGTH_SHORT).show();
+                        addInteraction(communities.get(getAdapterPosition()));
                         AddFollowing();
                     } else {
                         Toast.makeText(context, "Was not able to follow", Toast.LENGTH_SHORT).show();
@@ -139,6 +140,18 @@ public class CommunitySearchAdapter extends RecyclerView.Adapter<CommunitySearch
                                 }
                             });
                     deleteFollowingAlert.show();
+                }
+            });
+        }
+
+        private void addInteraction(Community community) {
+            ParseQuery<Subscription> subscriptionParseQuery = ParseQuery.getQuery(Subscription.class);
+            subscriptionParseQuery.whereEqualTo(Subscription.KEY_COMMUNITY, community);
+            subscriptionParseQuery.whereEqualTo(Subscription.KEY_USER, ParseUser.getCurrentUser());
+            subscriptionParseQuery.getFirstInBackground((object, e) -> {
+                if(e == null){
+                    object.setInteractionCount(object.getInteractionCount().intValue() + 1);
+                    object.saveInBackground();
                 }
             });
         }

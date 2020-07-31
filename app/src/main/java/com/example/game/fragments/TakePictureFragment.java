@@ -21,9 +21,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.game.R;
 import com.example.game.activities.MainActivity;
 import com.example.game.databinding.FragmentTakePictureBinding;
+import com.example.game.models.User;
 import com.example.game.utils.ImageUtil;
 import com.example.game.utils.NavigationUtil;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
@@ -62,6 +64,13 @@ public class TakePictureFragment extends Fragment {
         btnSubmit = binding.btnSubmit;
         ivProfile = binding.ivProfile;
         TextView tvSkip = binding.tvSkip;
+
+        //fill with a profile if there is one already
+        ParseUser user = ParseUser.getCurrentUser();
+        @Nullable ParseFile imageFile = user.getParseFile(User.KEY_IMAGE);
+        if(imageFile != null){
+            Glide.with(getContext()).load(imageFile.getUrl()).into(ivProfile);
+        }
 
         //set a listener on all elements
         ibFile.setOnClickListener(view1 -> {
