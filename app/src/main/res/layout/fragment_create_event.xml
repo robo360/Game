@@ -75,7 +75,7 @@
             android:contentDescription="@string/set_location"
             android:foregroundGravity="center"
             android:src="@drawable/ic_baseline_location_on_24"
-            android:tint="@color/colorAccent"
+            android:tint="@color/gray"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout3" />
@@ -134,7 +134,7 @@
             android:layout_marginStart="@dimen/side_margin"
             android:layout_marginTop="@dimen/side_margin"
             android:text="@string/set_a_picture"
-            android:textColor="@color/colorAccent"
+            android:textColor="@color/gray"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/autoTvCommunity" />
 
@@ -159,7 +159,7 @@
                 android:background="@color/white"
                 android:contentDescription="@string/date"
                 android:scaleType="fitCenter"
-                android:tint="@color/colorAccent"
+                android:tint="@color/gray"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tvTimeLabel"
                 app:layout_constraintTop_toBottomOf="@+id/ivPoster"
@@ -174,7 +174,7 @@
                 android:backgroundTint="@color/white"
                 android:contentDescription="@string/time"
                 android:scaleType="center"
-                android:tint="@color/colorAccent"
+                android:tint="@color/gray"
                 app:layout_constraintStart_toEndOf="@+id/imageButton"
                 app:layout_constraintTop_toBottomOf="@+id/ivPoster"
                 app:srcCompat="@drawable/ic_baseline_access_time_24" />

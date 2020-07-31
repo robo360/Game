@@ -24,6 +24,7 @@ import com.example.game.models.Subscription;
 import com.example.game.utils.AnimationUtils;
 import com.example.game.utils.ConstantUtils;
 import com.example.game.utils.EndlessRecyclerViewScrollListener;
+import com.example.game.utils.QueryUtil;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -63,56 +64,53 @@ public class CommunityFragment extends Fragment implements EventAdapter.OnClickB
             RecyclerView rvEvents = binding.rvEvents;
             SwipeRefreshLayout swipeContainer = binding.swipeContainer;
             events = new ArrayList<>();
-            adapter = new EventAdapter(getContext(), events, community, this);
+            adapter = new EventAdapter(getContext(), events, this);
 
             rvEvents.setAdapter(adapter);
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
             rvEvents.setLayoutManager(linearLayoutManager);
 
             if (community != null) {
+                if (!community.getName().equals(ConstantUtils.BASE_COMMUNITY)) {
+                    QueryUtil.addInteraction(community);
+                }
+
                 populateRecyclerView(community);
-                if(!community.getName().equals(ConstantUtils.BASE_COMMUNITY)){
-                    ParseQuery<Subscription> subscriptionParseQuery = ParseQuery.getQuery(Subscription.class);
-                    subscriptionParseQuery.whereEqualTo(Subscription.KEY_COMMUNITY, community);
-                    subscriptionParseQuery.whereEqualTo(Subscription.KEY_USER, ParseUser.getCurrentUser());
-                    subscriptionParseQuery.getFirstInBackground((object, e) -> {
-                        if(e == null){
-                            object.setInteractionCount(object.getInteractionCount().intValue() + 1);
-                            object.saveInBackground();
+
+                rvEvents.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+                    @Override
+                    public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                        if (!community.getName().equals(ConstantUtils.BASE_COMMUNITY)) {
+                            populateWithCommunityEventsWithSkip(community, totalItemsCount);
+
                         }
-                    });
-                }
-            }
-
-            rvEvents.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearLayoutManager) {
-                @Override
-                public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                    if (!community.getName().equals(ConstantUtils.BASE_COMMUNITY)) {
-                        populateWithCommunityEventsWithSkip(community, totalItemsCount);
-
                     }
-                }
-            });
+                });
 
-
-            swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                @Override
-                public void onRefresh() {
-                    populateRecyclerView(community);
-                    swipeContainer.setRefreshing(false);
-                }
-            });
-            // Configure the refreshing colors
-            swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
-                    android.R.color.holo_green_light,
-                    android.R.color.holo_orange_light,
-                    android.R.color.holo_red_light);
-
+                swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        populateRecyclerView(Objects.requireNonNull(community));
+                        swipeContainer.setRefreshing(false);
+                    }
+                });
+                // Configure the refreshing colors
+                swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                        android.R.color.holo_green_light,
+                        android.R.color.holo_orange_light,
+                        android.R.color.holo_red_light);
+            }
         } else {
             Log.e(TAG, "Missing community argument:" + new NullPointerException().getMessage());
         }
     }
 
+    /*
+    Algorithm: check whether on public community or a specific-interest community.
+    if(specific_interest), fill with recyclerView with events in that community
+    else, fill with suggestions based on the probability distribution of the user's interactions
+    with communities.
+     */
     private void populateRecyclerView(Community community) {
         events.clear();
         if (community.getName().equals(ConstantUtils.BASE_COMMUNITY)) {
@@ -147,24 +145,27 @@ public class CommunityFragment extends Fragment implements EventAdapter.OnClickB
             eventParseQuery.orderByDescending(Event.KEY_CREATED_AT);
             eventParseQuery.whereEqualTo(Event.KEY_COMMUNITY, community);
             eventParseQuery.setLimit(ConstantUtils.MAX_EVENTS_COUNT);
-            eventParseQuery.findInBackground((objects, e) -> {
-                if (e != null) {
-                    Log.e(TAG, getString(R.string.error_events_query) + e);
-                } else {
-                    Collections.shuffle(objects);
-                    if (objects.size() == 0) {
-                        binding.tvMessage.setVisibility(View.VISIBLE);
-                        binding.tvMessage.setText(R.string.no_event_in_community);
-                    } else if (objects.size() >= limit) {
-                        binding.tvMessage.setVisibility(View.GONE);
-                        events.addAll(objects.subList(0, limit));
-                        Collections.shuffle(events);
-                        adapter.notifyDataSetChanged();
+            eventParseQuery.findInBackground(new FindCallback<Event>() {
+                @Override
+                public void done(List<Event> objects, ParseException e) {
+                    if (e != null) {
+                        Log.e(TAG, getString(R.string.error_events_query) + e);
                     } else {
-                        binding.tvMessage.setVisibility(View.GONE);
-                        events.addAll(objects);
-                        Collections.shuffle(events);
-                        adapter.notifyDataSetChanged();
+                        Collections.shuffle(objects);
+                        if (objects.size() == 0) {
+                            binding.tvMessage.setVisibility(View.VISIBLE);
+                            binding.tvMessage.setText(R.string.no_event_in_community);
+                        } else if (objects.size() >= limit) {
+                            binding.tvMessage.setVisibility(View.GONE);
+                            events.addAll(objects.subList(0, limit));
+                            Collections.shuffle(events);
+                            adapter.notifyDataSetChanged();
+                        } else {
+                            binding.tvMessage.setVisibility(View.GONE);
+                            events.addAll(objects);
+                            Collections.shuffle(events);
+                            adapter.notifyDataSetChanged();
+                        }
                     }
                 }
             });
@@ -198,17 +199,20 @@ public class CommunityFragment extends Fragment implements EventAdapter.OnClickB
         eventParseQuery.include(Event.KEY_COMMUNITY);
         eventParseQuery.whereEqualTo(Event.KEY_COMMUNITY, community);
         eventParseQuery.setLimit(ConstantUtils.MAX_EVENTS_COUNT);
-        eventParseQuery.findInBackground((objects, e) -> {
-            if (e != null) {
-                Log.e(TAG, getString(R.string.error_events_query) + e);
-            } else {
-                if(objects.size() > 0 ){
-                    binding.tvMessage.setVisibility(View.GONE);
-                    events.addAll(objects);
-                    adapter.notifyDataSetChanged();
+        eventParseQuery.findInBackground(new FindCallback<Event>() {
+            @Override
+            public void done(List<Event> objects, ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, getString(R.string.error_events_query) + e);
                 } else {
-                    binding.tvMessage.setVisibility(View.VISIBLE);
-                    binding.tvMessage.setText(R.string.no_event_in_community);
+                    if (objects.size() > 0) {
+                        binding.tvMessage.setVisibility(View.GONE);
+                        events.addAll(objects);
+                        adapter.notifyDataSetChanged();
+                    } else {
+                        binding.tvMessage.setVisibility(View.VISIBLE);
+                        binding.tvMessage.setText(R.string.no_event_in_community);
+                    }
                 }
             }
         });
@@ -221,17 +225,20 @@ public class CommunityFragment extends Fragment implements EventAdapter.OnClickB
         eventParseQuery.whereEqualTo(Event.KEY_COMMUNITY, community);
         eventParseQuery.setSkip(skip);
         eventParseQuery.setLimit(ConstantUtils.MAX_EVENTS_COUNT);
-        eventParseQuery.findInBackground((objects, e) -> {
-            if (e != null) {
-                Log.e(TAG, getString(R.string.error_events_query) + e);
-            } else {
-                if(objects.size() > 0 ){
-                    binding.tvMessage.setVisibility(View.GONE);
-                    events.addAll(objects);
-                    adapter.notifyDataSetChanged();
+        eventParseQuery.findInBackground(new FindCallback<Event>() {
+            @Override
+            public void done(List<Event> objects, ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, getString(R.string.error_events_query) + e);
                 } else {
-                    binding.tvMessage.setVisibility(View.VISIBLE);
-                    binding.tvMessage.setText(R.string.no_event_in_community);
+                    if (objects.size() > 0) {
+                        binding.tvMessage.setVisibility(View.GONE);
+                        events.addAll(objects);
+                        adapter.notifyDataSetChanged();
+                    } else {
+                        binding.tvMessage.setVisibility(View.VISIBLE);
+                        binding.tvMessage.setText(R.string.no_event_in_community);
+                    }
                 }
             }
         });

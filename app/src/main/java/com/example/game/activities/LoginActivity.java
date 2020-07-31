@@ -21,11 +21,9 @@ import com.parse.ParseUser;
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
 
-    private ActivityLoginBinding binding;
     private EditText etEmail;
     private EditText etPassword;
     private Button btnLogin;
-    private TextView tvSingup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,12 +31,12 @@ public class LoginActivity extends AppCompatActivity {
         if (ParseUser.getCurrentUser() != null) {
             goToActivity(MainActivity.class);
         }
-        binding = ActivityLoginBinding.inflate(getLayoutInflater());
+        ActivityLoginBinding binding = ActivityLoginBinding.inflate(getLayoutInflater());
+        TextView tvSingup = binding.tvSignUpMessage;
         setContentView(binding.getRoot());
         etEmail = binding.etMail;
         etPassword = binding.etPassword;
         btnLogin = binding.btnLogin;
-        tvSingup = binding.tvSignUpMessage;
         //TODO: [UX] When the etPassword or etEmail lose focus, remove the virtual keyboard.
 
         //set a listener on the btnLogin

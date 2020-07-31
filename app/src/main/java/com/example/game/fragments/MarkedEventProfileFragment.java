@@ -6,6 +6,7 @@ import android.view.View;
 import com.example.game.R;
 import com.example.game.models.Attendance;
 import com.example.game.models.Event;
+import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -33,17 +34,20 @@ public class MarkedEventProfileFragment extends EventSearchFragment {
         queryList.add(qLiked);
         queryList.add(qAttend);
         ParseQuery<Attendance> q =  ParseQuery.or(queryList);
-        q.findInBackground((List<Attendance> objects, ParseException e) -> {
-            if (objects.size() > 0) {
-                for (Attendance object : objects) {
-                    events.add((Event) object.getEvent());
+        q.findInBackground(new FindCallback<Attendance>() {
+            @Override
+            public void done(List<Attendance> objects, ParseException e) {
+                if (objects.size() > 0) {
+                    for (Attendance object : objects) {
+                        events.add((Event) object.getEvent());
+                    }
+                    adapter.notifyDataSetChanged();
+                } else {
+                    tvMessage.setVisibility(View.VISIBLE);
+                    tvMessage.setText(R.string.no_marked_events_message);
+                    rvEventsSearch.setVisibility(View.GONE);
+                    Log.e(TAG,getString(R.string.error_events_query) + e);
                 }
-                adapter.notifyDataSetChanged();
-            } else {
-                tvMessage.setVisibility(View.VISIBLE);
-                tvMessage.setText(R.string.no_marked_events_message);
-                rvEventsSearch.setVisibility(View.GONE);
-                Log.e(TAG,getString(R.string.error_events_query) + e);
             }
         });
     }

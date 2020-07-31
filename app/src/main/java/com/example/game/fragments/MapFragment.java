@@ -26,6 +26,7 @@ import com.example.game.R;
 import com.example.game.models.Community;
 import com.example.game.models.Event;
 import com.example.game.models.Subscription;
+import com.example.game.utils.ConstantUtils;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -43,6 +44,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -230,21 +232,24 @@ public class MapFragment extends Fragment {
         ParseQuery<Event> eventParseQuery = ParseQuery.getQuery(Event.class);
         eventParseQuery.orderByDescending(Event.KEY_CREATED_AT);
         eventParseQuery.whereEqualTo(Event.KEY_COMMUNITY, community);
-        eventParseQuery.findInBackground((objects, e) -> {
-            if (e != null) {
-                Log.e(TAG, getString(R.string.error_events_query) + e);
-            } else {
-                events.addAll(objects);
-                for (Event event : events) {
-                    BitmapDescriptor defaultMarker =
-                            BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
-                    if (event.getAddress() != null && map != null) {
-                        LatLng position =
-                                new LatLng(event.getAddress().getLatitude(), event.getAddress().getLongitude());
-                        map.addMarker(new MarkerOptions()
-                                .position(position)
-                                .title(event.getTitle())
-                                .icon(defaultMarker));
+        eventParseQuery.findInBackground(new FindCallback<Event>() {
+            @Override
+            public void done(List<Event> objects, ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, getString(R.string.error_events_query) + e);
+                } else {
+                    events.addAll(objects);
+                    for (Event event : events) {
+                        BitmapDescriptor defaultMarker =
+                                BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
+                        if (event.getAddress() != null && map != null) {
+                            LatLng position =
+                                    new LatLng(event.getAddress().getLatitude(), event.getAddress().getLongitude());
+                            map.addMarker(new MarkerOptions()
+                                    .position(position)
+                                    .title(event.getTitle())
+                                    .icon(defaultMarker));
+                        }
                     }
                 }
             }
@@ -263,8 +268,10 @@ public class MapFragment extends Fragment {
                         @Override
                         public void done(Event object, ParseException e) {
                             if (e == null) {
-                                Fragment fragment = EventDetailFragment.newInstance(object, (Community) object.getCommunity());
-                                Objects.requireNonNull(getFragmentManager()).beginTransaction().replace(R.id.flContainer, fragment).commit();
+                                Fragment fragment = EventDetailFragment.newInstance(object, object.getCommunity());
+                                Objects.requireNonNull(getFragmentManager()).beginTransaction()
+                                        .replace(R.id.flContainer, fragment).addToBackStack(ConstantUtils.MAIN_TAG)
+                                        .commit();
                             }
                         }
                     });
@@ -277,12 +284,15 @@ public class MapFragment extends Fragment {
         ParseQuery<Subscription> q = ParseQuery.getQuery(Subscription.class);
         q.whereEqualTo(Subscription.KEY_USER, user);
         q.include(Subscription.KEY_COMMUNITY);
-        q.findInBackground((objects, e) -> {
-            if (e != null) {
-                Log.e(TAG, getString(R.string.error_events_query) + e);
-            } else {
-                for (Subscription subscription : objects) {
-                    addEventsMarkers(subscription.getCommunity());
+        q.findInBackground(new FindCallback<Subscription>() {
+            @Override
+            public void done(List<Subscription> objects, ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, getString(R.string.error_events_query) + e);
+                } else {
+                    for (Subscription subscription : objects) {
+                        addEventsMarkers(subscription.getCommunity());
+                    }
                 }
             }
         });

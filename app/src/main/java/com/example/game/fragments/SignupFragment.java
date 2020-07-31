@@ -1,11 +1,6 @@
 package com.example.game.fragments;
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,14 +10,20 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.example.game.R;
 import com.example.game.activities.LoginActivity;
 import com.example.game.databinding.FragmentSignupBinding;
-import com.example.game.utils.NavigationUtil;
 import com.example.game.models.Community;
 import com.example.game.models.Subscription;
+import com.example.game.utils.ConstantUtils;
+import com.example.game.utils.NavigationUtil;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
+import com.parse.GetCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -102,7 +103,6 @@ public class SignupFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_signup, container, false);
     }
 
@@ -115,16 +115,19 @@ public class SignupFragment extends Fragment {
                 } else {
                     //Subscribe to public community
                     ParseQuery<Community> communityParseQuery = ParseQuery.getQuery(Community.class);
-                    communityParseQuery.whereEqualTo(Community.KEY_NAME, "public");
-                    communityParseQuery.getFirstInBackground((object, e1) -> {
-                        Subscription subscription = new Subscription();
-                        subscription.setCommunity(object);
-                        subscription.setUser(ParseUser.getCurrentUser());
-                        subscription.saveInBackground();
+                    communityParseQuery.whereEqualTo(Community.KEY_NAME, ConstantUtils.BASE_COMMUNITY);
+                    communityParseQuery.getFirstInBackground(new GetCallback<Community>() {
+                        @Override
+                        public void done(Community object, ParseException e) {
+                            Subscription subscription = new Subscription();
+                            subscription.setCommunity(object);
+                            subscription.setUser(ParseUser.getCurrentUser());
+                            subscription.saveInBackground();
+                        }
                     });
                     Toast.makeText(getContext(), "Successful logged in", Toast.LENGTH_SHORT).show();
                     Fragment fragment = new TakePictureFragment();
-                    getFragmentManager().beginTransaction().replace(R.id.flContainer, fragment).commit();
+                    Objects.requireNonNull(getFragmentManager()).beginTransaction().replace(R.id.flContainer, fragment).commit();
                 }
             }
         });

@@ -1,16 +1,15 @@
 package com.example.game.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
-
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.example.game.R;
 import com.example.game.adapters.CommunityAdapter;
@@ -19,6 +18,8 @@ import com.example.game.models.Event;
 import com.example.game.models.Subscription;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.parse.FindCallback;
+import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
@@ -87,9 +88,12 @@ public class EventFeedFragment extends Fragment {
                 ParseQuery<Event> eventsQuery = ParseQuery.getQuery(Event.class);
                 eventsQuery.whereGreaterThan(Event.KEY_CREATED_AT, date);
                 eventsQuery.whereEqualTo(Event.KEY_COMMUNITY, communities.get(position));
-                eventsQuery.findInBackground((objects, e1) -> {
-                    if (position != 0 && objects.size() !=0) {
-                        tab.getOrCreateBadge().setNumber(objects.size());
+                eventsQuery.findInBackground(new FindCallback<Event>() {
+                    @Override
+                    public void done(List<Event> objects, ParseException e) {
+                        if (position != 0 && objects.size() != 0) {
+                            tab.getOrCreateBadge().setNumber(objects.size());
+                        }
                     }
                 });
             }
@@ -107,14 +111,17 @@ public class EventFeedFragment extends Fragment {
         ParseQuery<Subscription> q = ParseQuery.getQuery(Subscription.class);
         q.whereEqualTo(Subscription.KEY_USER, user);
         q.include(Subscription.KEY_COMMUNITY);
-        q.findInBackground((objects, e) -> {
-            if (e != null) {
-                Log.e(TAG, getString(R.string.error_events_query) + e);
-            } else {
-                for (Subscription subscription : objects) {
-                    communities.add((Community) subscription.getCommunity());
+        q.findInBackground(new FindCallback<Subscription>() {
+            @Override
+            public void done(List<Subscription> objects, ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, getString(R.string.error_events_query) + e);
+                } else {
+                    for (Subscription subscription : objects) {
+                        communities.add((Community) subscription.getCommunity());
+                    }
+                    communityAdapter.notifyDataSetChanged();
                 }
-                communityAdapter.notifyDataSetChanged();
             }
         });
     }

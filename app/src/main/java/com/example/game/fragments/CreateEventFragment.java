@@ -14,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -27,7 +26,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 
 import com.example.game.R;
 import com.example.game.activities.MainActivity;
@@ -47,14 +45,13 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.parse.GetCallback;
-import com.parse.Parse;
 import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.io.File;
-import java.sql.Time;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -74,15 +71,16 @@ public class CreateEventFragment extends DialogFragment {
     private static int AUTOCOMPLETE_REQUEST_CODE = 1;
     public static final String COMMUNITIES = "communities";
 
-    private ImageView ivPoster;
-    private File photoFile;
+    private FragmentCreateEventBinding binding;
     private DatePickerDialog datePickerDialog;
     private TimePickerDialog timePickerDialog;
+    private ArrayAdapter<String> adapter;
+    private TextView tvAddressDisplay;
     private String addressString;
     private LatLng addressLatLng;
-    private TextView tvAddressDisplay;
-    private ArrayAdapter<String> adapter;
     private Community community;
+    private ImageView ivPoster;
+    private File photoFile;
     private int year;
     private int month;
     private int day;
@@ -111,26 +109,33 @@ public class CreateEventFragment extends DialogFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        FragmentCreateEventBinding binding = FragmentCreateEventBinding.bind(view);
+        binding = FragmentCreateEventBinding.bind(view);
         Bundle args = getArguments();
-        ArrayList<String> communities = null;
+        @Nullable ArrayList<String> communities = null;
         if (args != null) {
             communities = args.getStringArrayList(COMMUNITIES);
         }
         Button btnShare = binding.btnShare;
-        EditText etTitle = binding.etTitle;
-        EditText etDescription = binding.etDescription;
         ImageButton btnDate = binding.ibDate;
         ImageButton btnTime = binding.ibTime;
         ImageButton ibLoc = binding.ibLoc;
         ImageButton ibClose = binding.ibClose;
+        TextView tvDisplayDate = binding.tvDisplayDate;
+        TextView tvDisplayTime = binding.tvDisplayTime;
+        TextView autoTvCommunity = binding.autoTvCommunity;
         ivPoster = binding.ivPoster;
         tvAddressDisplay = binding.tvAddressDisplay;
+
         if (communities != null) {
             adapter = new ArrayAdapter<>(view.getContext(), android.R.layout.simple_list_item_single_choice, communities);
         }
 
-        ivPoster.setOnClickListener(this::onPickPhoto);
+        ivPoster.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onPickPhoto(view);
+            }
+        });
 
         ibClose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -139,7 +144,13 @@ public class CreateEventFragment extends DialogFragment {
             }
         });
 
-        ibLoc.setOnClickListener(this::openPlaces);
+        ibLoc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openPlaces(view);
+            }
+        });
+
         View.OnClickListener dateClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -147,7 +158,7 @@ public class CreateEventFragment extends DialogFragment {
                 year = calendar.get(Calendar.YEAR);
                 month = calendar.get(Calendar.MONTH);
                 day = calendar.get(Calendar.DAY_OF_MONTH);
-                datePickerDialog = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
+                datePickerDialog = new DatePickerDialog(Objects.requireNonNull(getContext()), new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
                         DecimalFormat formatter = new DecimalFormat("00");
@@ -162,6 +173,8 @@ public class CreateEventFragment extends DialogFragment {
                 datePickerDialog.show();
             }
         };
+        btnDate.setOnClickListener(dateClickListener);
+        tvDisplayDate.setOnClickListener(dateClickListener);
 
         View.OnClickListener timeClickListener = new View.OnClickListener() {
             @Override
@@ -177,20 +190,18 @@ public class CreateEventFragment extends DialogFragment {
                         binding.tvDisplayTime.setText(String.format("%s:%s",
                                 formatter.format(hour), formatter.format(minute)));
                     }
-                }, hour,minute, false);
+                }, hour, minute, false);
 
                 timePickerDialog.show();
             }
         };
-        btnDate.setOnClickListener(dateClickListener);
         btnTime.setOnClickListener(timeClickListener);
-        binding.tvDisplayDate.setOnClickListener(dateClickListener);
-        binding.tvDisplayTime.setOnClickListener(timeClickListener);
-        binding.autoTvCommunity.setOnClickListener(new View.OnClickListener() {
+        tvDisplayTime.setOnClickListener(timeClickListener);
+
+        autoTvCommunity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.i(TAG, "Adapter elements:" + adapter.getCount());
-                MaterialAlertDialogBuilder communityDialog = new MaterialAlertDialogBuilder(getContext())
+                MaterialAlertDialogBuilder communityDialog = new MaterialAlertDialogBuilder(Objects.requireNonNull(getContext()))
                         .setTitle("Select Community")
                         .setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
                             @Override
@@ -208,57 +219,63 @@ public class CreateEventFragment extends DialogFragment {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 binding.autoTvCommunity.setText(adapter.getItem(i));
-                                ParseQuery<Community> communityParseQuery = ParseQuery.getQuery(Community.class);
-                                communityParseQuery.whereEqualTo(Community.KEY_NAME, adapter.getItem(i));
-                                communityParseQuery.getFirstInBackground(new GetCallback<Community>() {
-                                    @Override
-                                    public void done(Community object, com.parse.ParseException e) {
-                                        if(e == null){
-                                            community = object;
-                                            Toast.makeText(getContext(), "Community set", Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                });
+                                saveSelectedCommunity(i);
                             }
                         });
                 communityDialog.show();
             }
         });
 
-        btnShare.setOnClickListener(view12 -> {
-            Event event = new Event();
-            DecimalFormat formatter = new DecimalFormat("00");
-            String dateString = String.format("%s/%s/%s %s:%s",
-                    formatter.format(month), formatter.format(day), year,
-                    formatter.format(hour), formatter.format(minute));
-            if (ValidatorsUtil.checkTimePattern(dateString)) {
-                SimpleDateFormat format = new SimpleDateFormat(getString(R.string.pattern_time), Locale.US);
-                try {
-                    Date date = format.parse(dateString);
-                    event.setDate(date);
-                } catch (ParseException e) {
-                    Log.e(TAG, "Error while parsing time" + e);
-                    Snackbar.make(binding.ibDate, getString(R.string.wrong_date_message), BaseTransientBottomBar.LENGTH_SHORT).show();
-                    return;
-                }
-            } else {
-                Snackbar.make(binding.ibLoc, R.string.wrong_date_message, BaseTransientBottomBar.LENGTH_SHORT).show();
-                return;
+        btnShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                saveEvent();
             }
-            event.setUser(ParseUser.getCurrentUser());
-            event.setTitle(etTitle.getText().toString());
+        });
+    }
 
-            if (addressLatLng != null) {
-                event.setAddress(new ParseGeoPoint(addressLatLng.latitude, addressLatLng.longitude));
-                event.setAddressString(addressString);
-            } else {
-                Snackbar.make(btnShare, "Address cannot be empty", BaseTransientBottomBar.LENGTH_SHORT).show();
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_create_event, container, false);
+    }
+
+    private void saveEvent() {
+        Event event = new Event();
+        DecimalFormat formatter = new DecimalFormat("00");
+        String dateString = String.format("%s/%s/%s %s:%s",
+                formatter.format(month), formatter.format(day), year,
+                formatter.format(hour), formatter.format(minute));
+        if (ValidatorsUtil.checkTimePattern(dateString)) {
+            SimpleDateFormat format = new SimpleDateFormat(getString(R.string.pattern_time), Locale.US);
+            try {
+                Date date = format.parse(dateString);
+                event.setDate(date);
+            } catch (ParseException e) {
+                Log.e(TAG, "Error while parsing time" + e);
+                Snackbar.make(binding.ibDate, getString(R.string.wrong_date_message), BaseTransientBottomBar.LENGTH_SHORT).show();
                 return;
             }
-            event.setImage(new ParseFile(photoFile));
-            event.setCommunity(community);
-            event.setDescription(etDescription.getText().toString());
-            event.saveInBackground(e -> {
+        } else {
+            Snackbar.make(binding.ibLoc, R.string.wrong_date_message, BaseTransientBottomBar.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (addressLatLng != null) {
+            event.setAddress(new ParseGeoPoint(addressLatLng.latitude, addressLatLng.longitude));
+            event.setAddressString(addressString);
+        } else {
+            Snackbar.make(binding.btnShare, "Address cannot be empty", BaseTransientBottomBar.LENGTH_SHORT).show();
+            return;
+        }
+        event.setUser(ParseUser.getCurrentUser());
+        event.setTitle(binding.etTitle.getText().toString());
+        event.setImage(new ParseFile(photoFile));
+        event.setCommunity(community);
+        event.setDescription(binding.etDescription.getText().toString());
+        event.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(com.parse.ParseException e) {
                 if (e != null) {
                     Log.i(TAG, "Error making an event" + e);
                 } else {
@@ -266,7 +283,21 @@ public class CreateEventFragment extends DialogFragment {
                     Toast.makeText(getContext(), "Successful Created an event", Toast.LENGTH_SHORT).show();
                     NavigationUtil.goToActivity(getActivity(), MainActivity.class);
                 }
-            });
+            }
+        });
+    }
+
+    private void saveSelectedCommunity(int position) {
+        ParseQuery<Community> communityParseQuery = ParseQuery.getQuery(Community.class);
+        communityParseQuery.whereEqualTo(Community.KEY_NAME, adapter.getItem(position));
+        communityParseQuery.getFirstInBackground(new GetCallback<Community>() {
+            @Override
+            public void done(Community object, com.parse.ParseException e) {
+                if (e == null) {
+                    community = object;
+                    Toast.makeText(getContext(), "Community set", Toast.LENGTH_SHORT).show();
+                }
+            }
         });
     }
 
@@ -277,12 +308,6 @@ public class CreateEventFragment extends DialogFragment {
         Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
                 .build(view.getContext());
         startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_create_event, container, false);
     }
 
     // Trigger gallery selection for a photo
@@ -312,7 +337,8 @@ public class CreateEventFragment extends DialogFragment {
                 if (data != null) {
                     Log.i(TAG, Objects.requireNonNull(Autocomplete.getStatusFromIntent(data).getStatusMessage()));
                 }
-                Snackbar.make(tvAddressDisplay, R.string.no_address_message, BaseTransientBottomBar.LENGTH_SHORT).show();
+                Snackbar.make(tvAddressDisplay, R.string.no_address_message,
+                        BaseTransientBottomBar.LENGTH_SHORT).show();
             }
         }
     }

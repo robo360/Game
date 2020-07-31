@@ -19,6 +19,7 @@ import com.bumptech.glide.Glide;
 import com.example.game.R;
 import com.example.game.databinding.FragmentProfileBinding;
 import com.example.game.models.User;
+import com.example.game.utils.ConstantUtils;
 import com.example.game.utils.TimeUtil;
 import com.google.android.material.tabs.TabLayout;
 import com.parse.ParseException;
@@ -113,7 +114,6 @@ public class ProfileFragment extends Fragment {
         });
 
         ParseUser user = ParseUser.getCurrentUser();
-
         try {
             ParseFile imageProfile = (ParseFile) user.fetchIfNeeded().get(User.KEY_IMAGE);
             if (imageProfile != null) {
@@ -163,7 +163,7 @@ public class ProfileFragment extends Fragment {
         fragment = TakePictureFragment.newInstance();
         Objects.requireNonNull(getActivity())
                 .getSupportFragmentManager().beginTransaction()
-                .addToBackStack("MainActivity").replace(R.id.flContainer, fragment)
+                .addToBackStack(ConstantUtils.MAIN_TAG).replace(R.id.flContainer, fragment)
                 .commit();
     }
 

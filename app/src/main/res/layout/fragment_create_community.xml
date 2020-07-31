@@ -44,7 +44,6 @@
             android:inputType="textMultiLine"
             android:singleLine="true"
             android:textAlignment="center"
-            android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -74,7 +73,7 @@
             android:layout_marginStart="@dimen/side_margin"
             android:layout_marginTop="@dimen/side_margin"
             android:text="@string/set_a_picture"
-            android:textColor="@color/colorAccent"
+            android:textColor="@color/gray"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/etDescription" />
 
@@ -82,7 +81,7 @@
             android:id="@+id/btnShare"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="36dp"
+            android:layout_marginTop="@dimen/new_block"
             android:text="@string/start_community"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.579"
@@ -112,7 +111,8 @@
             app:layout_constraintBottom_toTopOf="@+id/etTitle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_baseline_close_24" />
+            app:srcCompat="@drawable/ic_baseline_close_24"
+            android:contentDescription="@string/clear_button" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

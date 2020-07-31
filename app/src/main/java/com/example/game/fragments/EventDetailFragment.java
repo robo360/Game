@@ -1,6 +1,7 @@
 package com.example.game.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -23,6 +24,7 @@ import com.example.game.models.Community;
 import com.example.game.models.Event;
 import com.example.game.models.Subscription;
 import com.example.game.models.User;
+import com.example.game.utils.QueryUtil;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -88,23 +90,11 @@ public class EventDetailFragment extends Fragment {
             }
         });
 
-        ParseQuery<Attendance> attendance1 = ParseQuery.getQuery(Attendance.class);
-        attendance1.whereEqualTo(Attendance.KEY_USER, ParseUser.getCurrentUser());
-        attendance1.whereEqualTo(Attendance.KEY_LIKE_STATUS, true);
-        attendance1.getFirstInBackground(new GetCallback<Attendance>() {
-            @Override
-            public void done(Attendance object, ParseException e) {
-                if(e == null){
-                    btnBookMark.setImageDrawable(getContext().getDrawable(R.drawable.ic_baseline_bookmark_24));
-                }
-            }
-        });
-
         //fill the rest of the views:
         try {
             tvCommunity.setText(String.format("@%s", Objects.requireNonNull(community).fetchIfNeeded().get(Community.KEY_NAME)));
         } catch (ParseException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error querying community name: " + e);
         }
 
         try {
@@ -123,15 +113,27 @@ public class EventDetailFragment extends Fragment {
         if (image != null) {
             Glide.with(Objects.requireNonNull(getContext())).load(event.getImage().getUrl()).into(ivImage);
         }
-        tvDetail.setText(event.getDescription());
 
-        btnGo.setOnClickListener(view1 -> saveAttendanceChange());
+        btnGo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                saveAttendanceChange();
+            }
+        });
 
-        tvGoing.setOnClickListener(view12 -> saveAttendanceChange());
+        tvGoing.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                saveAttendanceChange();
+            }
+        });
+
+        QueryUtil.bindBookMarkPerStatus(getContext(),btnBookMark);
+
         btnBookMark.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                bookMarkEvent(event);
+                QueryUtil.bookMarkEvent(event, getContext(), btnBookMark);
             }
         });
 
@@ -143,7 +145,7 @@ public class EventDetailFragment extends Fragment {
 
             @Override
             public boolean onDoubleTap(MotionEvent motionEvent) {
-                bookMarkEvent(event);
+                QueryUtil.bookMarkEvent(event, getContext(), btnBookMark);
                 return true;
             }
 
@@ -152,9 +154,6 @@ public class EventDetailFragment extends Fragment {
                 return false;
             }
         });
-
-        SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, HH:mm");
-        tvDate.setText(formatter.format(event.getDate()));
 
         ivImage.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -165,6 +164,9 @@ public class EventDetailFragment extends Fragment {
             }
         });
 
+        tvDetail.setText(event.getDescription());
+        SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, HH:mm");
+        tvDate.setText(formatter.format(event.getDate()));
     }
 
     @Override
@@ -211,62 +213,6 @@ public class EventDetailFragment extends Fragment {
                         }
                     }
                 });
-            }
-        });
-    }
-
-    private void bookMarkEvent(Event event) {
-        ParseQuery<Attendance> attendance = ParseQuery.getQuery(Attendance.class);
-        attendance.whereEqualTo(Attendance.KEY_EVENT, event);
-        attendance.whereEqualTo(Attendance.KEY_USER, ParseUser.getCurrentUser());
-        attendance.getFirstInBackground((object, e) -> {
-            if (object != null) {
-                boolean status = object.getLikeStatus();
-                if (status == true){
-                    object.setLikeStatus(false);
-                    btnBookMark.setImageDrawable(getContext().getDrawable(R.drawable.ic_baseline_bookmark_border_24));
-                } else {
-                    object.setLikeStatus(true);
-                    btnBookMark.setImageDrawable(getContext().getDrawable(R.drawable.ic_baseline_bookmark_24));
-                }
-                object.saveInBackground();
-            } else {
-                //Create Attendance record:
-                Attendance attendanceQuery = new Attendance();
-                attendanceQuery.setUser(ParseUser.getCurrentUser());
-                attendanceQuery.setEvent(event);
-                attendanceQuery.setLikeStatus(true);
-                attendanceQuery.saveInBackground(e1 -> {
-                    if (e == null) {
-                        btnBookMark.setImageDrawable(getContext().getDrawable(R.drawable.ic_baseline_bookmark_24));
-                    }
-                });
-            }
-        });
-
-        addInteraction(event);
-    }
-
-    public  void addInteraction(Event event){
-        //add the interaction to the db
-        ParseQuery<Subscription> subscriptionParseQuery = ParseQuery.getQuery(Subscription.class);
-        subscriptionParseQuery.whereEqualTo(Subscription.KEY_USER, ParseUser.getCurrentUser());
-        subscriptionParseQuery.whereEqualTo(Subscription.KEY_COMMUNITY, event.getCommunity());
-        subscriptionParseQuery.getFirstInBackground(new GetCallback<Subscription>() {
-            @Override
-            public void done(Subscription object, ParseException e) {
-                if(object != null && e == null){
-                    int count = object.getInteractionCount().intValue();
-                    object.setInteractionCount(count + 1);
-                    object.saveEventually();
-                } else {
-                    //create interaction
-                    Subscription subscription = new Subscription();
-                    subscription.setCommunity(event.getCommunity());
-                    subscription.setUser(ParseUser.getCurrentUser());
-                    subscription.setInteractionCount( 1 );
-                    subscription.saveEventually();
-                }
             }
         });
     }

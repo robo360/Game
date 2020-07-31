@@ -19,7 +19,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 
 import com.example.game.R;
 import com.example.game.activities.MainActivity;
@@ -28,8 +27,10 @@ import com.example.game.models.Community;
 import com.example.game.models.Subscription;
 import com.example.game.utils.ImageUtil;
 import com.example.game.utils.NavigationUtil;
+import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.io.File;
 
@@ -68,7 +69,12 @@ public class CreateCommunityFragment extends DialogFragment {
         ImageButton ibClose = binding.ibClose;
         ivPoster = binding.ivPoster;
 
-        ivPoster.setOnClickListener(this::onPickPhoto);
+        ivPoster.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onPickPhoto(view);
+            }
+        });
 
         ibClose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,20 +83,25 @@ public class CreateCommunityFragment extends DialogFragment {
             }
         });
 
-        btnShare.setOnClickListener(view12 -> {
-            Community community = new Community();
-            community.setCreator(ParseUser.getCurrentUser());
-            community.setName(etTitle.getText().toString());
-            community.setImage(new ParseFile(photoFile));
-            community.setDescription(etDescription.getText().toString());
-            community.saveInBackground(e -> {
-                if (e != null) {
-                    Log.e(TAG, "Error making an event" + e);
-                } else {
-                    subscribeToCommunity(community);
-                }
-            });
-
+        btnShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Community community = new Community();
+                community.setCreator(ParseUser.getCurrentUser());
+                community.setName(etTitle.getText().toString());
+                community.setImage(new ParseFile(photoFile));
+                community.setDescription(etDescription.getText().toString());
+                community.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e != null) {
+                            Log.e(TAG, "Error making an event" + e);
+                        } else {
+                            subscribeToCommunity(community);
+                        }
+                    }
+                });
+            }
         });
     }
 
@@ -127,12 +138,15 @@ public class CreateCommunityFragment extends DialogFragment {
         subscription.setUser(ParseUser.getCurrentUser());
         subscription.setCommunity(community);
         subscription.setFollowStatus(true);
-        subscription.saveInBackground(e -> {
-            if (e == null) {
-                Toast.makeText(getContext(), "Successful Created A community", Toast.LENGTH_SHORT).show();
-                NavigationUtil.goToActivity(getActivity(), MainActivity.class);
-            } else {
-                Log.e(TAG, "Error while making a subscription" + e);
+        subscription.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+                    Toast.makeText(getContext(), "Successful Created A community", Toast.LENGTH_SHORT).show();
+                    NavigationUtil.goToActivity(getActivity(), MainActivity.class);
+                } else {
+                    Log.e(TAG, "Error while making a subscription" + e);
+                }
             }
         });
     }

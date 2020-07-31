@@ -8,8 +8,7 @@
     android:layout_marginLeft="@dimen/eight_dp"
     android:layout_marginRight="@dimen/eight_dp"
     android:layout_marginBottom="1dp"
-    android:background="@color/white"
-    app:cardElevation="0.5dp">
+    android:background="@color/white">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/sc"
@@ -44,7 +43,7 @@
             android:layout_marginStart="@dimen/side_margin"
             android:layout_marginTop="@dimen/eight_dp"
             android:layout_toEndOf="@+id/ivImage"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -145,7 +144,7 @@
             android:layout_height="0.5dp"
             android:layout_marginTop="6dp"
             android:layout_marginBottom="2dp"
-            android:background="#F57C00"
+            android:background="@color/gray"
             app:layout_constraintBottom_toTopOf="@+id/ivImage"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -159,12 +158,12 @@
             android:layout_height="0.5dp"
             android:layout_marginTop="1dp"
             android:layout_marginBottom="3dp"
-            android:background="#F57C00"
+            android:background="@color/gray"
             app:layout_constraintBottom_toTopOf="@+id/tvTitle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ivImage"
-            app:layout_constraintVertical_bias="0.24000001" />
+            app:layout_constraintVertical_bias="0.060000002" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

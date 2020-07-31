@@ -19,6 +19,7 @@ import com.example.game.databinding.ItemSearchBinding;
 import com.example.game.models.Community;
 import com.example.game.models.Subscription;
 import com.example.game.models.User;
+import com.example.game.utils.QueryUtil;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.parse.DeleteCallback;
@@ -27,9 +28,9 @@ import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.util.List;
-import java.util.Objects;
 
 public class CommunitySearchAdapter extends RecyclerView.Adapter<CommunitySearchAdapter.ViewHolder> {
     private static final String TAG = "CommunitySearchAdapter";
@@ -77,98 +78,33 @@ public class CommunitySearchAdapter extends RecyclerView.Adapter<CommunitySearch
             btnAction = binding.btnAction;
             ivProfile = binding.ivProfile;
 
-            btnAction.setOnClickListener(view -> {
-                Subscription subscription = new Subscription();
-                subscription.setUser(ParseUser.getCurrentUser());
-                subscription.setCommunity(communities.get(getAdapterPosition()));
-                subscription.setInteractionCount(1);
-                subscription.saveInBackground(e -> {
-                    if (e == null) {
-                        btnAction.setVisibility(View.GONE);
-                        tvStatus.setVisibility(View.VISIBLE);
-                        Toast.makeText(context, "Followed", Toast.LENGTH_SHORT).show();
-                        addInteraction(communities.get(getAdapterPosition()));
-                        AddFollowing();
-                    } else {
-                        Toast.makeText(context, "Was not able to follow", Toast.LENGTH_SHORT).show();
-                        Log.e(TAG, "Error while following a community:" + e);
-                    }
-                });
-
+            btnAction.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    subscribeUserToCommunity();
+                }
             });
 
             tvStatus.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     deleteFollowingAlert = new MaterialAlertDialogBuilder(context)
-                            .setMessage("Are you sure you want to leave this community?")
-                            .setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+                            .setMessage(R.string.message_before_unfollow)
+                            .setNeutralButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    unsubscribeUserToCommunity();
+                                }
+                            })
+                            .setPositiveButton(R.string.leave, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
 
-                                }
-                            })
-                            .setPositiveButton("Leave", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    ParseQuery<Subscription> subscriptionParseQuery1 = ParseQuery.getQuery(Subscription.class);
-                                    subscriptionParseQuery1.include(Subscription.KEY_COMMUNITY);
-                                    subscriptionParseQuery1.whereEqualTo(Subscription.KEY_USER, ParseUser.getCurrentUser());
-                                    subscriptionParseQuery1.whereEqualTo(Subscription.KEY_COMMUNITY, communities.get(getAdapterPosition()));
-                                    Log.i(TAG, "Position:" + getAdapterPosition());
-                                    subscriptionParseQuery1.getFirstInBackground(new GetCallback<Subscription>() {
-                                        @Override
-                                        public void done(Subscription object, ParseException e) {
-                                            if (object != null && e == null) {
-                                                object.deleteInBackground(new DeleteCallback() {
-                                                    @Override
-                                                    public void done(ParseException e) {
-                                                        if (e == null) {
-                                                            removeFollowing();
-                                                            btnAction.setVisibility(View.VISIBLE);
-                                                            tvStatus.setVisibility(View.GONE);
-                                                        } else {
-                                                            Log.e(TAG, "Error while deleting community" + e);
-                                                        }
-                                                    }
-                                                });
-                                            } else {
-                                                Log.e(TAG, "Error while unfollowing community" + e);
-                                            }
-                                        }
-                                    });
                                 }
                             });
                     deleteFollowingAlert.show();
                 }
             });
-        }
-
-        private void addInteraction(Community community) {
-            ParseQuery<Subscription> subscriptionParseQuery = ParseQuery.getQuery(Subscription.class);
-            subscriptionParseQuery.whereEqualTo(Subscription.KEY_COMMUNITY, community);
-            subscriptionParseQuery.whereEqualTo(Subscription.KEY_USER, ParseUser.getCurrentUser());
-            subscriptionParseQuery.getFirstInBackground((object, e) -> {
-                if(e == null){
-                    object.setInteractionCount(object.getInteractionCount().intValue() + 1);
-                    object.saveInBackground();
-                }
-            });
-        }
-
-        private void removeFollowing() {
-            ParseUser user = ParseUser.getCurrentUser();
-            int count = Objects.requireNonNull(user.getNumber(User.KEY_FOLLOWING_COUNT)).intValue();
-            user.put(User.KEY_FOLLOWING_COUNT, count - 1);
-            user.saveEventually();
-
-        }
-
-        public void AddFollowing() {
-            ParseUser user = ParseUser.getCurrentUser();
-            int count = Objects.requireNonNull(user.getNumber(User.KEY_FOLLOWING_COUNT)).intValue();
-            user.put(User.KEY_FOLLOWING_COUNT, count + 1);
-            user.saveEventually();
         }
 
         public void bind(Community community) {
@@ -177,14 +113,17 @@ public class CommunitySearchAdapter extends RecyclerView.Adapter<CommunitySearch
             subscriptionParseQuery.include(Subscription.KEY_COMMUNITY);
             subscriptionParseQuery.whereEqualTo(Subscription.KEY_USER, ParseUser.getCurrentUser());
             subscriptionParseQuery.whereEqualTo(Subscription.KEY_COMMUNITY, community);
-            subscriptionParseQuery.getFirstInBackground((object, e) -> {
-                if (object != null && e == null) {
-                    btnAction.setVisibility(View.GONE);
-                    tvStatus.setVisibility(View.VISIBLE);
-                } else {
-                    Log.e(TAG, "Error while checking status" + e);
-                    tvStatus.setVisibility(View.GONE);
-                    btnAction.setVisibility(View.VISIBLE);
+            subscriptionParseQuery.getFirstInBackground(new GetCallback<Subscription>() {
+                @Override
+                public void done(Subscription object, ParseException e) {
+                    if (object != null && e == null) {
+                        btnAction.setVisibility(View.GONE);
+                        tvStatus.setVisibility(View.VISIBLE);
+                    } else {
+                        Log.e(TAG, "Error while checking status" + e);
+                        tvStatus.setVisibility(View.GONE);
+                        btnAction.setVisibility(View.VISIBLE);
+                    }
                 }
             });
 
@@ -204,6 +143,55 @@ public class CommunitySearchAdapter extends RecyclerView.Adapter<CommunitySearch
             } else {
                 ivProfile.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_baseline_image_24));
             }
+        }
+
+        private void subscribeUserToCommunity(){
+            Subscription subscription = new Subscription();
+            subscription.setUser(ParseUser.getCurrentUser());
+            subscription.setCommunity(communities.get(getAdapterPosition()));
+            subscription.setInteractionCount(1);
+            subscription.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e == null) {
+                        btnAction.setVisibility(View.GONE);
+                        tvStatus.setVisibility(View.VISIBLE);
+                        QueryUtil.addFollowingToUserCount();
+                    } else {
+                        Toast.makeText(context, R.string.was_not_following, Toast.LENGTH_SHORT)
+                                .show();
+                        Log.e(TAG, "Error while following a community:" + e);
+                    }
+                }
+            });
+        }
+
+        private void unsubscribeUserToCommunity(){
+            ParseQuery<Subscription> subscriptionParseQuery = ParseQuery.getQuery(Subscription.class);
+            subscriptionParseQuery.include(Subscription.KEY_COMMUNITY);
+            subscriptionParseQuery.whereEqualTo(Subscription.KEY_USER, ParseUser.getCurrentUser());
+            subscriptionParseQuery.whereEqualTo(Subscription.KEY_COMMUNITY, communities.get(getAdapterPosition()));
+            subscriptionParseQuery.getFirstInBackground(new GetCallback<Subscription>() {
+                @Override
+                public void done(Subscription object, ParseException e) {
+                    if (object != null && e == null) {
+                        object.deleteInBackground(new DeleteCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                if (e == null) {
+                                    QueryUtil.removeFollowingToUserCount();
+                                    btnAction.setVisibility(View.VISIBLE);
+                                    tvStatus.setVisibility(View.GONE);
+                                } else {
+                                    Log.e(TAG, "Error while deleting community" + e);
+                                }
+                            }
+                        });
+                    } else {
+                        Log.e(TAG, "Error while unfollowing community" + e);
+                    }
+                }
+            });
         }
     }
 }
