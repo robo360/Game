@@ -1,6 +1,7 @@
 package com.example.game.fragments;
 
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -25,6 +26,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import com.example.game.R;
@@ -66,7 +68,7 @@ import java.util.Objects;
 
 import static com.parse.Parse.getApplicationContext;
 
-public class CreateEventFragment extends Fragment {
+public class CreateEventFragment extends DialogFragment {
     private static final String TAG = "CreateEventFragment";
     public static final int PICK_PHOTO_CODE = 1046;
     private static int AUTOCOMPLETE_REQUEST_CODE = 1;
@@ -96,6 +98,17 @@ public class CreateEventFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        Dialog dialog = getDialog();
+        if (dialog != null) {
+            int width = ViewGroup.LayoutParams.MATCH_PARENT;
+            int height = ViewGroup.LayoutParams.MATCH_PARENT;
+            dialog.getWindow().setLayout(width, height);
+        }
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         FragmentCreateEventBinding binding = FragmentCreateEventBinding.bind(view);
@@ -110,6 +123,7 @@ public class CreateEventFragment extends Fragment {
         ImageButton btnDate = binding.ibDate;
         ImageButton btnTime = binding.ibTime;
         ImageButton ibLoc = binding.ibLoc;
+        ImageButton ibClose = binding.ibClose;
         ivPoster = binding.ivPoster;
         tvAddressDisplay = binding.tvAddressDisplay;
         if (communities != null) {
@@ -117,6 +131,13 @@ public class CreateEventFragment extends Fragment {
         }
 
         ivPoster.setOnClickListener(this::onPickPhoto);
+
+        ibClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dismiss();
+            }
+        });
 
         ibLoc.setOnClickListener(this::openPlaces);
         View.OnClickListener dateClickListener = new View.OnClickListener() {

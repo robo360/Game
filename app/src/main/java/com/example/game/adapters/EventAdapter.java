@@ -30,6 +30,8 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
@@ -153,7 +155,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
             });
 
             tvCommunity.setText(MessageFormat.format("@{0}", event.getCommunity().getName()));
-            tvDate.setText(event.getDate().toString());
+            SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, HH:mm");
+            tvDate.setText(formatter.format(event.getDate()));
             tvTitle.setText(event.getTitle());
             ParseFile image = event.getImage();
             if(image != null){

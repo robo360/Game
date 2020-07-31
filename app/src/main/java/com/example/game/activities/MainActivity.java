@@ -96,8 +96,10 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setSelectedItemId(R.id.action_event);
 
         fab.setOnClickListener(view -> {
-            fragment = CreateEventFragment.newInstance(communities);
-            fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(TAG).commit();
+            getCommunityNames();
+            Toast.makeText(MainActivity.this, R.string.create_event, Toast.LENGTH_SHORT).show();
+            CreateEventFragment createEventFragment = CreateEventFragment.newInstance(communities);
+            createEventFragment.show(fragmentManager, TAG);
         });
 
         toolbar.setOnMenuItemClickListener(item -> {
@@ -108,13 +110,13 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.create_event:
                     getCommunityNames();
                     Toast.makeText(MainActivity.this, R.string.create_event, Toast.LENGTH_SHORT).show();
-                    fragment = CreateEventFragment.newInstance(communities);
-                    fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
+                    CreateEventFragment createEventFragment = CreateEventFragment.newInstance(communities);
+                    createEventFragment.show(fragmentManager, TAG);
                     break;
                 default:
                     Toast.makeText(MainActivity.this, R.string.create_community, Toast.LENGTH_SHORT).show();
-                    fragment = CreateCommunityFragment.newInstance();
-                    fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(TAG).commit();
+                    CreateCommunityFragment createCommunityFragment = CreateCommunityFragment.newInstance();
+                    createCommunityFragment.show(fragmentManager, TAG);
                     break;
             }
             return true;

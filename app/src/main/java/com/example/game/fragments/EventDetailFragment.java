@@ -1,7 +1,6 @@
 package com.example.game.fragments;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -32,6 +31,7 @@ import com.parse.ParseUser;
 
 import org.parceler.Parcels;
 
+import java.text.SimpleDateFormat;
 import java.util.Objects;
 
 public class EventDetailFragment extends Fragment {
@@ -112,7 +112,6 @@ public class EventDetailFragment extends Fragment {
         } catch (ParseException e) {
             tvOrganizer.setText(getString(R.string.app_label));
         }
-        tvDate.setText(Objects.requireNonNull(event).getDate().toString());
         tvTitle.setText(event.getTitle());
 
         if (event.getAddressString() == null) {
@@ -153,6 +152,9 @@ public class EventDetailFragment extends Fragment {
                 return false;
             }
         });
+
+        SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, HH:mm");
+        tvDate.setText(formatter.format(event.getDate()));
 
         ivImage.setOnTouchListener(new View.OnTouchListener() {
             @Override

@@ -8,6 +8,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/white"
         android:scrollbarAlwaysDrawVerticalTrack="true">
 
         <EditText
@@ -34,7 +35,7 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/et_size"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="@dimen/side_margin"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             android:background="@drawable/edit_text_border"
             android:ems="10"
@@ -74,7 +75,7 @@
             android:contentDescription="@string/set_location"
             android:foregroundGravity="center"
             android:src="@drawable/ic_baseline_location_on_24"
-            android:tint="@color/gray"
+            android:tint="@color/colorAccent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout3" />
@@ -117,6 +118,7 @@
             android:layout_marginEnd="@dimen/side_margin"
             android:background="@drawable/edit_text_border"
             android:completionThreshold="0"
+            android:gravity="center"
             android:hint="@string/community"
             android:textAlignment="center"
             android:textSize="14sp"
@@ -132,7 +134,7 @@
             android:layout_marginStart="@dimen/side_margin"
             android:layout_marginTop="@dimen/side_margin"
             android:text="@string/set_a_picture"
-            android:textColor="@color/gray"
+            android:textColor="@color/colorAccent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/autoTvCommunity" />
 
@@ -157,7 +159,7 @@
                 android:background="@color/white"
                 android:contentDescription="@string/date"
                 android:scaleType="fitCenter"
-                android:tint="@color/gray"
+                android:tint="@color/colorAccent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tvTimeLabel"
                 app:layout_constraintTop_toBottomOf="@+id/ivPoster"
@@ -167,11 +169,12 @@
                 android:id="@+id/ibTime"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
                 android:layout_weight="1"
-                android:backgroundTint="#FFFFFF"
+                android:backgroundTint="@color/white"
                 android:contentDescription="@string/time"
                 android:scaleType="center"
-                android:tint="@color/gray"
+                android:tint="@color/colorAccent"
                 app:layout_constraintStart_toEndOf="@+id/imageButton"
                 app:layout_constraintTop_toBottomOf="@+id/ivPoster"
                 app:srcCompat="@drawable/ic_baseline_access_time_24" />
@@ -205,6 +208,7 @@
                 android:id="@+id/tvDisplayTime"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_marginLeft="4dp"
                 android:layout_weight="1"
                 android:background="@drawable/edit_text_border"
                 android:gravity="center"
@@ -225,6 +229,21 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvAddressDisplay" />
+
+        <ImageButton
+            android:id="@+id/ibClose"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="@dimen/side_margin"
+            android:layout_marginBottom="@dimen/side_margin"
+            android:background="@color/white"
+            android:scaleType="fitXY"
+            android:tint="@color/black"
+            app:layout_constraintBottom_toTopOf="@+id/etTitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            app:srcCompat="@drawable/ic_baseline_close_24" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

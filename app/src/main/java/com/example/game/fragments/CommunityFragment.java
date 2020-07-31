@@ -82,7 +82,6 @@ public class CommunityFragment extends Fragment implements EventAdapter.OnClickB
                         }
                     });
                 }
-
             }
 
             rvEvents.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearLayoutManager) {
@@ -204,6 +203,7 @@ public class CommunityFragment extends Fragment implements EventAdapter.OnClickB
                 Log.e(TAG, getString(R.string.error_events_query) + e);
             } else {
                 if(objects.size() > 0 ){
+                    binding.tvMessage.setVisibility(View.GONE);
                     events.addAll(objects);
                     adapter.notifyDataSetChanged();
                 } else {
@@ -226,6 +226,7 @@ public class CommunityFragment extends Fragment implements EventAdapter.OnClickB
                 Log.e(TAG, getString(R.string.error_events_query) + e);
             } else {
                 if(objects.size() > 0 ){
+                    binding.tvMessage.setVisibility(View.GONE);
                     events.addAll(objects);
                     adapter.notifyDataSetChanged();
                 } else {

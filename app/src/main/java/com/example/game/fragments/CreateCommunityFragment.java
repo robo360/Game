@@ -1,5 +1,6 @@
 package com.example.game.fragments;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -11,11 +12,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import com.example.game.R;
@@ -30,7 +33,7 @@ import com.parse.ParseUser;
 
 import java.io.File;
 
-public class CreateCommunityFragment extends Fragment {
+public class CreateCommunityFragment extends DialogFragment {
     private static final String TAG = "CreateCommunityFragment";
     public static final int PICK_PHOTO_CODE = 1046;
 
@@ -45,15 +48,34 @@ public class CreateCommunityFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        Dialog dialog = getDialog();
+        if (dialog != null) {
+            int width = ViewGroup.LayoutParams.MATCH_PARENT;
+            int height = ViewGroup.LayoutParams.MATCH_PARENT;
+            dialog.getWindow().setLayout(width, height);
+        }
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         com.example.game.databinding.FragmentCreateCommunityBinding binding = FragmentCreateCommunityBinding.bind(view);
         Button btnShare = binding.btnShare;
         EditText etTitle = binding.etTitle;
         EditText etDescription = binding.etDescription;
+        ImageButton ibClose = binding.ibClose;
         ivPoster = binding.ivPoster;
 
-        binding.ivPoster.setOnClickListener(this::onPickPhoto);
+        ivPoster.setOnClickListener(this::onPickPhoto);
+
+        ibClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dismiss();
+            }
+        });
 
         btnShare.setOnClickListener(view12 -> {
             Community community = new Community();
