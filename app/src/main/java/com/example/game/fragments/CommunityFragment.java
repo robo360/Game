@@ -105,11 +105,13 @@ public class CommunityFragment extends Fragment implements EventAdapter.OnClickB
         }
     }
 
-    /*
-    Algorithm: check whether on public community or a specific-interest community.
-    if(specific_interest), fill with recyclerView with events in that community
-    else, fill with suggestions based on the probability distribution of the user's interactions
-    with communities.
+    /**
+     * populates the recyclerView with events based on @community
+     * @param community This is the community at which the user is currently at.
+     *                  if this community names is BASE_COMMUNITY("public"), then feel the recycler with suggestions
+     *                  otherwise, feel the recyclerView with events in that community
+     * @see #populateRecyclerView(Community)
+     * @see #populateWithCommunityEvents(Community)
      */
     private void populateRecyclerView(Community community) {
         events.clear();
@@ -120,6 +122,13 @@ public class CommunityFragment extends Fragment implements EventAdapter.OnClickB
         }
     }
 
+    /**
+     * Populates the recyclerView using a pdf when the user already follows the other communities
+     * otherwise, show public events only.
+     * @param community This is the community at which the user is currently at.
+     * @see #populateWithCommunityEvents(Community)
+     * @see #populateWithPdf(List)
+     */
     private void populateWithSuggestions(Community community) {
         ParseQuery<Subscription> subscriptionParseQuery = ParseQuery.getQuery(Subscription.class);
         subscriptionParseQuery.whereEqualTo(Subscription.KEY_USER, ParseUser.getCurrentUser());
@@ -136,8 +145,17 @@ public class CommunityFragment extends Fragment implements EventAdapter.OnClickB
         });
     }
 
+    /**
+     *Generate a number of events from each community that corresponds to its fraction of interaction
+     * in all interactions. Get the pmf and calculate the limit of the number of events using the total number
+     * of events to populate a recyclerView. If the query results no results, inform the user that no events were found.
+     * If the number of events of events is less than the limit, shuffle the result and notify the adapter.
+     * Otherwise, pick the first "limit" events, shuffle them and notify the adapter.
+     * @param subscriptions This is a list of all subscriptions between the user and various communities they follow.
+     * @see #calculatePmf(List)
+     */
     private void populateWithPdf(List<Subscription> subscriptions) {
-        HashMap<Community, Float> pdf = calculatePdf(subscriptions);
+        HashMap<Community, Float> pdf = calculatePmf(subscriptions);
         for (Community community : pdf.keySet()) {
             int limit = (int) (pdf.get(community) * ConstantUtils.MAX_EVENTS_COUNT);
             ParseQuery<Event> eventParseQuery = ParseQuery.getQuery(Event.class);
@@ -171,9 +189,14 @@ public class CommunityFragment extends Fragment implements EventAdapter.OnClickB
             });
         }
     }
-
-    private HashMap<Community, Float> calculatePdf(List<Subscription> subscriptions) {
-        HashMap<Community, Float> pdf = new HashMap<>();
+    /**
+     * Calculate the probability mass function for interactions in various communities.
+     * Calculate total interactions and then a fraction contributed by each community.
+     * @param subscriptions This is a list of all subscriptions between the user and various communities they follow.
+     * @return pmf This is the probability mass function
+     */
+    private HashMap<Community, Float> calculatePmf(List<Subscription> subscriptions) {
+        HashMap<Community, Float> pmf = new HashMap<>();
         float totalInteractions = 0;
 
         for (Subscription subscription : subscriptions) {
@@ -187,12 +210,16 @@ public class CommunityFragment extends Fragment implements EventAdapter.OnClickB
             Community community = subscription.getCommunity();
             if (!community.getName().equals(ConstantUtils.BASE_COMMUNITY)) {
                 float frequency = subscription.getInteractionCount().floatValue() / totalInteractions;
-                pdf.put(subscription.getCommunity(), frequency);
+                pmf.put(subscription.getCommunity(), frequency);
             }
         }
-        return pdf;
+        return pmf;
     }
 
+    /**
+     * Feel the recyclerView with events(<=MAX_EVENTS_COUNT) in a certain community in a descending order by the date they were created.
+     * @param community This is a community at which the user is at in the tabLayout.
+     */
     private void populateWithCommunityEvents(Community community) {
         ParseQuery<Event> eventParseQuery = ParseQuery.getQuery(Event.class);
         eventParseQuery.orderByDescending(Event.KEY_CREATED_AT);
@@ -218,6 +245,12 @@ public class CommunityFragment extends Fragment implements EventAdapter.OnClickB
         });
     }
 
+    /**
+     * Feel the recyclerView with events(<=MAX_EVENTS_COUNT, excluding the ones already in the list )
+     * in a certain community in a descending order by the date they were created..
+     * @param community This is a community at which the user is at in the tabLayout.
+     * @param skip the number of events already seen.
+     */
     private void populateWithCommunityEventsWithSkip(Community community, int skip) {
         ParseQuery<Event> eventParseQuery = ParseQuery.getQuery(Event.class);
         eventParseQuery.orderByDescending(Event.KEY_CREATED_AT);
