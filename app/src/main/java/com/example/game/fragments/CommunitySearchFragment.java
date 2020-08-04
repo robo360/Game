@@ -17,6 +17,8 @@ import com.example.game.R;
 import com.example.game.adapters.CommunitySearchAdapter;
 import com.example.game.databinding.FragmentCommunitySearchBinding;
 import com.example.game.models.Community;
+import com.parse.FindCallback;
+import com.parse.ParseException;
 import com.parse.ParseQuery;
 
 import java.util.ArrayList;
@@ -62,18 +64,22 @@ public class CommunitySearchFragment extends Fragment {
             q.whereContains(Community.KEY_NAME, query);
         }
         q.include(Community.KEY_CREATOR);
-        q.findInBackground((objects, e) -> {
-            if (objects.size() > 0) {
-                communities.addAll(objects);
-                adapter.notifyDataSetChanged();
-                Log.e(TAG, "Results: " + objects);
-            } else {
-                tvMessage.setVisibility(View.VISIBLE);
-                tvMessage.setText(String.format("No communities matches '%s'", query));
-                rvCommunitiesSearch.setVisibility(View.GONE);
-                Log.e(TAG, "Error: " + e);
+        q.findInBackground(new FindCallback<Community>() {
+            @Override
+            public void done(List<Community> objects, ParseException e) {
+                if (e == null) {
+                    if (objects.size() > 0) {
+                        communities.addAll(objects);
+                        adapter.notifyDataSetChanged();
+                        Log.e(TAG, "Results: " + objects);
+                    } else {
+                        tvMessage.setVisibility(View.VISIBLE);
+                        tvMessage.setText(String.format("No communities matches '%s'", query));
+                        rvCommunitiesSearch.setVisibility(View.GONE);
+                        Log.e(TAG, "Error: " + e);
+                    }
+                }
             }
         });
     }
-
 }

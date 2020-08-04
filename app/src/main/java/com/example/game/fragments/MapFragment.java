@@ -25,6 +25,8 @@ import androidx.fragment.app.Fragment;
 import com.example.game.R;
 import com.example.game.models.Community;
 import com.example.game.models.Event;
+import com.example.game.models.Subscription;
+import com.example.game.utils.ConstantUtils;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -42,9 +44,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,11 +68,14 @@ public class MapFragment extends Fragment {
     @Nullable
     private Location currentLocation;
     private List<Event> events;
+    private List<Community> communities;
 
     public static MapFragment newInstance() {
         MapFragment fragment = new MapFragment();
         return fragment;
     }
+
+    //TODO: include a boundary and query in the boundary, also add a zoom in and out feature.
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -88,7 +95,7 @@ public class MapFragment extends Fragment {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     loadMap(map);
                     events = new ArrayList<>();
-                    addEventsMarkers();
+                    populate();
                 }
             });
         } else {
@@ -221,25 +228,28 @@ public class MapFragment extends Fragment {
         super.onSaveInstanceState(savedInstanceState);
     }
 
-    private void addEventsMarkers() {
+    private void addEventsMarkers(Community community) {
         ParseQuery<Event> eventParseQuery = ParseQuery.getQuery(Event.class);
         eventParseQuery.orderByDescending(Event.KEY_CREATED_AT);
-
-        eventParseQuery.findInBackground((objects, e) -> {
-            if (e != null) {
-                Log.e(TAG, getString(R.string.error_events_query) + e);
-            } else {
-                events.addAll(objects);
-                for (Event event : events) {
-                    BitmapDescriptor defaultMarker =
-                            BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
-                    if (event.getAddress() != null && map != null) {
-                        LatLng position =
-                                new LatLng(event.getAddress().getLatitude(), event.getAddress().getLongitude());
-                        map.addMarker(new MarkerOptions()
-                                .position(position)
-                                .title(event.getTitle())
-                                .icon(defaultMarker));
+        eventParseQuery.whereEqualTo(Event.KEY_COMMUNITY, community);
+        eventParseQuery.findInBackground(new FindCallback<Event>() {
+            @Override
+            public void done(List<Event> objects, ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, getString(R.string.error_events_query) + e);
+                } else {
+                    events.addAll(objects);
+                    for (Event event : events) {
+                        BitmapDescriptor defaultMarker =
+                                BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
+                        if (event.getAddress() != null && map != null) {
+                            LatLng position =
+                                    new LatLng(event.getAddress().getLatitude(), event.getAddress().getLongitude());
+                            map.addMarker(new MarkerOptions()
+                                    .position(position)
+                                    .title(event.getTitle())
+                                    .icon(defaultMarker));
+                        }
                     }
                 }
             }
@@ -258,13 +268,33 @@ public class MapFragment extends Fragment {
                         @Override
                         public void done(Event object, ParseException e) {
                             if (e == null) {
-                                Fragment fragment = EventDetailFragment.newInstance(object, (Community) object.getCommunity());
-                                Objects.requireNonNull(getFragmentManager()).beginTransaction().replace(R.id.flContainer, fragment).commit();
+                                Fragment fragment = EventDetailFragment.newInstance(object, object.getCommunity());
+                                Objects.requireNonNull(getFragmentManager()).beginTransaction()
+                                        .replace(R.id.flContainer, fragment).addToBackStack(ConstantUtils.MAIN_TAG)
+                                        .commit();
                             }
                         }
                     });
                 }
             });
         }
+    }
+    public void populate() {
+        ParseUser user = ParseUser.getCurrentUser();
+        ParseQuery<Subscription> q = ParseQuery.getQuery(Subscription.class);
+        q.whereEqualTo(Subscription.KEY_USER, user);
+        q.include(Subscription.KEY_COMMUNITY);
+        q.findInBackground(new FindCallback<Subscription>() {
+            @Override
+            public void done(List<Subscription> objects, ParseException e) {
+                if (e != null) {
+                    Log.e(TAG, getString(R.string.error_events_query) + e);
+                } else {
+                    for (Subscription subscription : objects) {
+                        addEventsMarkers(subscription.getCommunity());
+                    }
+                }
+            }
+        });
     }
 }

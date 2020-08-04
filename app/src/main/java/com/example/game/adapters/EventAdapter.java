@@ -2,7 +2,9 @@ package com.example.game.adapters;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -16,32 +18,33 @@ import com.bumptech.glide.Glide;
 import com.example.game.R;
 import com.example.game.databinding.ItemEventBinding;
 import com.example.game.fragments.CommunityFragment;
-import com.example.game.models.Community;
 import com.example.game.models.Event;
 import com.example.game.models.User;
+import com.example.game.utils.QueryUtil;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 
-public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> {
+public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
     private static final String TAG ="EventAdapter";
 
     private Context context;
     private List<Event> events;
-    private Community community;
     private CommunityFragment fragment;
 
-    public EventAdapter(Context context, List<Event> events, Community community, CommunityFragment fragment) {
+    public EventAdapter(Context context, List<Event> events, CommunityFragment fragment) {
         this.context = context;
         this.events = events;
-        this.community = community;
         this.fragment = fragment;
     }
 
     public interface OnClickBtnDetail{
-        void onClickedBtnDetail(Event event, Community community);
+        void onClickedBtnDetail(Event event, View view);
     }
 
     @NonNull
@@ -62,40 +65,91 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
         return events.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
         ImageButton btnDetail;
+        ImageButton btnBookMark;
         ImageView ivImage;
         TextView tvTitle;
         TextView tvDate;
         TextView tvOrganizer;
         TextView tvCommunity;
 
-        public ViewHolder(@NonNull View itemView) {
+        public ViewHolder(@NonNull View itemView)  {
             super(itemView);
             ItemEventBinding binding = ItemEventBinding.bind(itemView);
             btnDetail = binding.btnGo;
+            btnBookMark = binding.btnBookMark;
             tvTitle = binding.tvTitle;
             tvDate = binding.tvDate;
             tvOrganizer = binding.tvOrganizer;
             ivImage = binding.ivImage;
             tvCommunity = binding.tvCommunity;
-            btnDetail.setOnClickListener(view -> fragment.onClickedBtnDetail(events.get(getAdapterPosition()), community));
+
+            btnDetail.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    fragment.onClickedBtnDetail(events.get(getAdapterPosition()), ivImage);
+                }
+            });
+
+            btnBookMark.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    QueryUtil.bookMarkEvent(events.get(getAdapterPosition()), context, btnBookMark);
+                }
+            });
+
+            tvTitle.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    fragment.onClickedBtnDetail(events.get(getAdapterPosition()), ivImage);
+                }
+            });
+
+            GestureDetector gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
+                @Override
+                public boolean onSingleTapConfirmed(MotionEvent motionEvent) {
+                    return false;
+                }
+
+                @Override
+                public boolean onDoubleTap(MotionEvent motionEvent) {
+                    QueryUtil.bookMarkEvent(events.get(getAdapterPosition()), context, btnBookMark);
+                    return true;
+                }
+
+                @Override
+                public boolean onDoubleTapEvent(MotionEvent motionEvent) {
+                    return false;
+                }
+            });
+
+            ivImage.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    gestureDetector.onTouchEvent(motionEvent);
+                    return true;
+                }
+            });
         }
 
         public void bind(Event event) {
             try {
-                tvOrganizer.setText(event.getUser().fetchIfNeeded().get(User.KEY_NAME).toString());
+                tvOrganizer.setText(Objects.requireNonNull(event.getUser().fetchIfNeeded()
+                        .get(User.KEY_NAME)).toString());
             } catch (ParseException e) {
-                Log.e(TAG, "Error getting the name of the user:" +e);
+                Log.e(TAG, "Error getting the name of the user:" + e);
             }
-
-            tvCommunity.setText(MessageFormat.format("@{0}", community.getName()));
-            tvDate.setText(event.getDate().toString());
+            tvCommunity.setText(MessageFormat.format("@{0}", event.getCommunity().getName()));
+            SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, HH:mm", Locale.US);
+            tvDate.setText(formatter.format(event.getDate()));
             tvTitle.setText(event.getTitle());
             ParseFile image = event.getImage();
-            if(image != null){
+            if (image != null) {
                 Glide.with(context).load(event.getImage().getUrl()).into(ivImage);
             }
+            QueryUtil.bindBookMarkPerStatus(context, btnBookMark);
         }
     }
+
 }

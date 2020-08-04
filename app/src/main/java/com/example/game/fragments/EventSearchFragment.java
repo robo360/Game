@@ -18,6 +18,9 @@ import com.example.game.adapters.EventSearchAdapter;
 import com.example.game.databinding.FragmentEventSearchBinding;
 import com.example.game.models.Community;
 import com.example.game.models.Event;
+import com.example.game.utils.ConstantUtils;
+import com.parse.FindCallback;
+import com.parse.ParseException;
 import com.parse.ParseQuery;
 
 import java.util.ArrayList;
@@ -63,15 +66,18 @@ public class EventSearchFragment extends Fragment implements EventSearchAdapter.
             q.whereContains(Event.KEY_TITLE, query);
         }
         q.include(Community.KEY_CREATOR);
-        q.findInBackground((objects, e) -> {
-            if (objects.size() > 0) {
-                events.addAll(objects);
-                adapter.notifyDataSetChanged();
-            } else {
-                tvMessage.setVisibility(View.VISIBLE);
-                tvMessage.setText(String.format("No Events matches '%s'", query));
-                rvEventsSearch.setVisibility(View.GONE);
-                Log.e(TAG, "Error: " + e);
+        q.findInBackground(new FindCallback<Event>() {
+            @Override
+            public void done(List<Event> objects, ParseException e) {
+                if (objects.size() > 0) {
+                    events.addAll(objects);
+                    adapter.notifyDataSetChanged();
+                } else {
+                    tvMessage.setVisibility(View.VISIBLE);
+                    tvMessage.setText(String.format("No Events matches '%s'", query));
+                    rvEventsSearch.setVisibility(View.GONE);
+                    Log.e(TAG, "Error: " + e);
+                }
             }
         });
     }
@@ -79,6 +85,8 @@ public class EventSearchFragment extends Fragment implements EventSearchAdapter.
     @Override
     public void btnOnClickedListener(Event event) {
         EventDetailFragment fragment = EventDetailFragment.newInstance(event, (Community) event.getCommunity());
-        Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction().replace(R.id.flContainer, fragment).commit();
+        Objects.requireNonNull(getActivity()).getSupportFragmentManager()
+                .beginTransaction().replace(R.id.flContainer, fragment).addToBackStack(ConstantUtils.MAIN_TAG)
+                .commit();
     }
 }

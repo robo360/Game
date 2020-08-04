@@ -5,13 +5,16 @@
     android:id="@+id/card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp"
-    app:cardElevation="1dp">
+    android:layout_marginLeft="@dimen/eight_dp"
+    android:layout_marginRight="@dimen/eight_dp"
+    android:layout_marginBottom="1dp"
+    android:background="@color/white">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/sc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#FFFFFF"
         android:clickable="false">
 
         <ImageView
@@ -20,9 +23,11 @@
             android:layout_height="@dimen/iv_size"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="@dimen/side_margin"
+            android:layout_marginTop="@dimen/eight_dp"
+            android:background="#FBFBFB"
+            android:backgroundTintMode="src_atop"
             android:contentDescription="@string/profile"
-            android:scaleType="centerCrop"
+            android:scaleType="fitCenter"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -36,10 +41,9 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:layout_marginStart="@dimen/side_margin"
-            android:layout_marginTop="@dimen/side_margin"
+            android:layout_marginTop="@dimen/eight_dp"
             android:layout_toEndOf="@+id/ivImage"
             android:textColor="@color/black"
-            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -70,7 +74,9 @@
             android:layout_marginStart="@dimen/side_margin"
             android:layout_marginTop="16dp"
             android:textAlignment="textStart"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/btnBookMark"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ivImage"
             tools:text="Title of the event" />
@@ -79,11 +85,11 @@
             android:id="@+id/tvDate"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/side_margin"
-            android:layout_marginTop="@dimen/side_margin"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
             android:gravity="center_vertical"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            android:textColor="#F57C00"
+            app:layout_constraintEnd_toStartOf="@+id/btnBookMark"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvTitle"
             tools:text="June 8" />
@@ -93,7 +99,8 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/tv_height"
             android:layout_marginStart="@dimen/side_margin"
-            android:layout_marginTop="@dimen/side_margin"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="@dimen/side_margin"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -103,17 +110,60 @@
 
         <ImageButton
             android:id="@+id/btnGo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/eight_dp"
-            android:contentDescription="@string/going"
+            android:layout_width="45dp"
+            android:layout_height="35dp"
             android:backgroundTint="@color/white"
-            android:scaleType="centerInside"
+            android:contentDescription="@string/going"
+            android:scaleType="centerCrop"
             app:layout_constraintBottom_toTopOf="@+id/ivImage"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.802"
+            app:layout_constraintHorizontal_bias="0.571"
             app:layout_constraintStart_toEndOf="@+id/tvCommunity"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
             app:srcCompat="@drawable/ic_baseline_open_in_new_24" />
+
+        <ImageButton
+            android:id="@+id/btnBookMark"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            android:backgroundTint="@color/white"
+            android:contentDescription="@string/bookmark"
+            android:scaleType="centerInside"
+            android:tint="@color/black"
+            app:layout_constraintBottom_toBottomOf="@+id/tvDate"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ivImage"
+            app:layout_constraintVertical_bias="0.551"
+            app:srcCompat="@drawable/ic_baseline_bookmark_border_24" />
+
+        <View
+            android:id="@+id/divider2"
+            android:layout_width="0dp"
+            android:layout_height="0.5dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="2dp"
+            android:background="@color/gray"
+            app:layout_constraintBottom_toTopOf="@+id/ivImage"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvCommunity"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <View
+            android:id="@+id/divider4"
+            android:layout_width="0dp"
+            android:layout_height="0.5dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginBottom="3dp"
+            android:background="@color/gray"
+            app:layout_constraintBottom_toTopOf="@+id/tvTitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ivImage"
+            app:layout_constraintVertical_bias="0.060000002" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

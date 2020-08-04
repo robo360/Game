@@ -22,9 +22,7 @@ public class ImageUtil {
     public static Bitmap loadFromUri(Context context, Uri photoUri) {
         Bitmap image = null;
         try {
-            // check version of Android on device
             if (Build.VERSION.SDK_INT > 27) {
-                // on newer versions of Android, use the new decodeBitmap method
                 ImageDecoder.Source source = ImageDecoder.createSource(context.getContentResolver(), photoUri);
                 image = ImageDecoder.decodeBitmap(source);
             } else {
@@ -37,10 +35,12 @@ public class ImageUtil {
         return image;
     }
 
+    /*
+    Get safe storage directory for photos
+    Use `getExternalFilesDir` on Context to access package-specific directories.
+    This way, we don't need to request external read/write runtime permissions.
+     */
     public static File getPhotoFileUri(Context context, String fileName) {
-        // Get safe storage directory for photos
-        // Use `getExternalFilesDir` on Context to access package-specific directories.
-        // This way, we don't need to request external read/write runtime permissions.
         File mediaStorageDir = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), TAG);
 
         // Create the storage directory if it does not exist

@@ -2,7 +2,9 @@ package com.example.game.fragments;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -20,7 +22,10 @@ import com.example.game.databinding.FragmentEventDetailBinding;
 import com.example.game.models.Attendance;
 import com.example.game.models.Community;
 import com.example.game.models.Event;
+import com.example.game.models.Subscription;
 import com.example.game.models.User;
+import com.example.game.utils.QueryUtil;
+import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseQuery;
@@ -28,6 +33,7 @@ import com.parse.ParseUser;
 
 import org.parceler.Parcels;
 
+import java.text.SimpleDateFormat;
 import java.util.Objects;
 
 public class EventDetailFragment extends Fragment {
@@ -38,6 +44,7 @@ public class EventDetailFragment extends Fragment {
     @Nullable private Event event;
     private TextView tvGoing;
     private ImageButton btnGo;
+    private ImageButton btnBookMark;
 
     public static EventDetailFragment newInstance(Event event, Community community) {
         EventDetailFragment fragment = new EventDetailFragment();
@@ -60,13 +67,14 @@ public class EventDetailFragment extends Fragment {
         FragmentEventDetailBinding binding = FragmentEventDetailBinding.bind(view);
         TextView tvTitle = binding.tvTitle;
         TextView tvDate = binding.tvDate;
-        TextView tvOrganizer = binding.tvCreator;
+        TextView tvOrganizer = binding.tvOrganizer;
         ImageView ivImage = binding.ivImage;
         TextView tvCommunity = binding.tvCommunity;
         TextView tvDetail = binding.tvDetail;
         TextView tvAddress = binding.tvAddress;
         btnGo = binding.btnGo;
         tvGoing = binding.tvGoing;
+        btnBookMark = binding.btnBookMark;
 
         //show the status of the user on this event:
         ParseQuery<Attendance> attendance = ParseQuery.getQuery(Attendance.class);
@@ -86,15 +94,14 @@ public class EventDetailFragment extends Fragment {
         try {
             tvCommunity.setText(String.format("@%s", Objects.requireNonNull(community).fetchIfNeeded().get(Community.KEY_NAME)));
         } catch (ParseException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error querying community name: " + e);
         }
 
         try {
             tvOrganizer.setText(Objects.requireNonNull(Objects.requireNonNull(event).getUser().fetchIfNeeded().get(User.KEY_NAME)).toString());
         } catch (ParseException e) {
-            Log.e(TAG, "Error in getting the user:" + e);
+            tvOrganizer.setText(getString(R.string.app_label));
         }
-        tvDate.setText(Objects.requireNonNull(event).getDate().toString());
         tvTitle.setText(event.getTitle());
 
         if (event.getAddressString() == null) {
@@ -106,11 +113,60 @@ public class EventDetailFragment extends Fragment {
         if (image != null) {
             Glide.with(Objects.requireNonNull(getContext())).load(event.getImage().getUrl()).into(ivImage);
         }
+
+        btnGo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                saveAttendanceChange();
+            }
+        });
+
+        tvGoing.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                saveAttendanceChange();
+            }
+        });
+
+        QueryUtil.bindBookMarkPerStatus(getContext(),btnBookMark);
+
+        btnBookMark.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                QueryUtil.bookMarkEvent(event, getContext(), btnBookMark);
+            }
+        });
+
+        GestureDetector gestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener(){
+            @Override
+            public boolean onSingleTapConfirmed(MotionEvent motionEvent) {
+                return false;
+            }
+
+            @Override
+            public boolean onDoubleTap(MotionEvent motionEvent) {
+                QueryUtil.bookMarkEvent(event, getContext(), btnBookMark);
+                return true;
+            }
+
+            @Override
+            public boolean onDoubleTapEvent(MotionEvent motionEvent) {
+                return false;
+            }
+        });
+
+        ivImage.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+
+                gestureDetector.onTouchEvent(motionEvent);
+                return true;
+            }
+        });
+
         tvDetail.setText(event.getDescription());
-
-        btnGo.setOnClickListener(view1 -> saveAttendanceChange());
-
-        tvGoing.setOnClickListener(view12 -> saveAttendanceChange());
+        SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, HH:mm");
+        tvDate.setText(formatter.format(event.getDate()));
     }
 
     @Override

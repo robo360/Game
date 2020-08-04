@@ -11,13 +11,15 @@
         android:id="@+id/ivProfile"
         android:layout_width="0dp"
         android:layout_height="@dimen/iv_size"
+        android:layout_marginTop="@dimen/new_block"
         android:background="@color/white"
         android:contentDescription="@string/image_holder"
         android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_baseline_image_24" />
 
     <TextView
         android:id="@+id/textView"
@@ -25,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/new_block"
         android:fontFamily="sans-serif-condensed"
-        android:text="@string/take_profile_picture"
+        android:text="@string/set_a_profile_picture"
         android:textAlignment="textStart"
         android:textColor="@color/colorPrimary"
         android:textStyle="bold"

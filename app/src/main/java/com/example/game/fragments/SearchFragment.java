@@ -40,9 +40,12 @@ public class SearchFragment extends Fragment {
         searchFragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
         query = "";
 
-        searchView.setOnClickListener(view13 -> {
-            searchView.setIconifiedByDefault(false);
-            searchView.requestFocus();
+        searchView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                searchView.setIconifiedByDefault(false);
+                searchView.requestFocus();
+            }
         });
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -60,11 +63,27 @@ public class SearchFragment extends Fragment {
             }
         });
 
-        btnCommunity.setOnClickListener(view1 -> createCommunitySearchFragment(query));
+        btnCommunity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                createCommunitySearchFragment(query);
+            }
+        });
 
-        btnEvent.setOnClickListener(view12 -> createEventSearchFragment(query));
+        btnEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                createEventSearchFragment(query);
+            }
+        });
 
         createCommunitySearchFragment(query);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_search, container, false);
     }
 
     public void createCommunitySearchFragment(String query) {
@@ -91,11 +110,5 @@ public class SearchFragment extends Fragment {
         searchFragmentManager.beginTransaction()
                 .replace(R.id.SearchFlContainer, fragment)
                 .commit();
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_search, container, false);
     }
 }

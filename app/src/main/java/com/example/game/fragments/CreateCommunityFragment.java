@@ -1,5 +1,6 @@
 package com.example.game.fragments;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -17,7 +18,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
+import androidx.fragment.app.DialogFragment;
 
 import com.example.game.R;
 import com.example.game.activities.MainActivity;
@@ -26,12 +27,14 @@ import com.example.game.models.Community;
 import com.example.game.models.Subscription;
 import com.example.game.utils.ImageUtil;
 import com.example.game.utils.NavigationUtil;
+import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.io.File;
 
-public class CreateCommunityFragment extends Fragment {
+public class CreateCommunityFragment extends DialogFragment {
     private static final String TAG = "CreateCommunityFragment";
     public static final int PICK_PHOTO_CODE = 1046;
 
@@ -46,31 +49,59 @@ public class CreateCommunityFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        Dialog dialog = getDialog();
+        if (dialog != null) {
+            int width = ViewGroup.LayoutParams.MATCH_PARENT;
+            int height = ViewGroup.LayoutParams.MATCH_PARENT;
+            dialog.getWindow().setLayout(width, height);
+        }
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         com.example.game.databinding.FragmentCreateCommunityBinding binding = FragmentCreateCommunityBinding.bind(view);
         Button btnShare = binding.btnShare;
         EditText etTitle = binding.etTitle;
         EditText etDescription = binding.etDescription;
-        ImageButton ibFile = binding.ibFile;
+        ImageButton ibClose = binding.ibClose;
         ivPoster = binding.ivPoster;
 
-        ibFile.setOnClickListener(this::onPickPhoto);
+        ivPoster.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onPickPhoto(view);
+            }
+        });
 
-        btnShare.setOnClickListener(view12 -> {
-            Community community = new Community();
-            community.setCreator(ParseUser.getCurrentUser());
-            community.setName(etTitle.getText().toString());
-            community.setImage(new ParseFile(photoFile));
-            community.setDescription(etDescription.getText().toString());
-            community.saveInBackground(e -> {
-                if (e != null) {
-                    Log.e(TAG, "Error making an event" + e);
-                } else {
-                    subscribeToCommunity(community);
-                }
-            });
+        ibClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dismiss();
+            }
+        });
 
+        btnShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Community community = new Community();
+                community.setCreator(ParseUser.getCurrentUser());
+                community.setName(etTitle.getText().toString());
+                community.setImage(new ParseFile(photoFile));
+                community.setDescription(etDescription.getText().toString());
+                community.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e != null) {
+                            Log.e(TAG, "Error making an event" + e);
+                        } else {
+                            subscribeToCommunity(community);
+                        }
+                    }
+                });
+            }
         });
     }
 
@@ -107,12 +138,15 @@ public class CreateCommunityFragment extends Fragment {
         subscription.setUser(ParseUser.getCurrentUser());
         subscription.setCommunity(community);
         subscription.setFollowStatus(true);
-        subscription.saveInBackground(e -> {
-            if (e == null) {
-                Toast.makeText(getContext(), "Successful Created A community", Toast.LENGTH_SHORT).show();
-                NavigationUtil.goToActivity(getActivity(), MainActivity.class);
-            } else {
-                Log.e(TAG, "Error while making a subscription" + e);
+        subscription.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+                    Toast.makeText(getContext(), "Successful Created A community", Toast.LENGTH_SHORT).show();
+                    NavigationUtil.goToActivity(getActivity(), MainActivity.class);
+                } else {
+                    Log.e(TAG, "Error while making a subscription" + e);
+                }
             }
         });
     }

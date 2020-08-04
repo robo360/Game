@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="wrap_content"
     android:layout_width="match_parent">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -13,12 +14,17 @@
             android:id="@+id/etTitle"
             android:layout_width="0dp"
             android:layout_height="@dimen/et_size"
-            android:layout_marginTop="36dp"
+            android:layout_marginStart="@dimen/side_margin"
+            android:layout_marginTop="@dimen/side_margin"
+            android:layout_marginEnd="@dimen/side_margin"
             android:background="@drawable/edit_text_border"
             android:ems="10"
-            android:hint="Title"
+            android:hint="@string/title"
+            android:importantForAutofill="no"
             android:inputType="textMultiLine"
+            android:singleLine="true"
             android:textAlignment="center"
+            android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -28,53 +34,57 @@
             android:id="@+id/etDescription"
             android:layout_width="0dp"
             android:layout_height="@dimen/et_size"
-            android:layout_marginTop="@dimen/side_margin"
+            android:layout_marginStart="@dimen/side_margin"
+            android:layout_marginTop="@dimen/eight_dp"
+            android:layout_marginEnd="@dimen/side_margin"
             android:background="@drawable/edit_text_border"
             android:ems="10"
-            android:hint="Description"
+            android:hint="@string/description"
+            android:importantForAutofill="no"
             android:inputType="textMultiLine"
+            android:singleLine="true"
             android:textAlignment="center"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/etTitle" />
 
-        <ImageButton
-            android:id="@+id/ibFile"
-            android:layout_width="@dimen/ib_width"
-            android:layout_height="@dimen/ib_width"
-            android:layout_marginTop="@dimen/side_margin"
-            android:backgroundTint="@color/white"
-            android:contentDescription="@string/folder"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_baseline_folder_24"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/etDescription" />
-
-
         <ImageView
             android:id="@+id/ivPoster"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_height="@dimen/iv_size"
+            android:layout_marginStart="@dimen/side_margin"
+            android:layout_marginTop="@dimen/side_margin"
+            android:layout_marginEnd="@dimen/side_margin"
+            android:contentDescription="@string/poster"
+            android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ibFile"
+            app:layout_constraintStart_toEndOf="@+id/tvPosterLabel"
+            app:layout_constraintTop_toBottomOf="@+id/etDescription"
             app:srcCompat="@drawable/ic_baseline_image_24"
             tools:src="@tools:sample/avatars"
             tools:srcCompat="@drawable/ic_baseline_image_24" />
 
-        <Button
+        <TextView
+            android:id="@+id/tvPosterLabel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/side_margin"
+            android:layout_marginTop="@dimen/side_margin"
+            android:text="@string/set_a_picture"
+            android:textColor="@color/gray"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/etDescription" />
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnShare"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Start community"
+            android:layout_marginTop="@dimen/new_block"
+            android:text="@string/start_community"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintHorizontal_bias="0.579"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ivPoster" />
 
@@ -90,5 +100,20 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <ImageButton
+            android:id="@+id/ibClose"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="@dimen/side_margin"
+            android:background="@color/white"
+            android:scaleType="fitXY"
+            android:tint="@color/black"
+            app:layout_constraintBottom_toTopOf="@+id/etTitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_baseline_close_24"
+            android:contentDescription="@string/clear_button" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </ScrollView>

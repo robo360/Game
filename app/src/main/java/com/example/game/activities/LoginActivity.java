@@ -21,11 +21,9 @@ import com.parse.ParseUser;
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
 
-    private ActivityLoginBinding binding;
     private EditText etEmail;
     private EditText etPassword;
     private Button btnLogin;
-    private TextView tvSingup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,12 +31,12 @@ public class LoginActivity extends AppCompatActivity {
         if (ParseUser.getCurrentUser() != null) {
             goToActivity(MainActivity.class);
         }
-        binding = ActivityLoginBinding.inflate(getLayoutInflater());
+        ActivityLoginBinding binding = ActivityLoginBinding.inflate(getLayoutInflater());
+        TextView tvSingup = binding.tvSignUpMessage;
         setContentView(binding.getRoot());
         etEmail = binding.etMail;
         etPassword = binding.etPassword;
         btnLogin = binding.btnLogin;
-        tvSingup = binding.tvSignUpMessage;
         //TODO: [UX] When the etPassword or etEmail lose focus, remove the virtual keyboard.
 
         //set a listener on the btnLogin
@@ -46,11 +44,11 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //check whether the fields are not empty else login
-                String email = etEmail.getText().toString();
+                String email = etEmail.getText().toString().replaceAll(" ", "");
                 String password = etPassword.getText().toString();
 
                 if (email.isEmpty() || password.isEmpty()) {
-                    Snackbar.make(btnLogin, "Email or password cannot be empty", BaseTransientBottomBar.LENGTH_SHORT);
+                    Snackbar.make(btnLogin, "Email or password cannot be empty", BaseTransientBottomBar.LENGTH_SHORT).show();
                 } else {
                     //Send Async request
                     ParseUser.logInInBackground(email, password, new LogInCallback() {
@@ -58,7 +56,7 @@ public class LoginActivity extends AppCompatActivity {
                         public void done(ParseUser user, ParseException e) {
                             if (e != null) {
                                 Log.e(TAG, "Error while logging in" + e);
-                                Snackbar.make(btnLogin, "Error" + e, BaseTransientBottomBar.LENGTH_SHORT).show();
+                                Snackbar.make(btnLogin, "Wrong email or password" , BaseTransientBottomBar.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
                                 goToActivity(MainActivity.class);

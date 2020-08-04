@@ -12,7 +12,7 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/et_size"
         android:layout_marginStart="@dimen/side_margin"
-        android:layout_marginTop="@dimen/top_margin"
+        android:layout_marginTop="@dimen/side_margin"
         android:layout_marginEnd="@dimen/side_margin"
         android:autofillHints=""
         android:background="@drawable/edit_text_border"
@@ -23,9 +23,9 @@
         android:textColor="@android:color/darker_gray"
         android:textColorHint="@color/gray"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.493"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/ivLogo" />
 
     <EditText
         android:id="@+id/etPassword"
@@ -55,6 +55,7 @@
         android:text="@string/login"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etPassword" />
 
@@ -74,13 +75,14 @@
 
     <ImageView
         android:id="@+id/ivLogo"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginBottom="24dp"
+        android:layout_width="@dimen/iv_logo_width"
+        android:layout_height="@dimen/iv_logo_height"
+        android:layout_marginTop="@dimen/top_margin"
         android:contentDescription="@string/logo"
-        app:layout_constraintBottom_toTopOf="@+id/etMail"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.52"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/web_hi_res_512" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,12 +4,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.FileProvider;
-import androidx.fragment.app.Fragment;
-
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,9 +15,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
+import androidx.fragment.app.Fragment;
+
+import com.bumptech.glide.Glide;
 import com.example.game.R;
 import com.example.game.activities.MainActivity;
 import com.example.game.databinding.FragmentTakePictureBinding;
+import com.example.game.models.User;
 import com.example.game.utils.ImageUtil;
 import com.example.game.utils.NavigationUtil;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
@@ -63,6 +64,13 @@ public class TakePictureFragment extends Fragment {
         ivProfile = binding.ivProfile;
         TextView tvSkip = binding.tvSkip;
 
+        //fill with a profile if there is one already
+        ParseUser user = ParseUser.getCurrentUser();
+        @Nullable ParseFile imageFile = user.getParseFile(User.KEY_IMAGE);
+        if(imageFile != null){
+            Glide.with(Objects.requireNonNull(getContext())).load(imageFile.getUrl()).into(ivProfile);
+        }
+
         //set a listener on all elements
         ibFile.setOnClickListener(view1 -> {
             onPickPhoto();
@@ -88,11 +96,9 @@ public class TakePictureFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_take_picture, container, false);
     }
 
-    // Trigger gallery selection for a photo
     public void onPickPhoto() {
         Intent intent = new Intent(Intent.ACTION_PICK,
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -112,10 +118,7 @@ public class TakePictureFragment extends Fragment {
         }
         if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                // by this point we have the camera photo on disk
                 Bitmap takenImage = ImageUtil.rotateBitmapOrientation(photoFile.getPath());
-                // RESIZE BITMAP, see section below
-                // Load the taken image into a preview
                 ivProfile.setImageBitmap(takenImage);
             } else { // Result was a failure
                 Toast.makeText(getContext(), "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
@@ -124,13 +127,10 @@ public class TakePictureFragment extends Fragment {
     }
 
     protected void LaunchCamera() {
-        // create Intent to take a picture and return control to the calling application
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Create a File reference for future access
         photoFile = ImageUtil.getPhotoFileUri(Objects.requireNonNull(getContext()), PHOTO_FILE_NAME);
         Uri fileProvider = FileProvider.getUriForFile(getContext(), "com.example.game", photoFile);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider);
-        // make sure if the intent can be handled
         if (intent.resolveActivity(getContext().getPackageManager()) != null) {
             startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
         }

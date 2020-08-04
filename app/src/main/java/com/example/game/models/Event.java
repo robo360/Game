@@ -56,8 +56,8 @@ public class Event extends ParseObject {
         return getDate(KEY_DATE);
     }
 
-    public ParseObject getCommunity() {
-        return getParseObject(KEY_COMMUNITY);
+    public Community getCommunity() {
+        return (Community) getParseObject(KEY_COMMUNITY);
     }
 
     public String getDescription(){

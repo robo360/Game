@@ -3,9 +3,11 @@ package com.example.game.fragments;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,6 +19,7 @@ import com.bumptech.glide.Glide;
 import com.example.game.R;
 import com.example.game.databinding.FragmentProfileBinding;
 import com.example.game.models.User;
+import com.example.game.utils.ConstantUtils;
 import com.example.game.utils.TimeUtil;
 import com.google.android.material.tabs.TabLayout;
 import com.parse.ParseException;
@@ -85,8 +88,32 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        ParseUser user = ParseUser.getCurrentUser();
+        binding.ibOptions.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PopupMenu menu = new PopupMenu(getContext(), view);
+                menu.inflate(R.menu.pop_down_menu);
+                menu.show();
+                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        if(menuItem.getItemId() == R.id.action_change_profile){
+                            createTakePictureFragment();
+                        }
+                        return true;
+                    }
+                });
+            }
+        });
 
+        ivProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                createTakePictureFragment();
+            }
+        });
+
+        ParseUser user = ParseUser.getCurrentUser();
         try {
             ParseFile imageProfile = (ParseFile) user.fetchIfNeeded().get(User.KEY_IMAGE);
             if (imageProfile != null) {
@@ -98,7 +125,7 @@ public class ProfileFragment extends Fragment {
 
         try {
             tvName.setText(user.fetchIfNeeded().getString(User.KEY_NAME));
-            tvFollowing.setText(String.format("%s following", user.fetchIfNeeded().getNumber(User.KEY_POSTS_COUNT)));
+            tvFollowing.setText(String.format("%s following", user.fetchIfNeeded().getNumber(User.KEY_FOLLOWING_COUNT)));
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -130,4 +157,14 @@ public class ProfileFragment extends Fragment {
         fragment = new CommunityProfileFragment(QUERY);
         profileFragmentManager.beginTransaction().replace(R.id.profileFlContainer, fragment).commit();
     }
+
+    private void createTakePictureFragment(){
+        Fragment fragment;
+        fragment = TakePictureFragment.newInstance();
+        Objects.requireNonNull(getActivity())
+                .getSupportFragmentManager().beginTransaction()
+                .addToBackStack(ConstantUtils.MAIN_TAG).replace(R.id.flContainer, fragment)
+                .commit();
+    }
+
 }

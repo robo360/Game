@@ -32,8 +32,8 @@ public class Subscription extends ParseObject {
         return getParseUser(KEY_USER);
     }
 
-    public ParseObject getCommunity() {
-        return getParseObject(KEY_COMMUNITY);
+    public Community getCommunity() {
+        return (Community) getParseObject(KEY_COMMUNITY);
     }
 
     public boolean getFollowStatus() {
