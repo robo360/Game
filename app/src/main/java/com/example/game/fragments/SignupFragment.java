@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +41,7 @@ public class SignupFragment extends Fragment {
     private EditText etName;
     private EditText etRepeatedPassword;
     private Button btnSignup;
+    private ProgressBar progressBar;
 
     public static SignupFragment newInstance() {
         SignupFragment fragment = new SignupFragment();
@@ -58,11 +60,14 @@ public class SignupFragment extends Fragment {
         etName = binding.etName;
         etRepeatedPassword = binding.etRepeatPassword;
         btnSignup = binding.btnSignUp;
+        progressBar = binding.pgBarSingUp;
 
         //set a listener on the btnSignup
         btnSignup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                btnSignup.setClickable(false);
+                progressBar.setVisibility(View.VISIBLE);
                 final String email = etEmail.getText().toString();
                 String name = etName.getText().toString();
                 final String password = etPassword.getText().toString();
@@ -77,6 +82,7 @@ public class SignupFragment extends Fragment {
                         public void done(ParseException e) {
                             if (e != null) {
                                 Log.e(TAG, "Error Signup: " + e);
+                                progressBar.setVisibility(View.INVISIBLE);
                             } else {
                                 login(email, password);
                             }
@@ -129,6 +135,7 @@ public class SignupFragment extends Fragment {
                     Fragment fragment = new TakePictureFragment();
                     Objects.requireNonNull(getFragmentManager()).beginTransaction().replace(R.id.flContainer, fragment).commit();
                 }
+                progressBar.setVisibility(View.INVISIBLE);
             }
         });
     }
