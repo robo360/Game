@@ -39,7 +39,6 @@ public class QueryUtil {
         int count = Objects.requireNonNull(user.getNumber(User.KEY_FOLLOWING_COUNT)).intValue();
         user.put(User.KEY_FOLLOWING_COUNT, count - 1);
         user.saveInBackground();
-
     }
 
     public static void addFollowingToUserCount() {
@@ -53,13 +52,11 @@ public class QueryUtil {
         boolean currentState = event.getBookMarkStatus();
         if (currentState) {
             btnBookMark.setImageDrawable(context.getDrawable(R.drawable.ic_baseline_bookmark_border_24));
-            btnBookMark.setContentDescription(context.getString(R.string.not_bookmarked));
         } else {
             btnBookMark.setImageDrawable(context.getDrawable(R.drawable.ic_baseline_bookmark_24));
         }
         event.setBookMarkStatus(!currentState);
     }
-
     public static void bookMarkEvent(Event event, Context context, ImageButton btnBookMark) {
         changeBookMarkDrawable(context, btnBookMark, event);
         ParseQuery<Attendance> attendance = ParseQuery.getQuery(Attendance.class);
@@ -67,7 +64,8 @@ public class QueryUtil {
         attendance.whereEqualTo(Attendance.KEY_USER, ParseUser.getCurrentUser());
         attendance.getFirstInBackground((object, e) -> {
             if (object != null) {
-                object.setLikeStatus(!object.getLikeStatus());
+                boolean status = object.getLikeStatus();
+                object.setLikeStatus(!status);
                 object.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {
