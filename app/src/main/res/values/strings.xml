@@ -89,4 +89,7 @@
     <string name="leave">Leave</string>
     <string name="message_before_unfollow">Are you sure you want to leave this community?</string>
     <string name="clear_button">clear button</string>
+    <string name="bookmarked">bookmarked</string>
+    <string name="not_bookmarked">not bookmarked</string>
+    <string name="fail_bookmark">Action on Bookmark failed.</string>
 </resources>
