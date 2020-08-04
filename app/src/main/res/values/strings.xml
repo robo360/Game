@@ -92,4 +92,5 @@
     <string name="bookmarked">bookmarked</string>
     <string name="not_bookmarked">not bookmarked</string>
     <string name="fail_bookmark">Action on Bookmark failed.</string>
+    <string name="close_button">Close Button</string>
 </resources>

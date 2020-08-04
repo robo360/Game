@@ -16,7 +16,7 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/et_size"
             android:layout_marginStart="@dimen/side_margin"
-            android:layout_marginTop="@dimen/side_margin"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="@dimen/side_margin"
             android:background="@drawable/edit_text_border"
             android:ems="10"
@@ -28,7 +28,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/titlePage" />
+            app:layout_constraintTop_toBottomOf="@+id/pgBarCreateFragment" />
 
         <EditText
             android:id="@+id/etDescription"
@@ -169,7 +169,7 @@
                 android:id="@+id/ibTime"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="4dp"
+                android:layout_marginStart="4dp"
                 android:layout_weight="1"
                 android:backgroundTint="@color/white"
                 android:contentDescription="@string/time"
@@ -208,7 +208,7 @@
                 android:id="@+id/tvDisplayTime"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="4dp"
+                android:layout_marginStart="4dp"
                 android:layout_weight="1"
                 android:background="@drawable/edit_text_border"
                 android:gravity="center"
@@ -223,7 +223,7 @@
             android:id="@+id/btnShare"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/side_margin"
+            android:layout_marginTop="@dimen/eight_dp"
             android:text="@string/share"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -235,15 +235,26 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginEnd="@dimen/side_margin"
-            android:layout_marginBottom="@dimen/side_margin"
             android:background="@color/white"
             android:scaleType="fitXY"
             android:tint="@color/black"
-            app:layout_constraintBottom_toTopOf="@+id/etTitle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0"
-            app:srcCompat="@drawable/ic_baseline_close_24" />
+            app:srcCompat="@drawable/ic_baseline_close_24"
+            android:contentDescription="@string/close_button" />
+
+        <ProgressBar
+            android:id="@+id/pgBarCreateFragment"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:indeterminate="true"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ibClose" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

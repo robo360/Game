@@ -19,6 +19,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -76,10 +77,12 @@ public class CreateEventFragment extends DialogFragment {
     private TimePickerDialog timePickerDialog;
     private ArrayAdapter<String> adapter;
     private TextView tvAddressDisplay;
+    private ProgressBar progressBar;
     private String addressString;
     private LatLng addressLatLng;
     private Community community;
     private ImageView ivPoster;
+    private Button btnShare;
     private File photoFile;
     private int year;
     private int month;
@@ -115,7 +118,6 @@ public class CreateEventFragment extends DialogFragment {
         if (args != null) {
             communities = args.getStringArrayList(COMMUNITIES);
         }
-        Button btnShare = binding.btnShare;
         ImageButton btnDate = binding.ibDate;
         ImageButton btnTime = binding.ibTime;
         ImageButton ibLoc = binding.ibLoc;
@@ -123,8 +125,11 @@ public class CreateEventFragment extends DialogFragment {
         TextView tvDisplayDate = binding.tvDisplayDate;
         TextView tvDisplayTime = binding.tvDisplayTime;
         TextView autoTvCommunity = binding.autoTvCommunity;
-        ivPoster = binding.ivPoster;
         tvAddressDisplay = binding.tvAddressDisplay;
+        progressBar = binding.pgBarCreateFragment;
+        ivPoster = binding.ivPoster;
+        btnShare = binding.btnShare;
+
 
         if (communities != null) {
             adapter = new ArrayAdapter<>(view.getContext(), android.R.layout.simple_list_item_single_choice, communities);
@@ -229,6 +234,8 @@ public class CreateEventFragment extends DialogFragment {
         btnShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                btnShare.setClickable(false);
+                progressBar.setVisibility(View.VISIBLE);
                 saveEvent();
             }
         });
@@ -254,10 +261,14 @@ public class CreateEventFragment extends DialogFragment {
             } catch (ParseException e) {
                 Log.e(TAG, "Error while parsing time" + e);
                 Snackbar.make(binding.ibDate, getString(R.string.wrong_date_message), BaseTransientBottomBar.LENGTH_SHORT).show();
+                btnShare.setClickable(true);
+                progressBar.setVisibility(View.GONE);
                 return;
             }
         } else {
             Snackbar.make(binding.ibLoc, R.string.wrong_date_message, BaseTransientBottomBar.LENGTH_SHORT).show();
+            btnShare.setClickable(true);
+            progressBar.setVisibility(View.GONE);
             return;
         }
 
@@ -266,6 +277,8 @@ public class CreateEventFragment extends DialogFragment {
             event.setAddressString(addressString);
         } else {
             Snackbar.make(binding.btnShare, "Address cannot be empty", BaseTransientBottomBar.LENGTH_SHORT).show();
+            btnShare.setClickable(true);
+            progressBar.setVisibility(View.GONE);
             return;
         }
         event.setUser(ParseUser.getCurrentUser());
@@ -283,6 +296,8 @@ public class CreateEventFragment extends DialogFragment {
                     Toast.makeText(getContext(), "Successful Created an event", Toast.LENGTH_SHORT).show();
                     NavigationUtil.goToActivity(getActivity(), MainActivity.class);
                 }
+                btnShare.setClickable(true);
+                progressBar.setVisibility(View.GONE);
             }
         });
     }
