@@ -94,9 +94,10 @@ public class QueryUtil {
         QueryUtil.addInteraction(event.getCommunity());
     }
 
-    public static void bindBookMarkPerStatus(Context context, ImageButton btnBookMark) {
+    public static void bindBookMarkPerStatus(Context context, ImageButton btnBookMark, Event event) {
         ParseQuery<Attendance> attendance = ParseQuery.getQuery(Attendance.class);
         attendance.whereEqualTo(Attendance.KEY_USER, ParseUser.getCurrentUser());
+        attendance.whereEqualTo(Attendance.KEY_EVENT, event);
         attendance.whereEqualTo(Attendance.KEY_LIKE_STATUS, true);
         attendance.getFirstInBackground(new GetCallback<Attendance>() {
             @Override
