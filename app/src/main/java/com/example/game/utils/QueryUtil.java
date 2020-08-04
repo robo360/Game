@@ -16,6 +16,7 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import java.util.List;
 import java.util.Objects;
 
 public class QueryUtil {
@@ -48,19 +49,19 @@ public class QueryUtil {
         user.saveInBackground();
     }
 
-    private static void changeBookMarkDrawable(Context context, ImageButton btnBookMark){
-        String currentState = btnBookMark.getContentDescription().toString();
-        if (currentState.equals(context.getString(R.string.bookmarked))) {
+    private static void changeBookMarkDrawable(Context context, ImageButton btnBookMark, Event event){
+        boolean currentState = event.getBookMarkStatus();
+        if (currentState) {
             btnBookMark.setImageDrawable(context.getDrawable(R.drawable.ic_baseline_bookmark_border_24));
             btnBookMark.setContentDescription(context.getString(R.string.not_bookmarked));
         } else {
             btnBookMark.setImageDrawable(context.getDrawable(R.drawable.ic_baseline_bookmark_24));
-            btnBookMark.setContentDescription(context.getString(R.string.bookmarked));
         }
+        event.setBookMarkStatus(!currentState);
     }
 
     public static void bookMarkEvent(Event event, Context context, ImageButton btnBookMark) {
-        changeBookMarkDrawable(context, btnBookMark);
+        changeBookMarkDrawable(context, btnBookMark, event);
         ParseQuery<Attendance> attendance = ParseQuery.getQuery(Attendance.class);
         attendance.whereEqualTo(Attendance.KEY_EVENT, event);
         attendance.whereEqualTo(Attendance.KEY_USER, ParseUser.getCurrentUser());
@@ -72,7 +73,7 @@ public class QueryUtil {
                     public void done(ParseException e) {
                         if (e != null) {
                             Toast.makeText(context, R.string.fail_bookmark, Toast.LENGTH_SHORT).show();
-                            changeBookMarkDrawable(context, btnBookMark);
+                            changeBookMarkDrawable(context, btnBookMark, event);
                         }
                     }
                 });
@@ -103,6 +104,30 @@ public class QueryUtil {
             public void done(Attendance object, ParseException e) {
                 if (e == null) {
                     btnBookMark.setImageDrawable(context.getDrawable(R.drawable.ic_baseline_bookmark_24));
+                }
+            }
+        });
+    }
+
+    public static void bindBookMarkStatuses(List<Event> events) {
+        for (Event event : events) {
+            bindBookMarkStatus(event);
+        }
+    }
+
+    public static void bindBookMarkStatus(Event event) {
+        ParseQuery<Attendance> attendanceParseQuery = ParseQuery.getQuery(Attendance.class);
+        attendanceParseQuery.whereEqualTo(Attendance.KEY_EVENT, event);
+        attendanceParseQuery.whereEqualTo(Attendance.KEY_USER, ParseUser.getCurrentUser());
+        attendanceParseQuery.getFirstInBackground(new GetCallback<Attendance>() {
+            @Override
+            public void done(Attendance object, ParseException e) {
+                if(object != null){
+                    if (object.getLikeStatus()) {
+                        event.setBookMarkStatus(true);
+                    } else {
+                        event.setBookMarkStatus(false);
+                    }
                 }
             }
         });
