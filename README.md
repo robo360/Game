@@ -1,7 +1,6 @@
-Game Project 
+Game 
 ===
 
-# Game
 ## Table of Contents
 1. [Overview](#Overview)
 1. [Product Spec](#Product-Spec)
@@ -10,7 +9,7 @@ Game Project
 
 ## Overview
 ### Description
-Game is an app that allows users to form community around their favorites sports such as Basketball, soccer, and more to engage in conversations and organize games. 
+Game is an app that allows users to form community around their favorites sports such as Basketball, soccer, and more to organize and participate team sports games.
 
 ### App Evaluation
 [Evaluation of your app across the following attributes]
@@ -159,18 +158,7 @@ Game is an app that allows users to form community around their favorites sports
 |createdAt|	DateTime|	date when the first interaction is created (default field)|
 |updatedAt|	DateTime|	date when comment is last updated (default) field)|
 
-5. Comment (User - event)
-
-| Property | Type     | Description |
-| -------- | -------- | -------- |
-|objectId     | String    | unique id for the user post |
-|user |	Pointer to User | the person who created the post|
-|event |	Pointer to Event| Comments to a post|
-|comment |String | text of the comment written by the user| 
-|createdAt|	DateTime|	date when the first interaction is created (default field)|
-|updatedAt|	DateTime|	date when comment is last updated (default) field)|
-
-6. Subscription (user - community)
+5. Subscription (user - community)
 
 | Property | Type     | Description |
 | -------- | -------- | -------- |
