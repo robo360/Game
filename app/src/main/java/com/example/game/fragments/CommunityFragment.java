@@ -175,11 +175,13 @@ public class CommunityFragment extends Fragment implements EventAdapter.OnClickB
                             binding.tvMessage.setText(R.string.no_event_in_community);
                         } else if (objects.size() >= limit) {
                             binding.tvMessage.setVisibility(View.GONE);
+                            QueryUtil.bindBookMarkStatuses(objects);
                             events.addAll(objects.subList(0, limit));
                             Collections.shuffle(events);
                             adapter.notifyDataSetChanged();
                         } else {
                             binding.tvMessage.setVisibility(View.GONE);
+                            QueryUtil.bindBookMarkStatuses(objects);
                             events.addAll(objects);
                             Collections.shuffle(events);
                             adapter.notifyDataSetChanged();
@@ -234,6 +236,7 @@ public class CommunityFragment extends Fragment implements EventAdapter.OnClickB
                 } else {
                     if (objects.size() > 0) {
                         binding.tvMessage.setVisibility(View.GONE);
+                        QueryUtil.bindBookMarkStatuses(objects);
                         events.addAll(objects);
                         adapter.notifyDataSetChanged();
                     } else {
@@ -266,6 +269,7 @@ public class CommunityFragment extends Fragment implements EventAdapter.OnClickB
                 } else {
                     if (objects.size() > 0) {
                         binding.tvMessage.setVisibility(View.GONE);
+                        QueryUtil.bindBookMarkStatuses(objects);
                         events.addAll(objects);
                         adapter.notifyDataSetChanged();
                     } else {
