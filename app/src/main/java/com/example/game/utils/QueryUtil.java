@@ -16,6 +16,7 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import java.util.List;
 import java.util.Objects;
 
 public class QueryUtil {
@@ -38,7 +39,6 @@ public class QueryUtil {
         int count = Objects.requireNonNull(user.getNumber(User.KEY_FOLLOWING_COUNT)).intValue();
         user.put(User.KEY_FOLLOWING_COUNT, count - 1);
         user.saveInBackground();
-
     }
 
     public static void addFollowingToUserCount() {
@@ -47,26 +47,31 @@ public class QueryUtil {
         user.put(User.KEY_FOLLOWING_COUNT, count + 1);
         user.saveInBackground();
     }
-    private static void changeBookMarkDrawable(Context context, ImageButton btnBookMark){
-        if (btnBookMark.getDrawable() == context.getDrawable(R.drawable.ic_baseline_bookmark_24)) {
+
+    private static void changeBookMarkDrawable(Context context, ImageButton btnBookMark, Event event){
+        boolean currentState = event.getBookMarkStatus();
+        if (currentState) {
             btnBookMark.setImageDrawable(context.getDrawable(R.drawable.ic_baseline_bookmark_border_24));
         } else {
             btnBookMark.setImageDrawable(context.getDrawable(R.drawable.ic_baseline_bookmark_24));
         }
+        event.setBookMarkStatus(!currentState);
     }
     public static void bookMarkEvent(Event event, Context context, ImageButton btnBookMark) {
-        changeBookMarkDrawable(context, btnBookMark);
+        changeBookMarkDrawable(context, btnBookMark, event);
         ParseQuery<Attendance> attendance = ParseQuery.getQuery(Attendance.class);
         attendance.whereEqualTo(Attendance.KEY_EVENT, event);
         attendance.whereEqualTo(Attendance.KEY_USER, ParseUser.getCurrentUser());
         attendance.getFirstInBackground((object, e) -> {
             if (object != null) {
+                boolean status = object.getLikeStatus();
+                object.setLikeStatus(!status);
                 object.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {
                         if (e != null) {
-                            Toast.makeText(context, "Action on Bookmark failed.", Toast.LENGTH_SHORT).show();
-                            changeBookMarkDrawable(context, btnBookMark);
+                            Toast.makeText(context, R.string.fail_bookmark, Toast.LENGTH_SHORT).show();
+                            changeBookMarkDrawable(context, btnBookMark, event);
                         }
                     }
                 });
@@ -87,15 +92,40 @@ public class QueryUtil {
         QueryUtil.addInteraction(event.getCommunity());
     }
 
-    public static void bindBookMarkPerStatus(Context context, ImageButton btnBookMark) {
+    public static void bindBookMarkPerStatus(Context context, ImageButton btnBookMark, Event event) {
         ParseQuery<Attendance> attendance = ParseQuery.getQuery(Attendance.class);
         attendance.whereEqualTo(Attendance.KEY_USER, ParseUser.getCurrentUser());
+        attendance.whereEqualTo(Attendance.KEY_EVENT, event);
         attendance.whereEqualTo(Attendance.KEY_LIKE_STATUS, true);
         attendance.getFirstInBackground(new GetCallback<Attendance>() {
             @Override
             public void done(Attendance object, ParseException e) {
                 if (e == null) {
                     btnBookMark.setImageDrawable(context.getDrawable(R.drawable.ic_baseline_bookmark_24));
+                }
+            }
+        });
+    }
+
+    public static void bindBookMarkStatuses(List<Event> events) {
+        for (Event event : events) {
+            bindBookMarkStatus(event);
+        }
+    }
+
+    public static void bindBookMarkStatus(Event event) {
+        ParseQuery<Attendance> attendanceParseQuery = ParseQuery.getQuery(Attendance.class);
+        attendanceParseQuery.whereEqualTo(Attendance.KEY_EVENT, event);
+        attendanceParseQuery.whereEqualTo(Attendance.KEY_USER, ParseUser.getCurrentUser());
+        attendanceParseQuery.getFirstInBackground(new GetCallback<Attendance>() {
+            @Override
+            public void done(Attendance object, ParseException e) {
+                if(object != null){
+                    if (object.getLikeStatus()) {
+                        event.setBookMarkStatus(true);
+                    } else {
+                        event.setBookMarkStatus(false);
+                    }
                 }
             }
         });

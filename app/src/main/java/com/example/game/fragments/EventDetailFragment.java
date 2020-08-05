@@ -128,7 +128,7 @@ public class EventDetailFragment extends Fragment {
             }
         });
 
-        QueryUtil.bindBookMarkPerStatus(getContext(),btnBookMark);
+        QueryUtil.bindBookMarkPerStatus(getContext(),btnBookMark, event);
 
         btnBookMark.setOnClickListener(new View.OnClickListener() {
             @Override

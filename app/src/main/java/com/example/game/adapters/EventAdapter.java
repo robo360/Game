@@ -148,7 +148,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
             if (image != null) {
                 Glide.with(context).load(event.getImage().getUrl()).into(ivImage);
             }
-            QueryUtil.bindBookMarkPerStatus(context, btnBookMark);
+            QueryUtil.bindBookMarkPerStatus(context, btnBookMark, event);
         }
     }
 

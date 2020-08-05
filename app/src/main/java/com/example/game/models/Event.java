@@ -1,6 +1,5 @@
 package com.example.game.models;
 
-import com.parse.Parse;
 import com.parse.ParseClassName;
 import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
@@ -36,6 +35,8 @@ public class Event extends ParseObject {
     public static final String KEY_DATE = "date";
     public static final String KEY_ADDRESS_STRING = "addressString";
 
+    private boolean bookmarkStatus = false;
+
     public ParseUser getUser() {
         return getParseUser(KEY_CREATOR);
     }
@@ -68,6 +69,10 @@ public class Event extends ParseObject {
         return getString(KEY_ADDRESS_STRING);
     }
 
+    public boolean getBookMarkStatus(){
+        return bookmarkStatus;
+    }
+
     public void setUser(ParseUser user) {
         put(KEY_CREATOR, user);
     }
@@ -98,5 +103,9 @@ public class Event extends ParseObject {
 
     public void setAddressString(String addressString){
         put(KEY_ADDRESS_STRING, addressString);
+    }
+
+    public void setBookMarkStatus(boolean status) {
+        this.bookmarkStatus = status;
     }
 }
