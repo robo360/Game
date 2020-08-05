@@ -47,7 +47,7 @@ public class QueryUtil {
         user.put(User.KEY_FOLLOWING_COUNT, count + 1);
         user.saveInBackground();
     }
-
+  
     private static void changeBookMarkDrawable(Context context, ImageButton btnBookMark, Event event){
         boolean currentState = event.getBookMarkStatus();
         if (currentState) {
@@ -57,6 +57,7 @@ public class QueryUtil {
         }
         event.setBookMarkStatus(!currentState);
     }
+  
     public static void bookMarkEvent(Event event, Context context, ImageButton btnBookMark) {
         changeBookMarkDrawable(context, btnBookMark, event);
         ParseQuery<Attendance> attendance = ParseQuery.getQuery(Attendance.class);

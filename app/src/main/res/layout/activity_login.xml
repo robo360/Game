@@ -37,27 +37,27 @@
         android:background="@drawable/edit_text_border"
         android:gravity="center"
         android:hint="@string/password"
+        android:importantForAutofill="no"
         android:inputType="textMultiLine|textPassword"
         android:textAlignment="center"
         android:textColor="@android:color/darker_gray"
         android:textColorHint="@color/gray"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:importantForAutofill="no"
         app:layout_constraintTop_toBottomOf="@+id/etMail" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnLogin"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/et_size"
-        android:layout_marginTop="@dimen/new_block"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/side_margin"
         android:backgroundTint="@color/colorPrimary"
         android:text="@string/login"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etPassword" />
+        app:layout_constraintTop_toBottomOf="@+id/progressBar" />
 
     <TextView
         android:id="@+id/tvSignUpMessage"
@@ -80,9 +80,20 @@
         android:layout_marginTop="@dimen/top_margin"
         android:contentDescription="@string/logo"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.52"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/web_hi_res_512" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/side_margin"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etPassword" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

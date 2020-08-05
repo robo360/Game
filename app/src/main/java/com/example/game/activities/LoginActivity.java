@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +25,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText etEmail;
     private EditText etPassword;
     private Button btnLogin;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,7 @@ public class LoginActivity extends AppCompatActivity {
         etEmail = binding.etMail;
         etPassword = binding.etPassword;
         btnLogin = binding.btnLogin;
+        progressBar = binding.progressBar;
         //TODO: [UX] When the etPassword or etEmail lose focus, remove the virtual keyboard.
 
         //set a listener on the btnLogin
@@ -50,6 +53,8 @@ public class LoginActivity extends AppCompatActivity {
                 if (email.isEmpty() || password.isEmpty()) {
                     Snackbar.make(btnLogin, "Email or password cannot be empty", BaseTransientBottomBar.LENGTH_SHORT).show();
                 } else {
+                    btnLogin.setClickable(false);
+                    progressBar.setVisibility(View.VISIBLE);
                     //Send Async request
                     ParseUser.logInInBackground(email, password, new LogInCallback() {
                         @Override
@@ -57,10 +62,12 @@ public class LoginActivity extends AppCompatActivity {
                             if (e != null) {
                                 Log.e(TAG, "Error while logging in" + e);
                                 Snackbar.make(btnLogin, "Wrong email or password" , BaseTransientBottomBar.LENGTH_SHORT).show();
+                                btnLogin.setClickable(true);
                             } else {
                                 Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
                                 goToActivity(MainActivity.class);
                             }
+                            progressBar.setVisibility(View.INVISIBLE);
                         }
                     });
                 }

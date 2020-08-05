@@ -11,12 +11,12 @@
         android:id="@+id/ivLogo"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_marginBottom="@dimen/side_margin"
+        android:layout_marginTop="@dimen/new_block"
         android:contentDescription="@string/logo"
-        app:layout_constraintBottom_toTopOf="@+id/etName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.508"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/web_hi_res_512" />
 
     <EditText
@@ -24,18 +24,19 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/et_size"
         android:layout_marginStart="@dimen/side_margin"
-        android:layout_marginTop="@dimen/top_margin"
+        android:layout_marginTop="@dimen/side_margin"
         android:layout_marginEnd="@dimen/side_margin"
         android:background="@drawable/edit_text_border"
         android:gravity="center"
         android:hint="@string/name"
+        android:importantForAutofill="no"
         android:inputType="textMultiLine"
         android:textAlignment="center"
         android:textColorHint="@color/gray"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/ivLogo" />
 
     <EditText
         android:id="@+id/etMail"
@@ -53,7 +54,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etName" />
+        app:layout_constraintTop_toBottomOf="@+id/etName"
+        android:importantForAutofill="no" />
 
     <EditText
         android:id="@+id/etPassword"
@@ -97,14 +99,14 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnSignUp"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/et_size"
-        android:layout_marginTop="76dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/side_margin"
         android:backgroundTint="@color/colorPrimary"
         android:text="@string/signup"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etRepeatPassword" />
+        app:layout_constraintTop_toBottomOf="@+id/pgBarSingUp" />
 
     <TextView
         android:id="@+id/tvLoginMessage"
@@ -118,5 +120,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnSignUp" />
+
+    <ProgressBar
+        android:id="@+id/pgBarSingUp"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/side_margin"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etRepeatPassword" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

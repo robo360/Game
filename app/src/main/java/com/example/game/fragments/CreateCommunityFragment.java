@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -27,6 +28,8 @@ import com.example.game.models.Community;
 import com.example.game.models.Subscription;
 import com.example.game.utils.ImageUtil;
 import com.example.game.utils.NavigationUtil;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
@@ -40,6 +43,7 @@ public class CreateCommunityFragment extends DialogFragment {
 
     private ImageView ivPoster;
     private File photoFile;
+    private ProgressBar progressBar;
 
     public static CreateCommunityFragment newInstance() {
         CreateCommunityFragment fragment = new CreateCommunityFragment();
@@ -68,6 +72,7 @@ public class CreateCommunityFragment extends DialogFragment {
         EditText etDescription = binding.etDescription;
         ImageButton ibClose = binding.ibClose;
         ivPoster = binding.ivPoster;
+        progressBar = binding.pgBarCreateCommunity;
 
         ivPoster.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,21 +91,31 @@ public class CreateCommunityFragment extends DialogFragment {
         btnShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                btnShare.setClickable(false);
+                progressBar.setVisibility(View.VISIBLE);
                 Community community = new Community();
-                community.setCreator(ParseUser.getCurrentUser());
-                community.setName(etTitle.getText().toString());
-                community.setImage(new ParseFile(photoFile));
-                community.setDescription(etDescription.getText().toString());
-                community.saveInBackground(new SaveCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        if (e != null) {
-                            Log.e(TAG, "Error making an event" + e);
-                        } else {
-                            subscribeToCommunity(community);
+                if (etTitle.getText() == null || photoFile == null) {
+                    Snackbar.make(btnShare, "Title or photo cannot be empty", BaseTransientBottomBar.LENGTH_SHORT).show();
+                    btnShare.setClickable(true);
+                    progressBar.setVisibility(View.GONE);
+                } else {
+                    community.setCreator(ParseUser.getCurrentUser());
+                    community.setName(etTitle.getText().toString());
+                    community.setImage(new ParseFile(photoFile));
+                    community.setDescription(etDescription.getText().toString());
+                    community.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e != null) {
+                                Log.e(TAG, "Error making an event" + e);
+                            } else {
+                                subscribeToCommunity(community);
+                            }
+                            btnShare.setClickable(true);
+                            progressBar.setVisibility(View.GONE);
                         }
-                    }
-                });
+                    });
+                }
             }
         });
     }
