@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,6 +47,7 @@ public class TakePictureFragment extends Fragment {
     private Button btnSubmit;
     private ImageView ivProfile;
     private File photoFile;
+    private ProgressBar progressBar;
 
     public static TakePictureFragment newInstance() {
         TakePictureFragment fragment = new TakePictureFragment();
@@ -60,9 +62,10 @@ public class TakePictureFragment extends Fragment {
         com.example.game.databinding.FragmentTakePictureBinding binding = FragmentTakePictureBinding.bind(view);
         ImageButton ibCamera = binding.ibCamera;
         ImageButton ibFile = binding.ibFile;
+        TextView tvSkip = binding.tvSkip;
         btnSubmit = binding.btnSubmit;
         ivProfile = binding.ivProfile;
-        TextView tvSkip = binding.tvSkip;
+        progressBar = binding.pgBarTakePicture;
 
         //fill with a profile if there is one already
         ParseUser user = ParseUser.getCurrentUser();
@@ -85,8 +88,12 @@ public class TakePictureFragment extends Fragment {
         tvSkip.setOnClickListener(view13 -> NavigationUtil.goToActivity(getActivity(), MainActivity.class));
 
         btnSubmit.setOnClickListener(view14 -> {
+            btnSubmit.setClickable(false);
+            progressBar.setVisibility(View.VISIBLE);
             if (photoFile == null || ivProfile.getDrawable() == null) {
                 Log.e(TAG, "Picture cannot be empty cannot be empty");
+                btnSubmit.setClickable(true);
+                progressBar.setVisibility(View.GONE);
             } else {
                 save(ParseUser.getCurrentUser(), new ParseFile(photoFile));
             }
@@ -145,6 +152,8 @@ public class TakePictureFragment extends Fragment {
             } else {
                 NavigationUtil.goToActivity(getActivity(), MainActivity.class);
             }
+            btnSubmit.setClickable(true);
+            progressBar.setVisibility(View.GONE);
         });
     }
 }
