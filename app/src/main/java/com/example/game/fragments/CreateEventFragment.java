@@ -130,7 +130,6 @@ public class CreateEventFragment extends DialogFragment {
         ivPoster = binding.ivPoster;
         btnShare = binding.btnShare;
 
-
         if (communities != null) {
             adapter = new ArrayAdapter<>(view.getContext(), android.R.layout.simple_list_item_single_choice, communities);
         }

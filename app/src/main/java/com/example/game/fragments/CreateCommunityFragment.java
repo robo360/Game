@@ -94,11 +94,11 @@ public class CreateCommunityFragment extends DialogFragment {
                 btnShare.setClickable(false);
                 progressBar.setVisibility(View.VISIBLE);
                 Community community = new Community();
-                if(etTitle.getText() == null || photoFile == null){
+                if (etTitle.getText() == null || photoFile == null) {
                     Snackbar.make(btnShare, "Title or photo cannot be empty", BaseTransientBottomBar.LENGTH_SHORT).show();
                     btnShare.setClickable(true);
                     progressBar.setVisibility(View.GONE);
-                } else{
+                } else {
                     community.setCreator(ParseUser.getCurrentUser());
                     community.setName(etTitle.getText().toString());
                     community.setImage(new ParseFile(photoFile));

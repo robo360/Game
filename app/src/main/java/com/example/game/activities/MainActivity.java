@@ -189,9 +189,11 @@ public class MainActivity extends AppCompatActivity {
         q.findInBackground(new FindCallback<Subscription>() {
             @Override
             public void done(List<Subscription> objects, ParseException e) {
-                for (Subscription subscription : objects) {
-                    Community community = subscription.getCommunity();
-                    communityNames.add(community.getName());
+                if(objects != null){
+                    for (Subscription subscription : objects) {
+                        Community community = subscription.getCommunity();
+                        communityNames.add(community.getName());
+                    }
                 }
             }
         });
