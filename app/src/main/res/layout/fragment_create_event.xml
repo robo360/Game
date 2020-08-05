@@ -241,7 +241,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_baseline_close_24"
-            android:contentDescription="@string/close_button" />
+            android:contentDescription="@string/clear_button" />
 
         <ProgressBar
             android:id="@+id/pgBarCreateFragment"

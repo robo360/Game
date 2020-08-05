@@ -1,7 +1,6 @@
 package com.example.game.utils;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -48,18 +47,13 @@ public class QueryUtil {
         user.put(User.KEY_FOLLOWING_COUNT, count + 1);
         user.saveInBackground();
     }
-
     private static void changeBookMarkDrawable(Context context, ImageButton btnBookMark){
-        String currentState = btnBookMark.getContentDescription().toString();
-        if (currentState.equals(context.getString(R.string.bookmarked))) {
+        if (btnBookMark.getDrawable() == context.getDrawable(R.drawable.ic_baseline_bookmark_24)) {
             btnBookMark.setImageDrawable(context.getDrawable(R.drawable.ic_baseline_bookmark_border_24));
-            btnBookMark.setContentDescription(context.getString(R.string.not_bookmarked));
         } else {
             btnBookMark.setImageDrawable(context.getDrawable(R.drawable.ic_baseline_bookmark_24));
-            btnBookMark.setContentDescription(context.getString(R.string.bookmarked));
         }
     }
-
     public static void bookMarkEvent(Event event, Context context, ImageButton btnBookMark) {
         changeBookMarkDrawable(context, btnBookMark);
         ParseQuery<Attendance> attendance = ParseQuery.getQuery(Attendance.class);
@@ -67,12 +61,11 @@ public class QueryUtil {
         attendance.whereEqualTo(Attendance.KEY_USER, ParseUser.getCurrentUser());
         attendance.getFirstInBackground((object, e) -> {
             if (object != null) {
-                object.setLikeStatus(!object.getLikeStatus());
                 object.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {
                         if (e != null) {
-                            Toast.makeText(context, R.string.fail_bookmark, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "Action on Bookmark failed.", Toast.LENGTH_SHORT).show();
                             changeBookMarkDrawable(context, btnBookMark);
                         }
                     }
